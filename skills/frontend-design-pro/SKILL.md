@@ -98,7 +98,7 @@ Consulte as especificações completas em `references/dark-ui-depth.md`.
 
 ## 7. Roteamento de Referências
 
-| Necessidade / Domínio de UI | Arquivo de Referência |
+| **Necessidade / Domínio de UI** | Arquivo de Referência |
 |---|---|
 | **Catálogo de 67 Anti-Patterns** | `references/ai-slop-catalog.md` |
 | **48 Regras de Craft e UX (Rauno)** | `references/interface-guidelines.md` |
@@ -110,3 +110,31 @@ Consulte as especificações completas em `references/dark-ui-depth.md`.
 | **Formulários & Wizards** | `skills/ui-components/references/forms.md` |
 | **Landing Pages Cinematográficas** | `skills/ui-components/references/cinematic-landing-page.md` |
 | **Micro-interações e Motion** | `skills/ui-motion/SKILL.md` |
+
+---
+
+## 9. Pesquisa Competitiva de UX com Lazyweb MCP
+
+> [!IMPORTANT]
+> **Lembrete para IA e usuário:** O MCP Lazyweb está instalado e ativo. Para qualquer task de UI nova — antes de propor estrutura visual — use as tools de pesquisa do Lazyweb para embasar o design em dados reais de mercado em vez de propostas genéricas.
+
+### Quando Acionar o Lazyweb
+
+| Contexto da Task | Tool Lazyweb | O que retorna |
+|---|---|---|
+| Nova tela / componente | `lazyweb_search_screens` | Screenshots reais de produtos similares por categoria |
+| Paywall / pricing / planos | `lazyweb_start_paywall_synthesize` | Síntese de paywalls de mercado com CTAs e estruturas validadas |
+| A/B tests e experimentos | `lazyweb_search_experiments` | Experimentos reais com variantes e resultados |
+| Otimização de tela existente | `lazyweb_generate_report` | Relatório completo com mockups gerados por AI a partir de screenshot |
+| Proposta interativa de mudanças | `lazyweb_propose_ui_changes` | Diagrama interativo para usuário aprovar/reprovar cada mudança |
+| Flows e navegação | `lazyweb_search_flows` | Flows de onboarding, checkout, settings de apps reais |
+
+### Fluxo Recomendado Pré-Proposal
+```
+1. lazyweb_search_screens { query: "<categoria>", platform: "web"|"mobile" }
+2. lazyweb_agentic_search_finalize { agentic_search_id, result_refs: [...] }
+3. Incorporar referências no design.md da spec sob "Referências de Mercado Validadas"
+```
+
+> **Regra:** Nunca copiar schemas, regras de scoring ou lógica de produto do Lazyweb para dentro de skills ou arquivos de regras. O MCP é a fonte de verdade.
+

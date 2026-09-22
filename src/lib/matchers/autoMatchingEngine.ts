@@ -126,7 +126,12 @@ export function matchClientTokens(clientName: string | null | undefined, counter
   const clientTokens = normClient.split(' ').filter(t => t.length >= 3 && !STOPWORDS.has(t));
   const counterTokens = normCounter.split(' ').filter(t => t.length >= 3 && !STOPWORDS.has(t));
 
-  if (clientTokens.length === 0 || counterTokens.length === 0) return false;
+  if (clientTokens.length === 0 || counterTokens.length === 0) {
+    if (clientTokens.length === 0 && normClient.length >= 2) {
+      if (normCounter.includes(normClient)) return true;
+    }
+    return false;
+  }
 
   // Se houver coincidência de pelo menos 1 token forte (comprimento >= 4) ou 2 tokens
   let matchingTokens = 0;
@@ -339,15 +344,28 @@ export function executeAutoMatchingEngine(
           return matchClientTokens(os.client_name, fullOfxText);
         });
 
+        // Tier 1.5: Match de Pagamento Parcial (Valor Menor ou Igual) + Match Forte de Nome
+        if (!matchedOs) {
+          const partialMatches = storeOss.filter(os => {
+            if (matchedOsNumbers.has(String(os.os_number))) return false;
+            const osTotal = Number(os.total_value || 0);
+            if (txAmount > osTotal + TOLERANCE) return false;
+            return matchClientTokens(os.client_name, fullOfxText);
+          });
+          if (partialMatches.length === 1) {
+            matchedOs = partialMatches[0];
+          }
+        }
+
         // Tier 2: Match via receivablesArray de Transferência/PIX da Loja (BLINDAGEM: Boletos futuros NÃO entram aqui)
         if (!matchedOs) {
           const matchedReceivable = storeReceivables.find(rec => {
             if (!rec.os_number || matchedOsNumbers.has(String(rec.os_number))) return false;
-            // Se for boleto com vencimento futuro, NÃO casar com PIX à vista do dia
-            if (rec.type === 'Boleto') return false;
-
             const recVal = Number(rec.value || 0);
-            const isTransferOrPix = /TRANSF|PIX|TED|DOC|CONTA/i.test(rec.type || '') || /TRANSF|PIX|TED|DOC/i.test(rec.description || '');
+            if (rec.type === 'Boleto' && Math.abs(recVal - txAmount) > TOLERANCE) {
+              return false;
+            }
+            const isTransferOrPix = /TRANSF|PIX|TED|DOC|CONTA/i.test(rec.type || '') || /TRANSF|PIX|TED|DOC/i.test(rec.description || '') || rec.type === 'Boleto';
             if (!isTransferOrPix) return false;
             return Math.abs(recVal - txAmount) <= TOLERANCE;
           });

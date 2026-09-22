@@ -1220,4 +1220,13 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
    - Transações de débito `BLOQUEIO PIX` e crédito `DESBLOQUEIO PIX` de mesmo valor na mesma conta recebem `match_status = 'auto_cancelled'`, limpando ambos os lados da conciliação.
 **Risco identificado / Anti-pattern:** Usar funções agregadas inexistentes como `min(uuid)` no PostgreSQL para obter um ID de linha arbitrário.
 
-
+## [2026-09-17] — [Feature ID: 415-blindagem-vazamento-datas-anteriores-ofx]
+**Contexto:** Migration `20260917000004_fix_strict_conciliation_date_isolation.sql` para isolar estritamente o fechamento contábil e apuração de filiais em `get_daily_reconciliation_summary`.
+**Regra aprendida:**
+1. **Isolamento de Competência por target_date:**
+   - Em `ofx_transactions`, `pos_transactions` e `transactions`, a agregação diária DEVE filtrar por `target_date = v_target_date::date` (com fallback sargable UTC/BRT apenas se `target_date IS NULL`).
+   - NUNCA incluir cláusulas cegas como `OR import_batch_id IN (...)`, pois arquivos OFX multi-dias contêm histórico de semanas que vazaria para a data corrente.
+2. **Anti-Duplicação de Contas / Saídas Justificadas:**
+   - Ao apurar `contas_loja`, quando um débito bancário é vinculado a uma conta manual (`daily_manual_bills`), somar `bst.contas_loja_total + sofx.saidas_justificadas` duplica a despesa. A fórmula canônica deve usar `GREATEST(bst.contas_loja_total, sofx.saidas_justificadas)` ou priorizar a conta da loja.
+3. **Colunas de Identificação em ofx_transactions:**
+   - A tabela `ofx_transactions` possui as colunas `counterpart_name` e `bank_name`. Ela NÃO possui a coluna `title`. Consultas SQL com `title` geram erro `42703 (column does not exist)`.

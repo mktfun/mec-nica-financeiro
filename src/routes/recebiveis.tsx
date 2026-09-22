@@ -42,7 +42,7 @@ function RecebiveisPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('todas');
-  const [targetDate, setTargetDate] = useState<string>(() => '2026-08-25');
+  const [targetDate, setTargetDate] = useState<string>(() => getDefaultDate());
   const [page, setPage] = useState(1);
   const pageSize = 10;
 

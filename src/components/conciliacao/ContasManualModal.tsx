@@ -36,13 +36,15 @@ interface ContasManualModalProps {
   onClose: () => void;
   targetDate: string;
   fallbackTotal?: number;
+  jurosRedeValor?: number;
 }
 
 export function ContasManualModal({
   isOpen,
   onClose,
   targetDate,
-  fallbackTotal = 0
+  fallbackTotal = 0,
+  jurosRedeValor = 0
 }: ContasManualModalProps) {
   const queryClient = useQueryClient();
   const { data: stores = [] } = useStores();
@@ -312,6 +314,8 @@ export function ContasManualModal({
     .reduce((acc, b) => acc + Number(b.amount || 0), 0);
 
   const displayTotal = totalBillsContabilizados > 0 ? totalBillsContabilizados : fallbackTotal;
+  const finalTotal = Math.round(((displayTotal + jurosRedeValor) + Number.EPSILON) * 100) / 100;
+  
   const totalDebitosOfx = ofxSaidas.reduce((acc, tx) => acc + Math.abs(Number(tx.amount || 0)), 0);
 
   // Filtragem dos itens na tela
@@ -404,9 +408,16 @@ export function ContasManualModal({
 
             <div className="text-right">
               <div className="text-2xl font-bold font-mono text-rose-400">
-                {formatCurrency(displayTotal)}
+                {formatCurrency(finalTotal)}
               </div>
-              <span className="text-[10px] text-[var(--text-tertiary)]">Soma no Subtotal</span>
+              <div className="text-[10px] text-[var(--text-tertiary)] flex flex-col items-end mt-0.5">
+                <span className="font-semibold text-zinc-300">Subtotal de Deduções</span>
+                {jurosRedeValor > 0 && (
+                  <span className="text-[9px] text-zinc-400 font-mono">
+                    {formatCurrency(displayTotal)} (Contas) + {formatCurrency(jurosRedeValor)} (Juros)
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>

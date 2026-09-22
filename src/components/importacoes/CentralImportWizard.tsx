@@ -1495,7 +1495,8 @@ export function CentralImportWizard({
             payment_method: finalPaymentMethod,
             manual_category: itemBrand !== 'Outros' ? itemBrand : null,
             brand: itemBrand !== 'Outros' ? itemBrand : null,
-            dedup_hash: generateDeterministicHash(effectivePosDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos')
+            dedup_hash: generateDeterministicHash(effectivePosDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos'),
+            settlement_status: 'a_compensar'
           });
         });
       });
@@ -2058,8 +2059,66 @@ export function CentralImportWizard({
         }
       }
 
+      // Spec 426 & 427: Apuração rigorosa de Vendas REDE a Compensar (Ativos em Trânsito)
+      let cartoesACompensarTotal = 0;
+      let devolucoesRedeTotal = 0;
+      results.redeResults.forEach(r => {
+        if (r.success && r.transactions) {
+          r.transactions.forEach((t: any) => {
+            if (t.transaction_type === 'devolucao') {
+              devolucoesRedeTotal += Math.abs(t.gross_amount || t.net_amount || 0);
+            } else {
+              cartoesACompensarTotal += (t.net_amount || (t.gross_amount - (t.fee || 0)) || 0);
+            }
+          });
+        }
+      });
+
+      // Fallback complementar via pos_transactions se redeResults estiver vazio
+      if (cartoesACompensarTotal === 0) {
+        try {
+          const { data: posData } = await supabase
+            .from('pos_transactions')
+            .select('net_amount, settlement_status, transaction_type, gross_amount')
+            .eq('target_date', targetDate);
+          if (posData && posData.length > 0) {
+            posData.forEach((p: any) => {
+              if (p.transaction_type === 'devolucao') {
+                devolucoesRedeTotal += Math.abs(p.gross_amount || p.net_amount || 0);
+              } else if (p.settlement_status !== 'entrou' && p.settlement_status !== 'liquidado') {
+                cartoesACompensarTotal += Number(p.net_amount || 0);
+              }
+            });
+          }
+        } catch (e) {
+          console.warn("Erro ao consultar pos_transactions complementar:", e);
+        }
+      }
+
+      // Spec 427: Apuração de Dinheiro no Cofre das Lojas (em trânsito)
+      let dinheiroLojaCofreTotal = 0;
+      try {
+        const { data: vaultData } = await supabase
+          .from('store_cash_vault')
+          .select('amount, status')
+          .lte('entry_date', targetDate)
+          .in('status', ['em_transito', 'pending']);
+        if (vaultData && vaultData.length > 0) {
+          dinheiroLojaCofreTotal = vaultData.reduce((acc, v) => acc + Number(v.amount || 0), 0);
+        }
+      } catch (vErr) {
+        console.warn("Erro ao apurar store_cash_vault para auto-save:", vErr);
+      }
+
+      // Consolidação Canônica do Pilar 1 (Saldo Bancos + Cofre + Cartões a Compensar)
+      const totalSaldoBancoPositivoConsolidado = Math.round(
+        (saldoBancosPositivo + dinheiroLojaCofreTotal + cartoesACompensarTotal - devolucoesRedeTotal) * 100
+      ) / 100;
+
       const totalRecebiveis = manualDinheiroMp + manualAReceber;
-      const caixaAtualCalculado = saldoBancosPositivo + totalRecebiveis + veiculosPatioValor - saldoNegativoItau;
+      const caixaAtualCalculado = Math.round(
+        (totalSaldoBancoPositivoConsolidado + totalRecebiveis + veiculosPatioValor - saldoNegativoItau) * 100
+      ) / 100;
 
       addLog("Auto-salvando Fechamento do Dia...", "info");
       const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
@@ -2104,10 +2163,10 @@ export function CentralImportWizard({
 
       const fatTotalComAjustes = fatOiBase + totalRevenueAdjustments;
       const finalFaturamento = fatTotalComAjustes;
-      const fluxoCalculado = caixaAtualCalculado - caixaAnt;
-      const valorDispCalculado = fatTotalComAjustes - fluxoCalculado;
-      const subtotalContasCalculado = finalContasManual + jurosRedeTotal;
-      const diferencaCalculada = valorDispCalculado - subtotalContasCalculado;
+      const fluxoCalculado = Math.round((caixaAtualCalculado - caixaAnt) * 100) / 100;
+      const valorDispCalculado = Math.round((fatTotalComAjustes - fluxoCalculado) * 100) / 100;
+      const subtotalContasCalculado = Math.round((finalContasManual + jurosRedeTotal) * 100) / 100;
+      const diferencaCalculada = Math.round((valorDispCalculado - subtotalContasCalculado) * 100) / 100;
 
       try {
         const payload = {
@@ -2143,10 +2202,15 @@ export function CentralImportWizard({
             valor_disp_contas: valorDispCalculado,
             subtotal_contas: subtotalContasCalculado,
             diferenca_final: diferencaCalculada,
-            total_saldo_banco: saldoBancosPositivo,
+            total_saldo_banco: totalSaldoBancoPositivoConsolidado,
+            total_saldo_banco_positivo: totalSaldoBancoPositivoConsolidado,
             saldo_bancos_ofx: saldoBancosLiquido,
             saldo_bancos_positivo: saldoBancosPositivo,
             saldo_negativo_itau: saldoNegativoItau,
+            dinheiro_lojas: dinheiroLojaCofreTotal,
+            dinheiro_em_lojas: dinheiroLojaCofreTotal,
+            cartoes_a_compensar: cartoesACompensarTotal,
+            devolucoes_rede: devolucoesRedeTotal,
             dinheiro_mp: manualDinheiroMp,
             a_receber_manual: manualAReceber,
             total_patio: veiculosPatioValor,
@@ -2178,8 +2242,8 @@ export function CentralImportWizard({
         addLog("Pareamento automático finalizado com observações.", "warning");
       }
 
-      // 4.1. Conciliação Determinística de Cartões & Banco (ReconciliadorRedeOFX - Spec 398)
-      addLog("⚡ Executando Motor Determinístico de Reconciliação Rede x OFX (Spec 398)...", "info");
+      // 4.1. Conciliação Determinística de Cartões & Banco (Spec 426 - 100% A Compensar)
+      addLog("⚡ Executando Blindagem de Cartões REDE (Spec 426 - 100% A Compensar)...", "info");
       try {
         const redeEntries = Object.entries(redeByStore);
         if (redeEntries.length > 0) {
@@ -2235,57 +2299,52 @@ export function CentralImportWizard({
               .eq('store_id', sId)
               .eq('target_date', targetDate);
 
+            // Atualiza status baseado na reconciliação real entre Rede e OFX
             if (storePosTxs && storePosTxs.length > 0) {
-              const matchedPosIds: string[] = [];
-              const unsettledPosIds: string[] = [];
+              const enteredPosIds: string[] = [];
+              const pendingPosIds: string[] = [];
 
-              if (reconResult.totalCreditadoBanco >= (reconResult.totalVendasLiquidas - 0.05) && reconResult.totalVendasLiquidas > 0) {
-                // Toda a loja entrou no extrato bancário
-                storePosTxs.forEach(t => matchedPosIds.push(t.id));
-              } else if (reconResult.totalCreditadoBanco === 0) {
-                // Nenhum crédito no banco para a loja (ex: Piraporinha em 10/09)
-                storePosTxs.forEach(t => unsettledPosIds.push(t.id));
-              } else {
-                // Match granular por venda individual ou lote de bandeira
-                const availableDbTxs = [...storePosTxs];
-                
-                reconResult.conciliados.forEach(matchedSale => {
-                  const idx = availableDbTxs.findIndex(dbTx => {
-                    const matchNsu = matchedSale.nsu && ((dbTx.machine_name && dbTx.machine_name.includes(matchedSale.nsu)) || (dbTx.dedup_hash && dbTx.dedup_hash.includes(matchedSale.nsu)));
-                    const matchAmount = Math.abs(Number(dbTx.net_amount) - matchedSale.valorLiquido) <= 0.02;
-                    return matchNsu || matchAmount;
-                  });
+              storePosTxs.forEach((t: any) => {
+                const isMatched = reconResult.conciliados.some(c => 
+                  Math.abs(c.valorLiquido - Number(t.net_amount || 0)) <= 0.01 ||
+                  (t.dedup_hash && c.saleId && t.dedup_hash.includes(c.saleId))
+                );
+                if (isMatched) {
+                  enteredPosIds.push(t.id);
+                } else {
+                  pendingPosIds.push(t.id);
+                }
+              });
 
-                  if (idx !== -1) {
-                    const [matchedTx] = availableDbTxs.splice(idx, 1);
-                    matchedPosIds.push(matchedTx.id);
-                  }
-                });
-
-                // Transações remanescentes sem match explícito vão para nao_entrou
-                availableDbTxs.forEach(t => unsettledPosIds.push(t.id));
-              }
-
-              if (matchedPosIds.length > 0) {
+              if (enteredPosIds.length > 0) {
                 await supabase
                   .from('pos_transactions')
                   .update({ settlement_status: 'entrou', settled_date: targetDate })
-                  .in('id', matchedPosIds);
+                  .in('id', enteredPosIds);
               }
-
-              if (unsettledPosIds.length > 0) {
+              if (pendingPosIds.length > 0) {
                 await supabase
                   .from('pos_transactions')
-                  .update({ settlement_status: 'nao_entrou', settled_date: null })
-                  .in('id', unsettledPosIds);
+                  .update({ settlement_status: 'a_compensar', settled_date: null })
+                  .in('id', pendingPosIds);
+              }
+
+              // Atualiza match_status nos créditos do OFX que foram vinculados aos lotes da Rede
+              const matchedFitids = reconResult.conciliados.map(c => c.fitidBancoVinculado).filter(Boolean);
+              if (matchedFitids.length > 0) {
+                await supabase
+                  .from('ofx_transactions')
+                  .update({ match_status: 'conciliado', manual_category: 'Cartão Rede' })
+                  .in('fitid', matchedFitids);
               }
             }
 
-            if (reconResult.totalCreditadoBanco > 0) {
-              addLog(`💳 ReconciliadorRedeOFX: ${reconResult.storeName} -> R$ ${reconResult.totalCreditadoBanco.toFixed(2)} confirmados no banco, R$ ${reconResult.totalNaoEntrou.toFixed(2)} em aberto (A Compensar).`, "success");
-            } else {
-              addLog(`💳 ReconciliadorRedeOFX: ${reconResult.storeName} -> R$ ${reconResult.totalNaoEntrou.toFixed(2)} em aberto (A Compensar). Nenhum crédito no extrato.`, "info");
-            }
+            const totalVendasRedeLoja = reconResult.totalVendasLiquidas > 0
+              ? reconResult.totalVendasLiquidas
+              : redeSaleItems.reduce((acc, it) => acc + (it.netAmount || 0), 0);
+
+            const totalNaoEntrouLoja = reconResult.totalNaoEntrou;
+            addLog(`💳 Cartões REDE: ${reconResult.storeName} -> R$ ${(totalVendasRedeLoja - totalNaoEntrouLoja).toFixed(2)} conciliados no banco, R$ ${totalNaoEntrouLoja.toFixed(2)} A Compensar.`, "info");
           }
         }
       } catch (detErr: any) {

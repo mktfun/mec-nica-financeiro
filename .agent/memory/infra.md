@@ -12,6 +12,20 @@
 
 ---
 
+## IDs de Projetos MCP (Financeiro/Conciliação)
+
+| Serviço | Nome | ID | Status |
+|---|---|---|---|
+| **Lovable** | Mecânica Financeiro | `a6076718-b49b-4fb9-b0c9-b79959dcdc83` | ✅ published |
+| **Supabase** | conciliamec | `cnwzsvowkfymtdiryhqc` | ✅ ACTIVE_HEALTHY |
+| **Workspace Lovable** | mkt's Lovable | `rQHE67epKLgFOeliY426` | owner |
+
+- **Lovable editor:** https://lovable.dev/projects/a6076718-b49b-4fb9-b0c9-b79959dcdc83
+- **Lovable preview:** https://id-preview--a6076718-b49b-4fb9-b0c9-b79959dcdc83.lovable.app
+- **Supabase DB host:** db.cnwzsvowkfymtdiryhqc.supabase.co (us-east-1, pg17)
+
+---
+
 ## [2026-09-02] — [Feature ID: 351-fix-case-sensitive-ui-button-imports]
 **Contexto:** O ambiente de deploy da Lovable roda em Linux (case-sensitive). Importações como `@/components/ui/button` passavam no Windows mas quebravam no build remoto com `UNLOADABLE_DEPENDENCY`.
 **Regra aprendida:** Todos os componentes em `src/components/ui/` usam convenção PascalCase (`Button.tsx`, `Card.tsx`, `Badge.tsx`, `Modal.tsx`, etc.). Os imports devem obrigatoriamente usar PascalCase exato.

@@ -59,10 +59,11 @@ export function useGlobalOfxOut(date: string) {
     queryFn: async (): Promise<number> => {
       if (!date) return 0;
       
+      const nextDate = new Date(new Date(date + 'T12:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('transactions')
         .select('amount')
-        .eq('target_date', date)
+        .or(`target_date.eq.${date},and(occurred_at.gte.${date}T00:00:00,occurred_at.lt.${nextDate}T00:00:00)`)
         .eq('type', 'out')
         .eq('source', 'ofx');
         
@@ -103,11 +104,18 @@ export interface StoreReconciliationSummary {
   diferenca: number;
   status: 'approved' | 'divergence';
   // Split Dual de Diagnóstico
+  ofx_entradas_total?: number;
+  entradas_conciliadas?: number;
   entradas_realizadas?: number;
   entradas_previsto?: number;
+  dif_entradas?: number;
   diferenca_entradas?: number;
+  ofx_saidas_total?: number;
   saidas_ofx?: number;
+  contas_conciliadas?: number;
+  contas_loja_total?: number;
   contas_loja?: number;
+  dif_saidas?: number;
   diferenca_saidas?: number;
 }
 
@@ -127,6 +135,8 @@ export interface StoreCardData {
   diferencaEntradas?: number | null;
   saidasOfx?: number | null;
   contasLoja?: number | null;
+  contasCentralizadas?: number | null;
+  contasLocais?: number | null;
   diferencaSaidas?: number | null;
   dinheiroLoja?: number | null;
   ofxMaquininhas?: number | null;
@@ -301,12 +311,14 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       try {
         const { data: billsData, error: billsErr } = await supabase
           .from('daily_manual_bills')
-          .select('amount, status')
+          .select('amount, match_status, contabilizar_no_subtotal')
           .eq('date', date)
-          .neq('status', 'ignored');
+          .neq('match_status', 'ignored');
           
         if (!billsErr && billsData) {
-          totalManualBills = billsData.reduce((acc, b) => acc + Number(b.amount || 0), 0);
+          totalManualBills = billsData
+            .filter(b => b.contabilizar_no_subtotal !== false)
+            .reduce((acc, b) => acc + Number(b.amount || 0), 0);
         }
       } catch (err) {
         console.warn('Erro ao carregar daily_manual_bills:', err);
@@ -317,7 +329,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       try {
         const { data: snap } = await supabase
           .from('daily_snapshots')
-          .select('is_closed, faturamento, total_patio, caixa_atual, contas_a_pagar, saldo_negativo_itau, metadata')
+          .select('is_closed, faturamento, total_patio, caixa_atual, contas_a_pagar, saldo_negativo_itau, a_receber_manual, metadata')
           .eq('date', date)
           .maybeSingle();
         if (snap) {
@@ -352,14 +364,16 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const storesList: StoreReconciliationSummary[] = (raw.stores || raw.stores_detail || []).map((s: any) => {
         const sid = String(s.store_id || '').trim();
         const storeNaoEntrou = posQuerySuccess 
-          ? (posUnsettledByStore[sid] || 0)
+          ? (posUnsettledByStore[sid] ?? 0)
           : Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? 0);
 
         const redeLiq = Number(s.rede_liquido ?? s.maquininha ?? 0);
         const ofxMaq = Number(s.ofx_maquininhas ?? 0);
-        const finalNaoEntrou = (storeNaoEntrou === 0 && ofxMaq === 0 && redeLiq > 0) 
-          ? redeLiq 
-          : storeNaoEntrou;
+
+        // Se a busca de pos_transactions teve sucesso, respeita estritamente o valor não liquidado
+        const finalNaoEntrou = posQuerySuccess 
+          ? storeNaoEntrou 
+          : (storeNaoEntrou > 0 ? storeNaoEntrou : (redeLiq > 0 ? Math.max(0, redeLiq - ofxMaq) : 0));
 
         const storeVault = vaultQuerySuccess
           ? (vaultByStore[sid] || 0)
@@ -390,15 +404,24 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
           pix: Number(s.pix ?? s.pix_total ?? 0),
           na_loja_os: Number(s.na_loja_os ?? s.patio_os ?? 0),
           patio_os: Number(s.patio_os ?? s.na_loja_os ?? 0),
-          previsto_ofx: Number(s.previsto_ofx ?? s.entradas_conciliadas ?? 0),
+          previsto_ofx: Number(s.previsto_ofx ?? s.entradas_conciliadas ?? s.entradas_previsto ?? 0),
           diferenca: Number(s.diferenca ?? s.diferenca_total ?? 0),
           status: (s.status || (Math.abs(Number(s.diferenca || 0)) <= 0.05 ? 'approved' : 'divergence')) as 'approved' | 'divergence',
+          ofx_entradas_total: Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0),
+          entradas_conciliadas: Number(s.entradas_conciliadas ?? s.entradas_previsto ?? 0),
           entradas_realizadas: Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0),
           entradas_previsto: Number(s.entradas_conciliadas ?? s.entradas_previsto ?? 0),
-          diferenca_entradas: Number(s.dif_entradas ?? s.diferenca_entradas ?? 0),
+          dif_entradas: Number(s.dif_entradas ?? s.diferenca_entradas ?? 0),
+          diferenca_entradas: Number(s.diferenca_entradas ?? s.dif_entradas ?? 0),
+          ofx_saidas_total: Number(s.ofx_saidas_total ?? s.saidas_ofx ?? 0),
           saidas_ofx: Number(s.ofx_saidas_total ?? s.saidas_ofx ?? 0),
-          contas_loja: Number(s.contas_loja_total ?? s.contas_conciliadas ?? 0),
-          diferenca_saidas: Number(s.dif_saidas ?? s.diferenca_saidas ?? 0),
+          contas_loja_total: Number(s.contas_loja_total ?? s.contas_conciliadas ?? s.contas_loja ?? 0),
+          contas_conciliadas: Number(s.contas_conciliadas ?? s.contas_loja_total ?? s.contas_loja ?? 0),
+          contas_loja: Number(s.contas_loja ?? s.contas_conciliadas ?? s.contas_loja_total ?? 0),
+          contas_centralizadas: Number(s.contas_centralizadas ?? 0),
+          contas_locais: Number(s.contas_locais ?? 0),
+          dif_saidas: Number(s.dif_saidas ?? s.diferenca_saidas ?? 0),
+          diferenca_saidas: Number(s.diferenca_saidas ?? s.dif_saidas ?? 0),
         };
       });
 
@@ -451,7 +474,13 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const finalFatAnterior = Number(snapMeta.faturamento_anterior ?? raw.faturamento_anterior ?? 0);
 
       // Caixa Atual Canônico Universal: Ativos - Cheque Especial
-      const finalAReceber = Number(snapMeta.a_receber ?? snapMeta.a_receber_manual ?? raw.a_receber ?? 0);
+      const finalAReceber = Number(
+        snapshotData?.a_receber_manual ?? 
+        raw.a_receber ?? 
+        snapMeta.a_receber_manual ?? 
+        snapMeta.a_receber ?? 
+        0
+      );
       const livePatio = Number(raw.na_loja_os || 0);
       const snapPatio = Number(snapshotData?.total_patio ?? snapMeta.total_patio ?? snapMeta.na_loja_os ?? 0);
       const finalNaLojaOs = livePatio > 0 ? livePatio : snapPatio;

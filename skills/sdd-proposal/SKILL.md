@@ -29,8 +29,9 @@ Execute diretamente no seu contexto em menos de 1 minuto:
 5. **Roteamento de Skills Especializadas (Carregamento Sob Demanda):**
    Consulte as skills canônicas do domínio afetado ANTES de redigir a especificação:
    - **Se envolver UI / Telas / Componentes:** Consulte `DESIGN.md` e `skills/frontend-design-pro/SKILL.md`. A spec DEVE exigir tokens do design system (Zinc-950), superfícies por luminância (dark.design), conformidade com os 48 princípios de Rauno Freiberg e bloqueio de anti-patterns do catálogo de AI Slop.
+   - **[MCP LAZYWEB — OBRIGATÓRIO para UI Nova]:** Se a task envolver nova tela, componente, dashboard, paywall ou pricing, execute `lazyweb_search_screens` com a query da categoria antes de redigir o `design.md`. Incorpore as referências encontradas como "Referências de Mercado Validadas" no design.md. **Lembre ao usuário que essa pesquisa foi feita (ou ofereça fazê-la se não foi).**
    - **Se envolver Backend / Server Actions / APIs:** Consulte `skills/backend-patterns/SKILL.md`. A spec DEVE exigir Server Actions tipadas com `ActionResult<T>`, validação com Zod e mutações CRUD com revalidação de cache.
-   - **Se envolver Banco de Dados / Migrations:** Consulte `skills/database/SKILL.md`. A spec DEVE exigir migrations idempotentes (`IF NOT EXISTS`), políticas de RLS multi-tenant (`tenant_id`) e índices de query.
+   - **Se envolver Banco de Dados / Migrations:** Consulte `skills/database/SKILL.md`. Se houver `project_id` configurado, inspecione com `list_tables` via MCP Supabase antes de propor DDL. A spec DEVE exigir migrations idempotentes (`IF NOT EXISTS`), políticas de RLS multi-tenant (`tenant_id`) e índices de query.
    - **Se envolver Autenticação / Sessão / Permissões:** Consulte `skills/auth/SKILL.md` e `skills/security/SKILL.md`. A spec DEVE exigir `getUser()` no servidor (zero `getSession()`), Taint Analysis de entradas e salvaguardas OWASP Top 10.
 </step>
 

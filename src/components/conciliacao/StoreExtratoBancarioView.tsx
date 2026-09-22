@@ -67,7 +67,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const { unlinkTransaction } = useManualMatch();
   const queryClient = useQueryClient();
 
-  const [viewScope, setViewScope] = useState<'lote_ofx' | 'dia_alvo'>('lote_ofx');
+  const [viewScope, setViewScope] = useState<'lote_ofx' | 'dia_alvo'>('dia_alvo');
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -96,14 +96,18 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   // Define as transações ativas de acordo com o escopo selecionado (Lote OFX Completo vs Apenas Dia Alvo)
   const rawTransactions = useMemo(() => {
     if (viewScope === 'dia_alvo') {
-      return extratoData?.targetDateTxs && extratoData.targetDateTxs.length > 0 
+      const txs = extratoData?.targetDateTxs && extratoData.targetDateTxs.length > 0 
         ? extratoData.targetDateTxs 
         : allTransactions;
+      return txs.filter((t: any) => {
+        const tDate = (t.target_date || t.date || t.occurred_at || '').split('T')[0];
+        return tDate === date;
+      });
     }
     return extratoData?.loteTxs && extratoData.loteTxs.length > 0 
       ? extratoData.loteTxs 
       : allTransactions;
-  }, [viewScope, extratoData, allTransactions]);
+  }, [viewScope, extratoData, allTransactions, date]);
 
   // Filtra transações originadas no OFX
   const ofxTransactions = useMemo(() => {
@@ -169,6 +173,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
             ? { isMatched: true, matchedBill: linkedBill, confidence: 1.0 } 
             : isBatchMatched
             ? { isMatched: true, matchedBill: { title: tx.manual_category || 'Lote Conciliado', recipient_name: tx.manual_justification || tx.counterpart_name || 'Lote Conciliado', description: 'Conciliado via Lote', amount: Math.abs(tx.amount) } as any, confidence: 1.0 }
+            : effectiveCategory
+            ? { isMatched: false, confidence: 0 }
             : matchExpenseWithOfxDebit(tx, dailyBills)
           ) 
         : { isMatched: false, confidence: 0 };
@@ -329,7 +335,9 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     const groupsMap = new Map<string, any[]>();
     
     sortedTransactions.forEach(tx => {
-      const rawDate = (tx.occurred_at || tx.date || tx.target_date || '').split('T')[0] || date;
+      const rawDate = viewScope === 'dia_alvo'
+        ? date
+        : ((tx.occurred_at || tx.date || tx.target_date || '').split('T')[0] || date);
       if (!groupsMap.has(rawDate)) {
         groupsMap.set(rawDate, []);
       }
@@ -369,7 +377,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         netBalance,
       };
     });
-  }, [sortedTransactions, sortAsc, date]);
+  }, [sortedTransactions, sortAsc, date, viewScope]);
 
   // Controle de Accordion por dia (dias colapsados)
   const [collapsedDays, setCollapsedDays] = useState<Set<string>>(new Set());
@@ -1043,15 +1051,15 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                         <CreditCard size={10} className="mr-1" />
                                         Lote Rede (Ref: D-1)
                                       </Badge>
-                                    ) : matchedBill ? (
-                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold">
-                                        <Receipt size={10} className="mr-1 text-teal-400" />
-                                        Conta: {matchedBill.recipient_name || matchedBill.title}
-                                      </Badge>
                                     ) : tx.manual_category ? (
                                       <Badge variant="outline" className="h-5 py-0 px-2 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
                                         <CheckCircle2 size={10} className="mr-1 text-purple-400" />
                                         {String(tx.manual_category).replace('_', ' ')}
+                                      </Badge>
+                                    ) : matchedBill ? (
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold">
+                                        <Receipt size={10} className="mr-1 text-teal-400" />
+                                        Conta: {matchedBill.recipient_name || matchedBill.title}
                                       </Badge>
                                     ) : tx.isPastDate && (tx.target_date ? tx.target_date < date : true) ? (
                                       <Badge
@@ -1073,7 +1081,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                   {/* Linha 2: Metadados Revolut (Natureza contábil, Conta vinculada, Intercompany, Documento, Justificativa) */}
                                   <div className="flex items-center gap-1.5 text-xs text-zinc-400 mt-0.5 flex-wrap">
                                     <span className="font-medium text-zinc-300">{natureLabel}</span>
-                                    {matchedBill && (
+                                    {matchedBill && !tx.manual_category && (
                                       <>
                                         <span className="text-zinc-600">•</span>
                                         <span className="text-teal-300/90 font-medium">Conta: {matchedBill?.recipient_name || matchedBill?.title}</span>

@@ -2,189 +2,119 @@
 trigger: always_on
 ---
 
-# 🪐 Antigravity Vibe Coding Orchestration Rules v6 (2026 Edition — XML Protocol)
+# 🪐 Antigravity Vibe Coding Orchestration Rules v7 (Native AGY Edition — 2026)
 
-<constitution version="6.0" platform="Antigravity 2.0">
+<constitution version="7.0" platform="Antigravity 2.0">
 
-<override_supremo priority="critical">
-O modo padrao do Antigravity e **SINGLE-AGENT DIRETO**. A delegacao para subagentes via `invoke_subagent` ou `agy CLI` e opcional e restrita exclusivamente a analise, pesquisa ou revisao paralela quando o usuario solicitar explicitamente (ex.: `/teamwork-preview` ou `/council`).
-**LIMITES INVIOLAVEIS PARA SUBAGENTES:** Subagentes jamais podem executar commit, push, rollback destrutivo (`git reset`), editar arquivos de codigo de forma autonoma fora do plano aprovado ou realizar auto-chaining entre fases (proposal -> apply -> archive).
-</override_supremo>
+<execution_doctrine mode="direct_single_agent">
+O Antigravity opera em **SINGLE-AGENT DIRETO (CONCURRENCY: 1)**. 
+A engenharia de software, especificação, implementação e validação são executadas pelo próprio agente raiz.
+- Proibido o uso de debates multi-agente para tarefas de código (elimina a amplificação de erros e o efeito telefone sem fio).
+- Subagentes via invoke_subagent são restritos estritamente a pesquisas paralelas de LEITURA (grep, busca na web, análise de documentação) quando explicitamente solicitado.
+- Subagentes JAMAIS podem editar código, commitar, rodar push ou fazer rollbacks.
+- O Council Debate multi-agente é reservado EXCLUSIVAMENTE para stress-tests arquiteturais pontuais quando o usuário chamar /council.
+</execution_doctrine>
+
+<output_policy anti_waffling="true">
+- Tom de comunicação: Especialista para especialista, direto, conciso e técnico.
+- ZERO prosa desnecessária, zero pedidos de desculpas, zero monólogos filosóficos.
+- Entregue diagnósticos objetivos, planos em bullet points, diffs cirúrgicos e relatórios de verificação de terminal.
+</output_policy>
 
 <circuit_breakers>
-<breaker name="anti-auto-apply" phase="proposal_completion">
-<rule>O workflow sdd-proposal / vibe-proposal e EXCLUSIVAMENTE de especificacao e planejamento.</rule>
+<breaker name="plan-first" phase="before_code_mutation">
+<rule>NENHUM arquivo de código (src/, lib/, supabase/, componentes) pode ser criado, modificado ou deletado sem PLANO APROVADO.</rule>
 <enforcement>
-- Ao finalizar proposal.md, design.md e spec-plan.md: PARE IMEDIATAMENTE.
-- TERMINANTEMENTE PROIBIDO criar ou editar arquivos de código (src/, lib/, supabase/) apos o proposal.
-- TERMINANTEMENTE PROIBIDO marcar tasks no spec-plan.md sem comando explicito.
-- O turno DEVE terminar aguardando a aprovacao do usuario com o comando /vibe-apply <id> ou /sdd-apply <id>.
+1. Antes de qualquer escrita de código, gere um checklist em bullet points contendo:
+   - Causa-raiz diagnosticada.
+   - Blast Radius: Lista exata dos arquivos que serão tocados e dependências filhas afetadas (consulte o grafo).
+   - Comando de verificação de terminal (build/typecheck/teste).
+2. PARE IMEDIATAMENTE e aguarde a aprovação explícita do usuário (via Planning Mode do Antigravity ou comando /sdd-apply).
+3. Modificações fora dos arquivos listados no plano aprovado são CATEGORICAMENTE BLOQUEADAS.
 </enforcement>
 </breaker>
 
-<breaker name="anti-auto-archive" phase="apply_completion">
-<rule>O workflow sdd-apply / vibe-apply e EXCLUSIVAMENTE de implementacao e verificacao local.</rule>
+<breaker name="terminal-gate-and-rollback" phase="after_code_mutation">
+<rule>Toda mutação de código deve ser verificada imediatamente no terminal.</rule>
 <enforcement>
-- Ao concluir as tasks, rodar a verificacao de terminal (build gate) e obter [AUDIT_PASSED]: PARE IMEDIATAMENTE.
-- TERMINANTEMENTE PROIBIDO avancar automaticamente para o archive, rodar git commit/push ou mover specs/.
-- O usuario DEVE testar a aplicacao em localhost/preview antes de qualquer arquivamento.
-- O turno DEVE terminar solicitando o teste humano e aguardando o comando /vibe-archive <id> ou /sdd-archive <id>.
+1. Após aplicar uma alteração, execute o comando de verificação rápida (build / typecheck). Zero testes de browser/frontend.
+2. Se a verificação FALHAR: execute ROLLBACK IMEDIATO da alteração antes de tentar outra hipótese.
+3. TERMINANTEMENTE PROIBIDO fazer "conserto sobre conserto" acumulando erros em cascata.
+4. Ao passar no teste: PARE IMEDIATAMENTE para validação do usuário antes de qualquer arquivamento ou commit.
 </enforcement>
 </breaker>
 </circuit_breakers>
 
-<core_principles>
-<principle name="sdd_first">
-Nenhuma feature ou refatoração estrutural começa sem especificação física prévia em specs/<id>/.
-</principle>
+<surgical_mutation_rules>
+- Use sempre edições cirúrgicas pontuais (substituição exata de blocos via replace_file_content).
+- PROIBIDO reescrever arquivos inteiros para consertar bugs locais.
+- Preserve 100% dos imports, contratos de interface, helpers e comentários existentes não relacionados à mudança.
+- Não faça "faxina" ou refatoração cosmética não solicitada em arquivos vizinhos.
+</surgical_mutation_rules>
 
-<principle name="modular_memory">
-A memoria reside em arquivos .agent/memory/<categoria>.md (Obsidian), nunca no contexto transitorio da IA. Leia antes de propor, consulte antes de aplicar e escreva no archive.
-</principle>
+<ui_design_guardrails standard="shadcn_zinc950">
+Este projeto segue rigorosamente o padrão de Design System do DESIGN.md (Shadcn/ui + Tailwind com CSS Variables):
+1. ZERO ARBITRARY CLASSES:
+   - PROIBIDO o uso de classes arbitrárias: nunca use hexadecimais soltos (ex.: bg-[#09090b], text-[#121212]) ou tamanhos arbitrários (w-[320px]).
+   - Use estritamente as classes utilitárias da escala Tailwind e os tokens semânticos.
+2. TOKENS SEMÂNTICOS OBRIGATÓRIOS:
+   - Backgrounds: Use EXCLUSIVAMENTE bg-background, bg-card, bg-muted ou bg-secondary.
+   - Textos: Use EXCLUSIVAMENTE text-foreground, text-muted-foreground e text-primary.
+   - Bordas: Use EXCLUSIVAMENTE border-border ou border-border/40.
+3. REGRA DO DARK MODE E "NO PURE BLACK":
+   - PROIBIDO o uso de preto puro (#000000, bg-black) no código dos componentes. O fundo padrão é Zinc-950 (bg-background).
+   - O controle de preto total/OLED é feito centralizadamente nas CSS Variables em globals.css, garantindo que toda a UI escureça de forma idêntica.
+   - Hierarquia de elevação de superfícies:
+     - Nível 0 (Canvas): bg-background (Zinc-950)
+     - Nível 1 (Cards e Painéis): bg-card border border-border/50 (Zinc-900)
+     - Nível 2 (Popovers e Modais): bg-popover border border-border
+</ui_design_guardrails>
 
-<principle name="headless_cli">
-Operacao 100% headless. Jamais use comandos que exijam login interativo no navegador. Injete GH_TOKEN e SUPABASE_ACCESS_TOKEN via ambiente silenciosamente.
-</principle>
-
-<principle name="doe_self_annealing">
-Erros de execucao e bugs sao fontes obrigatorias de endurecimento do sistema. Toda resolucao em sdd-debug atualiza a memoria Obsidian e eleva regras universais para prevenir repeticao.
-</principle>
-
-<principle name="clean_workspace">
-Arquivos temporarios e dumps de dados residem exclusivamente em .tmp/ e NUNCA sao commitados no repositorio. Entregáveis residem em specs/, src/ e supabase/.
-</principle>
-
-<principle name="cli_fallbacks">
-- Se git nao estiver no PATH: use C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe
-- Se PowerShell acusar erro de Execution Policy: envolva em cmd.exe /c "<comando>"
-- Em caso de "Author identity unknown": configure git config user.email "ai@clawhub.com" antes de commitar.
-</principle>
-</core_principles>
-
-<anti_hallucination>
-<directive>ANTES de criar qualquer codigo, pesquise o codigo legado, consulte a memoria e execute o grafo topologico. Aplique CARREGAMENTO LAZY (sob demanda): carregue APENAS o skill do dominio estritamente afetado pela tarefa (maximo 1-2 skills por vez).</directive>
-
-<domain_checks>
-<check domain="Frontend" condition="SE a tarefa alterar UI, componentes ou telas">
-Leia .agent/memory/ui.md e consulte spec/global/features.md.
-Carregue sob demanda: skills/ui-components/SKILL.md (e skills/ui-motion/SKILL.md apenas se houver animacoes).
-</check>
-
-<check domain="Backend" condition="SE a tarefa alterar Server Actions, rotas ou Auth">
-Leia .agent/memory/supabase.md e memory/auth.md.
-Carregue sob demanda: skills/backend-patterns/SKILL.md (e skills/auth/SKILL.md se envolver sessao).
-</check>
-
-<check domain="Database" condition="SE a tarefa alterar tabelas, colunas ou RLS">
-Inspecione o schema real via SQL antes de propor tabelas ou colunas.
-Carregue sob demanda: skills/database/SKILL.md (references/rls-patterns.md apenas se editar policies).
-</check>
-
-<check domain="Graphify">
-Graphify e uma ferramenta Python (pacote graphifyy com dois Y's, comando graphify com um Y):
-- Consultar: graphify query "<termo>" e graphify explain "<modulo>"
-- Atualizar: graphify update
-- NUNCA use npx @baml/graphify.
-</check>
-</domain_checks>
-</anti_hallucination>
-
-<execution_architecture mode="direct_single_agent">
-<principle>
-O Antigravity opera em MODO DIRETO (SINGLE-AGENT). O proprio agente executa a pesquisa, a especificacao, a implementacao e a validacao, eliminando latencia de orquestracao, loops de subagentes e sobrecarga de contexto, mantendo rigor tecnico absoluto.
-</principle>
+<graphify_intelligence>
+O Graphify é a ferramenta de inteligência topológica do projeto:
+- No Proposal: Execute graphify explain "<modulo>" ou graphify query "<termo>" para mapear o Blast Radius real antes de propor edições.
+- No Archive: Execute graphify update para sincronizar o grafo com o código entregue e execute a limpeza de resíduos temporários (.tmp/, logs).
+- O comando de terminal é graphify (um Y), pacote Python graphifyy.
+</graphify_intelligence>
 
 <core_workflows>
-- /vibe-proposal (ou /sdd-proposal): Planejamento direto em 1 turno (Memoria Obsidian + Grafo + Codigo Legado + Skills de Dominio [Design/Backend/DB/Security] -> Triade SDD -> Hard Stop).
-- /vibe-apply (ou /sdd-apply): Implementacao direta sequencial em 1 turno (Tasks -> Execucao com Skills de Dominio [DESIGN.md, ActionResult, RLS, Taint Analysis] -> Auto-healing -> Terminal Gate -> Hard Stop).
-- /vibe-archive (ou /sdd-archive): Quality Gate (Build + Security Audit), escrita no Obsidian por categoria, elevacao de regras /learn, graphify update e git commit controlado.
-- /vibe-debug (ou /sdd-debug): Diagnostico forense rapido em logs reais, banco via SQL e referencias de dominio com repair em ate 3 tentativas.
+- /sdd-proposal: Gera a tríade SDD (proposal.md, design.md, spec-plan.md) com mapeamento de Blast Radius via Graphify e aplica Hard Stop imediato.
+- /sdd-apply: Executa as tasks aprovadas de forma cirúrgica e sequencial, roda o Terminal Gate (build limpo) e aplica Hard Stop para teste humano.
+- /sdd-archive: Executa o Quality Gate final, limpa resíduos transitórios (.tmp/, logs), atualiza o grafo (graphify update), salva memória duradoura e realiza commit atômico controlado.
+- /sdd-debug: Diagnóstico forense em logs reais e banco via SQL, com teste e rollback em caso de falha.
+- /council: Deliberação multi-agente pontual para decisões de arquitetura sob demanda.
 </core_workflows>
-</execution_architecture>
 
-<subagent_hierarchy version="1.0">
-<activation>
-Subagentes sao ativados APENAS quando o usuario solicita explicitamente via /teamwork-preview, /council ou comando direto. O modo padrao permanece SINGLE-AGENT DIRETO.
-</activation>
+<clean_workspace>
+- Arquivos temporários e dumps de dados residem exclusivamente em .tmp/ e NUNCA são commitados.
+- Se git não estiver no PATH: use C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe.
+- Se PowerShell acusar erro de Execution Policy: envolva em cmd.exe /c "<comando>".
+</clean_workspace>
 
-<levels>
-<level depth="0" role="Root Agent">
-Antigravity IDE — executa tudo diretamente por default.
-Pode invocar Leads quando solicitado pelo usuario.
-Monopoliza: git commit/push, spec-plan.md edits, memory writes, circuit breaker enforcement.
-</level>
+<mcp_tools>
+O Antigravity 2.0 possui 4 MCPs instalados e ativos. Use-os conforme o contexto — nunca os ignore silenciosamente.
 
-<level depth="1" role="Lead">
-Coordena Workers por dominio. NAO escreve codigo diretamente.
-enable_subagent_tools: true | enable_write_tools: false
-Max paralelo: 3 workers simultaneos.
-Leads disponiveis: research-lead, implementation-lead, quality-lead.
-</level>
+### 1. lazyweb — Pesquisa Competitiva de UX (42 tools)
+- **Quando usar:** SEMPRE que a task envolver criação de nova tela, componente de UI, paywall, pricing, landing page ou dashboard. Consulte ANTES de propor qualquer estrutura visual.
+- **Lembre ao usuário que essa opção existe** se o contexto for de UI e Lazyweb não foi mencionado.
+- **Tools principais:** `lazyweb_search_screens` (refs de mercado), `lazyweb_generate_report` (relatório de otimização a partir de screenshot), `lazyweb_propose_ui_changes` (proposta interativa de mudanças), `lazyweb_search_experiments` (A/B tests reais).
+- **REGRA CRÍTICA:** Nunca copiar schemas, regras de scoring ou lógica de produto do Lazyweb para skills ou regras. Os MCPs são a fonte de verdade; as skills apenas descrevem *quando* e *como* chamá-los.
 
-<level depth="2" role="Worker">
-Execucao especializada com skill vinculada.
-enable_subagent_tools: false | enable_write_tools: true (exceto read-only workers)
-Max tool calls: 10 | Timeout: 5 minutos.
-</level>
-</levels>
+### 2. chrome-devtools-mcp — Browser Real & QA Visual (29 tools)
+- **Quando usar:** Validação visual pós-implementação, audit de Lighthouse, inspeção de erros de console/network, performance profiling.
+- **Não substitui** o Terminal Gate (`npm run build`). É uma **camada adicional** após o build passar.
+- **Tools principais:** `take_screenshot`, `lighthouse_audit`, `list_console_messages`, `list_network_requests`, `performance_start_trace` / `performance_stop_trace` / `performance_analyze_insight`.
 
-<worker_execution_priority>
-PRIORIDADE 1 — agy CLI (worker primario):
-  Invocar via: scripts/spawn-agy-worker.ps1
-  Flags: --print --output-format json --model gemini-3.1-pro-high --agent <worker-name>
-  Vantagem: execucao paralela real, isolamento de contexto, output JSON estruturado.
+### 3. supabase — DDL & Operações Diretas (27 tools)
+- **Quando usar:** Via primária para migrações, inspeção de schema, logs e Edge Functions em projetos Supabase conectados.
+- **Sequência obrigatória para DDL:** `list_tables` (inspecionar) → `execute_sql` (rascunho/verificação) → `apply_migration` (DDL definitivo com nome em snake_case).
+- **Para diagnóstico:** `query_logs` + `get_advisors` antes de qualquer mudança no schema.
+- **Fallback:** CLI local (`npx supabase db push --linked`) quando não houver `project_id` disponível.
 
-PRIORIDADE 2 — Antigravity 2.0 nativo (fallback automatico):
-  Invocar via: invoke_subagent / define_subagent
-  Ativado quando: agy CLI falha (timeout, erro, nao encontrado) OU usuario forca --native.
-  Vantagem: acesso ao contexto completo do workspace, sem overhead de processo.
-
-REGRA: O fallback e AUTOMATICO. Se agy falhar, o Lead DEVE tentar nativo antes de reportar FAILED.
-REGRA: O usuario pode forcar modo nativo via flag no setup ou comando explicito.
-</worker_execution_priority>
-
-<monopolies>
-<monopoly action="git commit/push" owner="Root Agent"/>
-<monopoly action="spec-plan.md edits" owner="Root Agent"/>
-<monopoly action="memory write (.agent/memory/)" owner="Root Agent"/>
-<monopoly action="circuit breaker enforcement" owner="Root Agent"/>
-</monopolies>
-</subagent_hierarchy>
-
-<specialized_agents>
-Agentes organizados em hierarquia de 2 niveis em .agent/agents/:
-
-Leads (Level 1 — .agent/agents/leads/):
-- research-lead.md: Coordena pesquisa paralela (codebase, docs, grafo).
-- implementation-lead.md: Distribui tasks por dominio (frontend, backend, database).
-- quality-lead.md: Coordena auditoria, validacao e debug.
-
-Workers (Level 2 — .agent/agents/workers/):
-- codebase-researcher.md: Pesquisa profunda no codebase (read-only).
-- docs-researcher.md: Pesquisa em docs e web (read-only).
-- graph-analyzer.md: Analise de dependencias via Graphify (read-only).
-- frontend-worker.md: Implementacao UI/React/shadcn com ui-components e ui-motion.
-- backend-worker.md: Server Actions tipadas, validacao Zod e fluxos de Auth.
-- database-worker.md: Schema Supabase, migrations SQL e policies RLS.
-- auditor-worker.md: Auditoria de final de ciclo (7 dimensoes).
-- validator-worker.md: Revisao independente de specs antes do apply.
-- bug-investigator.md: Investigacao de falhas com hipoteses bayesianas.
-- security-worker.md: Especialista em AppSec, Taint Analysis, CVEs, Secrets e pentest adversarial.
-</specialized_agents>
-
-<skill_catalog>
-Consulte sempre skills/INDEX.md para o roteamento de contexto:
-- saas-scaffold: Criacao de projetos SaaS do zero (Next.js + Supabase + shadcn).
-- ui-components: Componentes universais, Dark UI Zinc-950 e landing pages cinematograficas.
-- ui-motion: Animacoes Magic UI e micro-interacoes.
-- database: Padroes de banco, RLS multi-tenant e migrations.
-- auth: Autenticacao segura SSR Supabase JWT.
-- backend-patterns: Server Actions tipadas ActionResult<T>.
-- deploy-production: Prontidao para producao e Core Web Vitals.
-- security: Hub de Cybersecurity, Taint Analysis (Sentry), Pentest (Cloudflare), OWASP Top 10 e Secrets.
-- obsidian: Gestao da memoria modular persistente do projeto.
-- council-debate: Conselho multi-agente para stress-test de decisoes arquiteturais.
-- agy-bridge: Integracao com agy CLI como worker headless.
-</skill_catalog>
+### 4. lovable — App Builder Programático (40 tools)
+- **Quando usar:** Projetos hospedados no Lovable (não para projetos locais de scratch/).
+- **Tools principais:** `send_message` (instrui o agente Lovable), `get_diff` (inspeciona mudanças), `set_project_knowledge` (injeta contexto persistente), `list_projects`.
+- **Projeto ativo configurado:** Financeiro/Conciliação (ver `.agent/memory/infra.md` para IDs).
+</mcp_tools>
 
 </constitution>

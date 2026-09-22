@@ -27,6 +27,17 @@ function normalizeText(text?: string | null): string {
 }
 
 /**
+ * Verifica se há correspondência semântica de pelo menos um token significativo (>= 3 caracteres)
+ */
+export function hasTokenMatch(billText?: string | null, normTx: string = ''): boolean {
+  if (!billText || !normTx) return false;
+  const norm = normalizeText(billText);
+  const stopWords = new Set(['ltda', 's/a', 'sa', 'epp', 'me', 'ref', 'pag', 'pix', 'de', 'do', 'da', 'dos', 'das', 'para', 'com', 'servicos', 'centro', 'automotivo']);
+  const tokens = norm.split(' ').filter(t => t.length >= 3 && !stopWords.has(t));
+  return tokens.some(t => normTx.includes(t));
+}
+
+/**
  * Realiza o match entre uma transação bancária de saída (débito OFX) e as contas a pagar importadas (daily_manual_bills)
  */
 export function matchExpenseWithOfxDebit(tx: any, bills: any[] = []): ExpenseMatchResult {
@@ -56,12 +67,22 @@ export function matchExpenseWithOfxDebit(tx: any, bills: any[] = []): ExpenseMat
       return { isMatched: true, matchedBill: singleBill, confidence: 0.99 };
     }
 
-    // Mesmo que o texto varie ligeiramente, o valor único na filial dá confiança alta (90%)
-    return { isMatched: true, matchedBill: singleBill, confidence: 0.90 };
+    // Match por token significativo (>= 3 letras) ou código externo
+    if (
+      hasTokenMatch(singleBill.recipient_name, normTx) ||
+      hasTokenMatch(singleBill.title, normTx) ||
+      hasTokenMatch(singleBill.description, normTx) ||
+      (singleBill.external_code && (normTx.includes(normalizeText(singleBill.external_code)) || normTx.includes(singleBill.external_code)))
+    ) {
+      return { isMatched: true, matchedBill: singleBill, confidence: 0.90 };
+    }
+
+    // Nomes totalmente divergentes (ex: Henrique != Daniel) não casam cegamente
+    return { isMatched: false, confidence: 0 };
   }
 
   if (exactAmountBills.length > 1) {
-    // Desempate por similaridade de texto
+    // Desempate por similaridade de texto estrita
     for (const b of exactAmountBills) {
       const normRecip = normalizeText(b.recipient_name);
       const normDesc = normalizeText(b.description);
@@ -75,8 +96,21 @@ export function matchExpenseWithOfxDebit(tx: any, bills: any[] = []): ExpenseMat
         return { isMatched: true, matchedBill: b, confidence: 0.95 };
       }
     }
-    // Caso padrão: atribui o primeiro da lista com score médio
-    return { isMatched: true, matchedBill: exactAmountBills[0], confidence: 0.80 };
+
+    // Busca por tokens significativos entre os candidatos
+    for (const b of exactAmountBills) {
+      if (
+        hasTokenMatch(b.recipient_name, normTx) ||
+        hasTokenMatch(b.title, normTx) ||
+        hasTokenMatch(b.description, normTx) ||
+        (b.external_code && (normTx.includes(normalizeText(b.external_code)) || normTx.includes(b.external_code)))
+      ) {
+        return { isMatched: true, matchedBill: b, confidence: 0.85 };
+      }
+    }
+
+    // Se nenhum candidato tiver correlação textual, não força match aleatório
+    return { isMatched: false, confidence: 0 };
   }
 
   // 2. Match com tolerância de até 5% (para pequenas variações de juros ou multas)
@@ -484,33 +518,32 @@ export function executeExpenseAutoMatching(
       }
     }
 
-    // Camada 3: Valor único na loja
+    // Camada 3: Valor único na loja (com validação de token ou código)
     if (!matchedBill && d.storeId) {
       const storeBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === d.storeId && Math.abs(Number(b.amount || 0) - d.txAmount) <= TOLERANCE);
       if (storeBills.length === 1) {
-        matchedBill = storeBills[0];
-        matchConfidence = 0.90;
-        layer = 3;
+        const b = storeBills[0];
+        const tokenMatch = hasTokenMatch(b.recipient_name, normTx) || hasTokenMatch(b.title, normTx) || hasTokenMatch(b.description, normTx);
+        const codeMatch = b.external_code && (d.fitid.includes(b.external_code) || b.external_code.includes(d.fitid));
+        if (tokenMatch || codeMatch) {
+          matchedBill = b;
+          matchConfidence = 0.90;
+          layer = 3;
+        }
       }
     }
 
-    // Camada 4: Global / Matriz
+    // Camada 4: Global / Matriz (estritamente com token ou código)
     if (!matchedBill) {
       const candidateBills = allBills.filter(b => !matchedBillKeys.has(b._key) && Math.abs(Number(b.amount || 0) - d.txAmount) <= TOLERANCE);
-      if (candidateBills.length === 1) {
-        matchedBill = candidateBills[0];
-        matchConfidence = 0.85;
-        layer = 4;
-      } else if (candidateBills.length > 1) {
-        for (const b of candidateBills) {
-          const normRecip = normalizeText(b.recipient_name);
-          const firstToken = normRecip.split(' ')[0];
-          if (firstToken && firstToken.length >= 3 && normTx.includes(firstToken)) {
-            matchedBill = b;
-            matchConfidence = 0.80;
-            layer = 4;
-            break;
-          }
+      for (const b of candidateBills) {
+        const tokenMatch = hasTokenMatch(b.recipient_name, normTx) || hasTokenMatch(b.title, normTx) || hasTokenMatch(b.description, normTx);
+        const codeMatch = b.external_code && (d.fitid.includes(b.external_code) || b.external_code.includes(d.fitid));
+        if (tokenMatch || codeMatch) {
+          matchedBill = b;
+          matchConfidence = candidateBills.length === 1 ? 0.85 : 0.80;
+          layer = 4;
+          break;
         }
       }
     }

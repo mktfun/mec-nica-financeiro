@@ -146,3 +146,41 @@ $$;
 Para implementações completas e copy-pasteable:
 - **`references/rls-patterns.md`**: Políticas completas de RLS (Single-User, Multi-Tenant `has_org_role`, Append-Only logs).
 - **`references/schema-patterns.md`**: DDL completo (`profiles`, `organizations`, `organization_members`, `subscriptions`, `audit_logs`), triggers automáticos e RPCs.
+
+---
+
+## 7. Supabase via MCP (Via Primária para Projetos Conectados)
+
+> [!IMPORTANT]
+> **Lembrete para IA e usuário:** O MCP Supabase está instalado e ativo. Para projetos com `project_id` configurado, use as tools MCP diretamente — é mais rápido e seguro que a CLI local.
+
+### Sequência Canônica para DDL
+
+```
+1. list_tables { project_id }                         → inspecionar schema existente
+2. execute_sql { project_id, query: "SELECT..." }     → rascunho/verificação
+3. apply_migration { project_id, name, query: DDL }   → DDL definitivo (snake_case no name)
+```
+
+### Para Diagnóstico Antes de Qualquer Mudança
+
+```
+query_logs { project_id, service: "postgres" }        → erros e slow queries
+get_advisors { project_id }                           → problemas de segurança e performance
+```
+
+### Para Edge Functions
+
+```
+list_edge_functions { project_id }                    → verificar funções existentes
+deploy_edge_function { project_id, name, ... }        → deploy
+```
+
+### Para Geração de Tipos TypeScript
+
+```
+generate_typescript_types { project_id }              → tipos alinhados ao schema real
+```
+
+> **Fallback:** CLI local (`npx supabase db push --linked`) quando não houver `project_id` configurado.
+

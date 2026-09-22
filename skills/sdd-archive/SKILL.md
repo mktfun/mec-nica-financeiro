@@ -85,6 +85,16 @@ Move-Item "specs/<id>" "specs/archive/<id>"
 ```
 </step>
 
+<step number="6.1" name="Limpeza de Resíduos Transitórios e Caches">
+Antes de preparar o staging, execute a faxina completa de artefatos efêmeros do ciclo:
+1. **Limpeza de temporários:** Remova arquivos em `.tmp/`:
+   ```powershell
+   if (Test-Path .tmp) { Remove-Item -Recurse -Force .tmp/* -ErrorAction SilentlyContinue }
+   ```
+2. **Limpeza de backups de edição:** Remova arquivos `*.bak` ou logs soltos.
+3. **Proteção do Grafo:** O cache bruto de AST (`graphify-out/cache/`) NUNCA é commitado. Apenas o grafo consolidado (`graphify-out/graph.json` e `graphify-out/graph.html`) deve ser preservado.
+</step>
+
 <step number="7" name="Staging Seletivo & Commit Controlado">
 1. **Inspeção Pré-Staging Obrigatória:**
    ```bash
@@ -93,12 +103,11 @@ Move-Item "specs/<id>" "specs/archive/<id>"
 2. **Filtro Anti-Vazamento:**
    - Verifique que NENHUM arquivo `.env*`, `*.pem`, `*.key`, `*.dump` ou `.tmp/` está na lista.
    - Inspecione `git diff --cached` em busca de padrões de chaves reais (OpenAI, Stripe, Supabase service keys).
-   - Se houver resíduos transitórios em `.tmp/`, limpe com segurança antes de prosseguir.
 3. **Staging Seletivo por Allowlist (PROIBIDO git add .):**
    ```bash
    git add "specs/archive/<id>"
    git add ".agent/memory/"
-   git add "graphify-out/"
+   git add "graphify-out/graph.json" "graphify-out/graph.html"
    # Adicione pontualmente apenas os arquivos de código implementados nesta spec:
    git add "src/<caminho_específico>" "supabase/migrations/<caminho_específico>"
    ```

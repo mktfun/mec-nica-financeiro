@@ -27,9 +27,10 @@ interface Props {
   targetDate: string;
   onNext: () => void;
   onBack: () => void;
+  isSandbox?: boolean;
 }
 
-export function Step3CashVaultDaniel({ targetDate, onNext, onBack }: Props) {
+export function Step3CashVaultDaniel({ targetDate, onNext, onBack, isSandbox = false }: Props) {
   const queryClient = useQueryClient();
   const [hadPickup, setHadPickup] = useState<boolean | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -87,6 +88,13 @@ export function Step3CashVaultDaniel({ targetDate, onNext, onBack }: Props) {
     }
 
     setConfirming(true);
+    if (isSandbox) {
+      toast.success(`[SANDBOX] ${selectedIds.size} registro(s) marcado(s) como depositado localmente!`);
+      setSelectedIds(new Set());
+      setConfirmed(true);
+      setConfirming(false);
+      return;
+    }
     try {
       const { error } = await supabase
         .from('store_cash_vault')

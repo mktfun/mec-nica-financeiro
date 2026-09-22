@@ -244,12 +244,30 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
   return useQuery({
     queryKey: ['transactions', 'store', storeId, 'date', date],
     queryFn: async () => {
+      const nextDate = new Date(new Date(date + 'T12:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+      
+      let batchId: string | null = null;
+      if (date) {
+        const { data: dateBatch } = await supabase
+          .from('import_batches')
+          .select('id')
+          .eq('target_date', date)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (dateBatch?.id) {
+          batchId = dateBatch.id;
+        }
+      }
+
+      const dateFilter = `target_date.eq.${date},and(occurred_at.gte.${date}T00:00:00,occurred_at.lt.${nextDate}T00:00:00)`;
+
       // 1. Busca primeiro em ofx_transactions (SSOT moderna)
       const { data: ofxData } = await supabase
         .from('ofx_transactions')
         .select('*')
         .eq('store_id', storeId)
-        .eq('target_date', date)
+        .or(dateFilter)
         .order('occurred_at', { ascending: false });
 
       if (ofxData && ofxData.length > 0) {
@@ -267,7 +285,7 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
         .from('transactions')
         .select('*')
         .eq('store_id', storeId)
-        .eq('target_date', date)
+        .or(dateFilter)
         .order('occurred_at', { ascending: false });
       if (error) throw error;
       return data as any[];
@@ -283,6 +301,7 @@ export interface StoreExtratoBancarioData {
   loteTxs: any[];
   batchId: string | null;
   recon: any | null;
+  hasOfxForDate?: boolean;
 }
 
 export function useStoreExtratoBancario(date: string, storeId: string) {
@@ -315,6 +334,21 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
         }
       }
 
+      // 1.5. Busca se existe batch de importação associado explicitamente a esta data
+      let batchId: string | null = null;
+      if (date) {
+        const { data: dateBatch } = await supabase
+          .from('import_batches')
+          .select('id')
+          .eq('target_date', date)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (dateBatch?.id) {
+          batchId = dateBatch.id;
+        }
+      }
+
       const mapOfx = (t: any) => ({
         ...t,
         source: 'ofx',
@@ -324,11 +358,14 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
       });
 
       // 2. Busca transações da data alvo em ofx_transactions (SSOT moderna)
+      const nextDate = new Date(new Date(date + 'T12:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+      const dateFilter = `target_date.eq.${date},and(occurred_at.gte.${date}T00:00:00,occurred_at.lt.${nextDate}T00:00:00)`;
+
       const { data: targetOfx, error: tErr } = await supabase
         .from('ofx_transactions')
         .select('*')
         .eq('store_id', storeId)
-        .eq('target_date', date)
+        .or(dateFilter)
         .order('occurred_at', { ascending: true });
 
       if (tErr) throw tErr;
@@ -341,7 +378,7 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
           .from('transactions')
           .select('*')
           .eq('store_id', storeId)
-          .eq('target_date', date)
+          .or(dateFilter)
           .order('occurred_at', { ascending: true });
         if (legacyTxs && legacyTxs.length > 0) {
           targetDateTxs = legacyTxs;
@@ -349,8 +386,10 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
       }
 
       // 3. Localiza o import_batch_id das transações OFX da data alvo
-      const ofxTxInTargetDate = targetDateTxs.find((t: any) => (t.source === 'ofx' || t.fitid) && t.import_batch_id);
-      const batchId = ofxTxInTargetDate ? ofxTxInTargetDate.import_batch_id : null;
+      if (!batchId) {
+        const ofxTxInTargetDate = targetDateTxs.find((t: any) => (t.source === 'ofx' || t.fitid) && t.import_batch_id);
+        batchId = ofxTxInTargetDate ? ofxTxInTargetDate.import_batch_id : null;
+      }
 
       let loteTxs: any[] = [];
       if (batchId) {
@@ -408,7 +447,8 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
         targetDateTxs: targetDateTxs || [],
         loteTxs: loteTxs.length > 0 ? loteTxs : (targetDateTxs || []),
         batchId,
-        recon
+        recon,
+        hasOfxForDate: (targetDateTxs?.length ?? 0) > 0 || (loteTxs?.length ?? 0) > 0
       };
     },
     enabled: !!storeId && !!date,
@@ -594,6 +634,8 @@ export function useBulkInsertTransactions() {
       let data: any = null;
       let error: any = null;
 
+      const explicitTargetDate = !Array.isArray(payload) ? (payload.targetDate || payload.target_date) : undefined;
+
       if (ofxTxs.length > 0) {
         const { data: d1, error: e1 } = await supabase
           .from('ofx_transactions' as any)
@@ -611,7 +653,7 @@ export function useBulkInsertTransactions() {
                cnpj_cpf: t.cnpj_cpf || null,
                matched_os_number: t.os_number || t.matched_os_number || null,
                import_batch_id: t.import_batch_id || null,
-               target_date: t.target_date || (t.occurred_at ? t.occurred_at.split('T')[0] : (t.date ? t.date.split('T')[0] : null))
+               target_date: t.target_date || explicitTargetDate || (t.date ? String(t.date).split('T')[0] : (t.occurred_at ? String(t.occurred_at).split('T')[0] : null))
              };
           }), { onConflict: 'store_id, fitid' });
         if (e1) { error = e1; } else { data = d1; }

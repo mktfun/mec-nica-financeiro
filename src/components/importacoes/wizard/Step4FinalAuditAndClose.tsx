@@ -330,28 +330,51 @@ export function Step4FinalAuditAndClose({
           );
           const reconResult = reconciliador.executarReconciliacao();
 
-          const matchedIds = reconResult.conciliados.map((i) => i.saleId).filter(Boolean);
-          const unsettledIds = reconResult.naoEntrou.map((i) => i.saleId).filter(Boolean);
+          // Atualiza status baseado na reconciliação real entre Rede e OFX
+          if (redeSales && redeSales.length > 0) {
+            const enteredIds: string[] = [];
+            const pendingIds: string[] = [];
 
-          if (matchedIds.length > 0) {
-            await supabase
-              .from('pos_transactions')
-              .update({ settlement_status: 'entrou', settled_date: targetDate })
-              .in('id', matchedIds);
+            redeSales.forEach((s: any) => {
+              const isMatched = reconResult.conciliados.some(c =>
+                c.saleId === s.id ||
+                Math.abs(c.valorLiquido - Number(s.net_amount || s.netAmount || 0)) <= 0.01
+              );
+              if (isMatched && s.id) {
+                enteredIds.push(s.id);
+              } else if (s.id) {
+                pendingIds.push(s.id);
+              }
+            });
+
+            if (enteredIds.length > 0) {
+              await supabase
+                .from('pos_transactions')
+                .update({ settlement_status: 'entrou', settled_date: targetDate })
+                .in('id', enteredIds);
+            }
+            if (pendingIds.length > 0) {
+              await supabase
+                .from('pos_transactions')
+                .update({ settlement_status: 'a_compensar', settled_date: null })
+                .in('id', pendingIds);
+            }
+
+            const matchedFitids = reconResult.conciliados.map(c => c.fitidBancoVinculado).filter(Boolean);
+            if (matchedFitids.length > 0) {
+              await supabase
+                .from('ofx_transactions')
+                .update({ match_status: 'conciliado', manual_category: 'Cartão Rede' })
+                .in('fitid', matchedFitids);
+            }
           }
-          if (unsettledIds.length > 0) {
-            await supabase
-              .from('pos_transactions')
-              .update({ settlement_status: 'nao_entrou', settled_date: null })
-              .in('id', unsettledIds);
-          }
-          totalResolved += matchedIds.length;
+          totalResolved += redeSales.length;
         }
       }
 
       await refetch();
       toast.success(
-        `Conciliação Determinística concluída! ${totalResolved} vendas de cartão equalizadas.`
+        `Conciliação de Cartões concluída! Matches de extrato e compensações atualizados.`
       );
     } catch (err: any) {
       console.error('Erro no motor determinístico:', err);

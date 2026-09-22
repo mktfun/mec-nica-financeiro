@@ -600,146 +600,151 @@ export function CashVaultCompositionModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="max-w-5xl bg-zinc-950 border border-zinc-800 text-zinc-100 p-0 overflow-hidden shadow-2xl rounded-2xl"
-    >
-      {/* Header com Identidade Visual Dark UI */}
-      <div className="px-6 py-5 border-b border-zinc-800/80 bg-gradient-to-r from-zinc-900/90 via-zinc-950 to-zinc-900/90 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 shadow-inner">
-            <Banknote className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold tracking-tight text-zinc-100">
-                Gestão e Rastreabilidade do Dinheiro em Cofre
-              </h2>
-              {frozenSnapshot ? (
-                <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 bg-emerald-500/10 text-[10px] gap-1">
-                  <Lock className="w-3 h-3" /> Snapshot Histórico Congelado (Fechado)
-                </Badge>
-              ) : isEditing ? (
-                <Badge variant="outline" className="border-amber-500/40 text-amber-300 bg-amber-500/10 text-[10px] gap-1">
-                  <Sparkles className="w-3 h-3" /> Modo Edição / Descongelamento Ativo
-                </Badge>
-              ) : null}
-            </div>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Composição fração a fração do dinheiro recebido nas OSs e baixas inteligentes de despesas em espécie
-            </p>
-          </div>
+      size="2xl"
+      title="Gestão e Rastreabilidade do Dinheiro em Cofre"
+      footer={
+        <div className="flex items-center justify-between w-full text-xs text-[var(--text-tertiary)]">
+          <span>Data Base: {targetDate}</span>
+          <Button size="sm" variant="outline" onClick={onClose} className="border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
+            Fechar
+          </Button>
         </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* Toolbar Superior com Subtítulo e Ações */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[var(--border-subtle)]">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 shrink-0">
+              <Banknote className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs text-[var(--text-tertiary)]">
+                Composição fração a fração do dinheiro recebido nas OSs e baixas inteligentes de despesas em espécie
+              </p>
+              <div className="flex items-center gap-2 mt-1">
+                {frozenSnapshot ? (
+                  <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 bg-emerald-500/10 text-[10px] gap-1">
+                    <Lock className="w-3 h-3" /> Snapshot Histórico Congelado (Fechado)
+                  </Badge>
+                ) : isEditing ? (
+                  <Badge variant="outline" className="border-amber-500/40 text-amber-300 bg-amber-500/10 text-[10px] gap-1">
+                    <Sparkles className="w-3 h-3" /> Modo Edição / Descongelamento Ativo
+                  </Badge>
+                ) : null}
+              </div>
+            </div>
+          </div>
 
-        <div className="flex items-center gap-2 self-end md:self-auto">
           <Button
             size="sm"
             variant="outline"
             onClick={() => setIsExpenseModalOpen(true)}
-            className="border-amber-500/40 hover:bg-amber-500/10 text-amber-300 text-xs gap-1.5 h-8 font-medium"
+            className="border-amber-500/40 hover:bg-amber-500/10 text-amber-300 text-xs gap-1.5 h-8 font-medium shrink-0 self-start sm:self-auto cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" /> Registrar Saída em Dinheiro
           </Button>
-          <Button size="sm" variant="ghost" onClick={onClose} className="h-8 px-2 text-zinc-400 hover:text-zinc-100">
-            ✕
-          </Button>
-        </div>
-      </div>
-
-      {/* Cards de Métricas Consolidadas */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-6 bg-zinc-900/40 border-b border-zinc-800/60">
-        <div className="bg-zinc-900/80 border border-amber-500/30 rounded-xl p-3 flex flex-col">
-          <span className="text-[10px] text-amber-400 font-semibold uppercase tracking-wider">
-            Em Trânsito / No Cofre
-          </span>
-          <span className="text-lg font-mono font-bold text-amber-300 mt-1">
-            {formatCurrency(metrics.totalEmTransito)}
-          </span>
-          <span className="text-[10px] text-zinc-400 mt-0.5">Conta no Caixa Atual</span>
         </div>
 
-        <div className="bg-zinc-900/80 border border-emerald-500/30 rounded-xl p-3 flex flex-col">
-          <span className="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider">
-            Depositado no Banco
-          </span>
-          <span className="text-lg font-mono font-bold text-emerald-300 mt-1">
-            {formatCurrency(metrics.totalDepositado)}
-          </span>
-          <span className="text-[10px] text-zinc-400 mt-0.5">Entrou no Extrato OFX</span>
+        {/* Cards de Métricas Consolidadas */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+              Em Trânsito / No Cofre
+            </div>
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-amber-300">
+              {formatCurrency(metrics.totalEmTransito)}
+            </div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Conta no Caixa Atual</div>
+          </div>
+
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Depositado no Banco
+            </div>
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
+              {formatCurrency(metrics.totalDepositado)}
+            </div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Entrou no Extrato OFX</div>
+          </div>
+
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+              Saídas / Despesas Pagas
+            </div>
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-rose-300">
+              {formatCurrency(metrics.totalSaidas)}
+            </div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Abatido do Cofre</div>
+          </div>
+
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-[var(--text-tertiary)]"></span>
+              Total Movimentado
+            </div>
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
+              {formatCurrency(metrics.totalGeral)}
+            </div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">{vaultItems.length} frações registradas</div>
+          </div>
         </div>
 
-        <div className="bg-zinc-900/80 border border-rose-500/30 rounded-xl p-3 flex flex-col">
-          <span className="text-[10px] text-rose-400 font-semibold uppercase tracking-wider">
-            Saídas / Despesas Pagas
-          </span>
-          <span className="text-lg font-mono font-bold text-rose-300 mt-1">
-            {formatCurrency(metrics.totalSaidas)}
-          </span>
-          <span className="text-[10px] text-zinc-400 mt-0.5">Abatido do Cofre</span>
+        {/* Navegação por Abas */}
+        <div className="flex border-b border-[var(--border-subtle)] gap-2">
+          <button
+            onClick={() => setActiveTab('entries')}
+            className={`py-2.5 px-4 text-xs font-medium border-b-2 transition-colors flex items-center gap-2 cursor-pointer ${
+              activeTab === 'entries'
+                ? 'border-amber-400 text-amber-300 font-semibold'
+                : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <Banknote className="w-4 h-4" />
+            Composição Fração a Fração ({vaultItems.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('unmatched_bills')}
+            className={`py-2.5 px-4 text-xs font-medium border-b-2 transition-colors flex items-center gap-2 cursor-pointer ${
+              activeTab === 'unmatched_bills'
+                ? 'border-primary text-[var(--text-primary)] font-semibold'
+                : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <Receipt className="w-4 h-4" />
+            Sugestões de Saídas (Contas sem OFX)
+            {unmatchedCount > 0 && (
+              <span className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-[10px] rounded-full font-mono">
+                {unmatchedCount}
+              </span>
+            )}
+          </button>
         </div>
 
-        <div className="bg-zinc-900/80 border border-zinc-800 rounded-xl p-3 flex flex-col">
-          <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">
-            Total Movimentado
-          </span>
-          <span className="text-lg font-mono font-bold text-zinc-200 mt-1">
-            {formatCurrency(metrics.totalGeral)}
-          </span>
-          <span className="text-[10px] text-zinc-500 mt-0.5">{vaultItems.length} frações registradas</span>
-        </div>
-      </div>
-
-      {/* Navegação por Abas */}
-      <div className="flex border-b border-zinc-800 px-6 bg-zinc-950/80">
-        <button
-          onClick={() => setActiveTab('entries')}
-          className={`py-3 px-4 text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === 'entries'
-              ? 'border-amber-400 text-amber-300 bg-amber-400/5'
-              : 'border-transparent text-zinc-400 hover:text-zinc-200'
-          }`}
-        >
-          <Banknote className="w-4 h-4" />
-          Composição Fração a Fração ({vaultItems.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('unmatched_bills')}
-          className={`py-3 px-4 text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === 'unmatched_bills'
-              ? 'border-indigo-400 text-indigo-300 bg-indigo-400/5'
-              : 'border-transparent text-zinc-400 hover:text-zinc-200'
-          }`}
-        >
-          <Sparkles className="w-4 h-4 text-indigo-400" />
-          💡 Sugestões de Saídas (Contas sem OFX)
-          {unmatchedCount > 0 && (
-            <span className="px-1.5 py-0.5 bg-indigo-500/20 text-indigo-300 text-[10px] rounded-full font-mono">
-              {unmatchedCount}
-            </span>
-          )}
-        </button>
-      </div>
-
-      {/* Conteúdo das Abas */}
-      <div className="p-6 max-h-[55vh] overflow-y-auto space-y-4">
+        {/* Conteúdo Aba 1: Frações em Dinheiro */}
         {activeTab === 'entries' && (
           <div className="space-y-4">
             {/* Barra de Filtros */}
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <div className="relative w-full sm:w-64">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                <div className="relative w-full sm:w-72">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     placeholder="Filtrar por OS, cliente, placa ou loja..."
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-amber-500/50"
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-amber-500/50"
                   />
                 </div>
                 <select
                   value={storeFilter}
                   onChange={e => setStoreFilter(e.target.value)}
-                  className="bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-amber-500/50"
+                  className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/50 cursor-pointer"
                 >
                   <option value="ALL">Todas as Lojas</option>
                   {stores.map((s: any) => (
@@ -748,131 +753,134 @@ export function CashVaultCompositionModal({
                 </select>
               </div>
 
-              <span className="text-[11px] text-zinc-500 self-end sm:self-auto">
+              <span className="text-[11px] text-[var(--text-tertiary)] self-end sm:self-auto whitespace-nowrap">
                 Mostrando {filteredVaultItems.length} de {vaultItems.length} frações
               </span>
             </div>
 
-            {/* Tabela de Frações de Dinheiro com Loja, OS, Cliente, Placa, Data, Valor e Status */}
+            {/* Tabela de Frações de Dinheiro */}
             {isLoadingVault ? (
               <div className="py-12 flex justify-center items-center">
                 <LoadingSpinner size="md" />
               </div>
             ) : filteredVaultItems.length === 0 ? (
-              <div className="py-12 text-center text-zinc-500 border border-dashed border-zinc-800/80 rounded-xl">
+              <div className="py-12 text-center text-[var(--text-tertiary)] border border-dashed border-[var(--border-subtle)] rounded-xl">
                 Nenhum lançamento em dinheiro encontrado com os filtros atuais.
               </div>
             ) : (
-              <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-inner bg-zinc-900/30">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-900/90 text-zinc-400 text-[10px] uppercase font-semibold border-b border-zinc-800">
-                    <tr>
-                      <th className="py-2.5 px-3">Loja</th>
-                      <th className="py-2.5 px-3">OS / Placa</th>
-                      <th className="py-2.5 px-3">Cliente / Descrição</th>
-                      <th className="py-2.5 px-3">Data</th>
-                      <th className="py-2.5 px-3 text-right">Valor</th>
-                      <th className="py-2.5 px-3 text-center">Status</th>
-                      <th className="py-2.5 px-3 text-right">Ação</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800/50 font-mono">
-                    {filteredVaultItems.map(item => {
-                      const isSaida = item.notes?.includes('[SAIDA_DESPESA]') || item.description?.toUpperCase().includes('[SAÍDA');
-                      const isDepositado = item.status === 'depositado';
-                      const isEmTransito = item.status === 'em_transito' || item.status === 'pending';
+              <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden bg-[var(--bg-canvas)] shadow-inner">
+                <div className="overflow-x-auto max-h-[460px] overflow-y-auto custom-scrollbar">
+                  <table className="w-full text-left text-xs min-w-[780px]">
+                    <thead className="bg-[var(--bg-surface)] text-[var(--text-tertiary)] text-[10px] uppercase font-semibold border-b border-[var(--border-subtle)] sticky top-0 z-10 backdrop-blur-md">
+                      <tr>
+                        <th className="py-2.5 px-3.5 whitespace-nowrap min-w-[130px]">Loja</th>
+                        <th className="py-2.5 px-3.5 whitespace-nowrap min-w-[110px]">OS / Placa</th>
+                        <th className="py-2.5 px-3.5 min-w-[200px]">Cliente / Descrição</th>
+                        <th className="py-2.5 px-3.5 whitespace-nowrap min-w-[90px]">Data</th>
+                        <th className="py-2.5 px-3.5 text-right whitespace-nowrap min-w-[100px]">Valor</th>
+                        <th className="py-2.5 px-3.5 text-center whitespace-nowrap min-w-[100px]">Status</th>
+                        <th className="py-2.5 px-3.5 text-right whitespace-nowrap min-w-[130px]">Ação</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border-subtle)]/60 font-mono">
+                      {filteredVaultItems.map(item => {
+                        const isSaida = item.notes?.includes('[SAIDA_DESPESA]') || item.description?.toUpperCase().includes('[SAÍDA');
+                        const isDepositado = item.status === 'depositado';
+                        const isEmTransito = item.status === 'em_transito' || item.status === 'pending';
 
-                      return (
-                        <tr key={item.id} className="hover:bg-zinc-900/60 transition-colors">
-                          <td className="py-2.5 px-3 font-sans font-medium text-zinc-200">
-                            {storeNameMap[item.store_id] || item.store_id}
-                          </td>
-                          <td className="py-2.5 px-3">
-                            {item.os_number_ref ? (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-amber-300 text-[11px] font-semibold w-fit">
-                                  OS #{item.os_number_ref}
-                                </span>
-                                {item.plate && (
-                                  <span className="text-[10px] text-zinc-400 font-mono">
-                                    {item.plate}
+                        return (
+                          <tr key={item.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                            <td className="py-2.5 px-3.5 font-sans font-medium text-[var(--text-primary)] whitespace-nowrap">
+                              {storeNameMap[item.store_id] || item.store_id}
+                            </td>
+                            <td className="py-2.5 px-3.5 whitespace-nowrap">
+                              {item.os_number_ref ? (
+                                <div className="flex items-center gap-1.5">
+                                  <span className="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] text-amber-300 text-[11px] font-semibold border border-[var(--border-subtle)]">
+                                    OS #{item.os_number_ref}
                                   </span>
-                                )}
+                                  {item.plate && (
+                                    <span className="text-[10px] text-[var(--text-tertiary)] font-mono">
+                                      {item.plate}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-[var(--text-tertiary)] text-[11px]">Manual / Avulso</span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3.5 font-sans text-[var(--text-secondary)] text-[11px]">
+                              <div className="font-medium text-[var(--text-primary)] truncate max-w-xs">
+                                {item.client_name || item.description}
                               </div>
-                            ) : (
-                              <span className="text-zinc-500 text-[11px]">Manual / Avulso</span>
-                            )}
-                          </td>
-                          <td className="py-2.5 px-3 font-sans text-zinc-300 text-[11px] max-w-xs">
-                            <div className="font-medium text-zinc-100 truncate">
-                              {item.client_name || item.description}
-                            </div>
-                            {item.client_name && (
-                              <div className="text-[10px] text-zinc-500 truncate">
-                                {item.description}
-                              </div>
-                            )}
-                          </td>
-                          <td className="py-2.5 px-3 text-zinc-400 text-[11px] font-sans">
-                            {item.entry_date}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-bold text-zinc-100">
-                            {formatCurrency(item.amount)}
-                          </td>
-                          <td className="py-2.5 px-3 text-center">
-                            {isSaida ? (
-                              <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px]">
-                                Saída / Despesa
-                              </Badge>
-                            ) : isEmTransito ? (
-                              <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px]">
-                                No Cofre
-                              </Badge>
-                            ) : (
-                              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px]">
-                                Depositado
-                              </Badge>
-                            )}
-                          </td>
-                          <td className="py-2.5 px-3 text-right">
-                            {isEmTransito && !frozenSnapshot && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => toggleDepositMutation.mutate({ id: item.id, nextStatus: 'depositado' })}
-                                className="h-7 px-2 text-[10px] border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 cursor-pointer"
-                              >
-                                Marcar Depositado
-                              </Button>
-                            )}
-                            {isDepositado && !isSaida && !frozenSnapshot && (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => toggleDepositMutation.mutate({ id: item.id, nextStatus: 'em_transito' })}
-                                className="h-7 px-2 text-[10px] text-zinc-400 hover:text-amber-300 cursor-pointer"
-                              >
-                                Voltar p/ Cofre
-                              </Button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                              {item.client_name && (
+                                <div className="text-[10px] text-[var(--text-tertiary)] truncate max-w-xs">
+                                  {item.description}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-[var(--text-tertiary)] text-[11px] font-sans whitespace-nowrap">
+                              {item.entry_date}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-right font-bold text-[var(--text-primary)] font-sans tabular-nums whitespace-nowrap">
+                              {formatCurrency(item.amount)}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-center whitespace-nowrap">
+                              {isSaida ? (
+                                <Badge variant="outline" className="border-rose-500/30 bg-rose-500/10 text-rose-300 text-[10px]">
+                                  Saída / Despesa
+                                </Badge>
+                              ) : isEmTransito ? (
+                                <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300 text-[10px]">
+                                  No Cofre
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-[10px]">
+                                  Depositado
+                                </Badge>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-right whitespace-nowrap">
+                              {isEmTransito && !frozenSnapshot && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => toggleDepositMutation.mutate({ id: item.id, nextStatus: 'depositado' })}
+                                  className="h-7 px-2.5 text-[11px] border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 cursor-pointer whitespace-nowrap"
+                                >
+                                  Marcar Depositado
+                                </Button>
+                              )}
+                              {isDepositado && !isSaida && !frozenSnapshot && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => toggleDepositMutation.mutate({ id: item.id, nextStatus: 'em_transito' })}
+                                  className="h-7 px-2.5 text-[11px] text-[var(--text-tertiary)] hover:text-amber-300 cursor-pointer whitespace-nowrap"
+                                >
+                                  Voltar p/ Cofre
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
         )}
 
+        {/* Conteúdo Aba 2: Sugestões de Saídas */}
         {activeTab === 'unmatched_bills' && (
           <div className="space-y-4">
-            <div className="p-3.5 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-start gap-3 text-xs text-indigo-300">
-              <Info className="w-5 h-5 shrink-0 text-indigo-400 mt-0.5" />
+            <div className="p-3.5 bg-secondary/30 border border-[var(--border-subtle)] rounded-xl flex items-start gap-3 text-xs text-[var(--text-secondary)]">
+              <Info className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
               <div>
-                <span className="font-semibold text-indigo-200">Motor de Recomendação de Pagamentos em Dinheiro Físico:</span>
-                <p className="mt-0.5 text-indigo-300/90 text-[11px] leading-relaxed">
+                <span className="font-semibold text-[var(--text-primary)]">Motor de Recomendação de Pagamentos em Dinheiro Físico:</span>
+                <p className="mt-0.5 text-[11px] text-[var(--text-tertiary)] leading-relaxed">
                   Estas contas do arquivo <strong>BuscaContasAPagar.xls</strong> não tiveram débito correspondente no extrato bancário (OFX).
                   Se foram pagas com o dinheiro vivo do cofre de alguma filial, dê baixa abaixo para abater o valor do cofre e sanar a despesa sem distorções contábeis.
                 </p>
@@ -880,14 +888,14 @@ export function CashVaultCompositionModal({
             </div>
 
             {/* Sub-filtros para Contas */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-zinc-400 font-medium">Exibir:</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-[var(--text-tertiary)] font-medium">Exibir:</span>
               <button
                 onClick={() => setBillsFilter('unmatched')}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   billsFilter === 'unmatched'
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                    : 'text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800'
+                    : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)] bg-[var(--bg-canvas)] border border-[var(--border-subtle)]'
                 }`}
               >
                 💡 Não Conciliadas no OFX ({unmatchedCount})
@@ -897,7 +905,7 @@ export function CashVaultCompositionModal({
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   billsFilter === 'paid_cash'
                     ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                    : 'text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800'
+                    : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)] bg-[var(--bg-canvas)] border border-[var(--border-subtle)]'
                 }`}
               >
                 Pagas em Dinheiro ({allBills.filter(b => b.match_status === 'paid_cash').length})
@@ -906,8 +914,8 @@ export function CashVaultCompositionModal({
                 onClick={() => setBillsFilter('ignored')}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   billsFilter === 'ignored'
-                    ? 'bg-zinc-700/40 text-zinc-300 border border-zinc-600'
-                    : 'text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800'
+                    ? 'bg-muted text-foreground border border-border'
+                    : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)] bg-[var(--bg-canvas)] border border-[var(--border-subtle)]'
                 }`}
               >
                 Ignoradas ({allBills.filter(b => b.match_status === 'ignored').length})
@@ -916,8 +924,8 @@ export function CashVaultCompositionModal({
                 onClick={() => setBillsFilter('all')}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   billsFilter === 'all'
-                    ? 'bg-zinc-800 text-zinc-200 border border-zinc-700'
-                    : 'text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800'
+                    ? 'bg-secondary text-secondary-foreground border border-[var(--border-subtle)]'
+                    : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)] bg-[var(--bg-canvas)] border border-[var(--border-subtle)]'
                 }`}
               >
                 Todas ({allBills.length})
@@ -929,139 +937,141 @@ export function CashVaultCompositionModal({
                 <LoadingSpinner size="md" />
               </div>
             ) : filteredBills.length === 0 ? (
-              <div className="py-12 text-center text-zinc-500 border border-dashed border-zinc-800/80 rounded-xl">
+              <div className="py-12 text-center text-[var(--text-tertiary)] border border-dashed border-[var(--border-subtle)] rounded-xl">
                 Nenhuma conta encontrada para o filtro selecionado.
               </div>
             ) : (
-              <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-inner bg-zinc-900/30">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-900/90 text-zinc-400 text-[10px] uppercase font-semibold border-b border-zinc-800">
-                    <tr>
-                      <th className="py-2.5 px-3">Favorecido / Título</th>
-                      <th className="py-2.5 px-3">Categoria</th>
-                      <th className="py-2.5 px-3">Descrição</th>
-                      <th className="py-2.5 px-3">Loja do Cofre</th>
-                      <th className="py-2.5 px-3 text-right">Valor</th>
-                      <th className="py-2.5 px-3 text-right">Ação Consciente</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800/50 font-mono">
-                    {filteredBills.map(bill => {
-                      const isPaidCash = bill.match_status === 'paid_cash';
-                      const isIgnored = bill.match_status === 'ignored';
-                      const currentChosenStore = selectedStoreByBill[bill.id] || bill.store_id || 'st-01';
-                      const storeAvailable = availableInTransitByStore[currentChosenStore] || 0;
+              <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden bg-[var(--bg-canvas)] shadow-inner">
+                <div className="overflow-x-auto max-h-[460px] overflow-y-auto custom-scrollbar">
+                  <table className="w-full text-left text-xs min-w-[780px]">
+                    <thead className="bg-[var(--bg-surface)] text-[var(--text-tertiary)] text-[10px] uppercase font-semibold border-b border-[var(--border-subtle)] sticky top-0 z-10 backdrop-blur-md">
+                      <tr>
+                        <th className="py-2.5 px-3.5 whitespace-nowrap min-w-[180px]">Favorecido / Título</th>
+                        <th className="py-2.5 px-3.5 whitespace-nowrap min-w-[120px]">Categoria</th>
+                        <th className="py-2.5 px-3.5 min-w-[180px]">Descrição</th>
+                        <th className="py-2.5 px-3.5 min-w-[180px]">Loja do Cofre</th>
+                        <th className="py-2.5 px-3.5 text-right whitespace-nowrap min-w-[100px]">Valor</th>
+                        <th className="py-2.5 px-3.5 text-right whitespace-nowrap min-w-[150px]">Ação Consciente</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border-subtle)]/60 font-mono">
+                      {filteredBills.map(bill => {
+                        const isPaidCash = bill.match_status === 'paid_cash';
+                        const isIgnored = bill.match_status === 'ignored';
+                        const currentChosenStore = selectedStoreByBill[bill.id] || bill.store_id || 'st-01';
+                        const storeAvailable = availableInTransitByStore[currentChosenStore] || 0;
 
-                      return (
-                        <tr key={bill.id} className="hover:bg-zinc-900/60 transition-colors">
-                          <td className="py-2.5 px-3 font-sans font-medium text-zinc-100">
-                            <div>{bill.title}</div>
-                            {isPaidCash && (
-                              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[9px] mt-0.5">
-                                Baixa Realizada em Dinheiro
-                              </Badge>
-                            )}
-                            {isIgnored && (
-                              <Badge className="bg-zinc-800 text-zinc-400 border-zinc-700 text-[9px] mt-0.5">
-                                Ignorada
-                              </Badge>
-                            )}
-                          </td>
-                          <td className="py-2.5 px-3 font-sans text-zinc-400 text-[11px]">
-                            {bill.category}
-                          </td>
-                          <td className="py-2.5 px-3 font-sans text-zinc-300 text-[11px] max-w-xs truncate">
-                            {bill.description || '—'}
-                          </td>
-                          <td className="py-2.5 px-3 font-sans">
-                            {!isPaidCash ? (
-                              <select
-                                value={currentChosenStore}
-                                onChange={e => setSelectedStoreByBill(prev => ({ ...prev, [bill.id]: e.target.value }))}
-                                className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-[11px] text-zinc-200 focus:outline-none focus:border-amber-500/50"
-                              >
-                                {stores.map((s: any) => {
-                                  const c = availableInTransitByStore[s.id] || 0;
-                                  return (
-                                    <option key={s.id} value={s.id}>
-                                      {s.name} (Cofre: {formatCurrency(c)})
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            ) : (
-                              <span className="text-zinc-400 text-[11px]">
-                                {storeNameMap[bill.store_id || ''] || 'Loja Vinculada'}
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-bold text-amber-300">
-                            {formatCurrency(bill.amount)}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-sans">
-                            <div className="flex items-center justify-end gap-1.5">
-                              {!isPaidCash && !isIgnored && (
-                                <>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => {
-                                      payBillWithCashMutation.mutate({
-                                        bill,
-                                        storeIdChosen: currentChosenStore
-                                      });
-                                    }}
-                                    disabled={payBillWithCashMutation.isPending || storeAvailable < bill.amount}
-                                    title={storeAvailable < bill.amount ? `Cofre da filial com apenas ${formatCurrency(storeAvailable)}. Selecione outra loja com saldo.` : undefined}
-                                    className="h-7 px-2.5 text-[11px] border-amber-500/40 text-amber-300 hover:bg-amber-500/10 gap-1.5 disabled:opacity-40 cursor-pointer"
-                                  >
-                                    <ArrowDownToLine className="w-3.5 h-3.5 text-amber-400" />
-                                    Dar Baixa como Saída
-                                  </Button>
+                        return (
+                          <tr key={bill.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                            <td className="py-2.5 px-3.5 font-sans font-medium text-[var(--text-primary)]">
+                              <div>{bill.title}</div>
+                              {isPaidCash && (
+                                <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-[9px] mt-0.5">
+                                  Baixa Realizada em Dinheiro
+                                </Badge>
+                              )}
+                              {isIgnored && (
+                                <Badge variant="outline" className="border-zinc-700 bg-zinc-800 text-zinc-400 text-[9px] mt-0.5">
+                                  Ignorada
+                                </Badge>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3.5 font-sans text-[var(--text-tertiary)] text-[11px] whitespace-nowrap">
+                              {bill.category}
+                            </td>
+                            <td className="py-2.5 px-3.5 font-sans text-[var(--text-secondary)] text-[11px] max-w-xs truncate">
+                              {bill.description || '—'}
+                            </td>
+                            <td className="py-2.5 px-3.5 font-sans whitespace-nowrap">
+                              {!isPaidCash ? (
+                                <select
+                                  value={currentChosenStore}
+                                  onChange={e => setSelectedStoreByBill(prev => ({ ...prev, [bill.id]: e.target.value }))}
+                                  className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded px-2 py-1 text-[11px] text-[var(--text-primary)] focus:outline-none focus:border-amber-500/50 cursor-pointer"
+                                >
+                                  {stores.map((s: any) => {
+                                    const c = availableInTransitByStore[s.id] || 0;
+                                    return (
+                                      <option key={s.id} value={s.id}>
+                                        {s.name} (Cofre: {formatCurrency(c)})
+                                      </option>
+                                    );
+                                  })}
+                                </select>
+                              ) : (
+                                <span className="text-[var(--text-tertiary)] text-[11px]">
+                                  {storeNameMap[bill.store_id || ''] || 'Loja Vinculada'}
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-right font-bold text-amber-300 font-sans tabular-nums whitespace-nowrap">
+                              {formatCurrency(bill.amount)}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-right font-sans whitespace-nowrap">
+                              <div className="flex items-center justify-end gap-1.5">
+                                {!isPaidCash && !isIgnored && (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => {
+                                        payBillWithCashMutation.mutate({
+                                          bill,
+                                          storeIdChosen: currentChosenStore
+                                        });
+                                      }}
+                                      disabled={payBillWithCashMutation.isPending || storeAvailable < bill.amount}
+                                      title={storeAvailable < bill.amount ? `Cofre da filial com apenas ${formatCurrency(storeAvailable)}. Selecione outra loja com saldo.` : undefined}
+                                      className="h-7 px-2.5 text-[11px] border-amber-500/40 text-amber-300 hover:bg-amber-500/10 gap-1.5 disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                                    >
+                                      <ArrowDownToLine className="w-3.5 h-3.5 text-amber-400" />
+                                      Dar Baixa como Saída
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => ignoreBillMutation.mutate({ billId: bill.id, nextStatus: 'ignored' })}
+                                      className="h-7 px-2 text-[11px] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] cursor-pointer whitespace-nowrap"
+                                      title="Ignorar esta conta na sugestão de baixa em dinheiro"
+                                    >
+                                      <EyeOff className="w-3 h-3 mr-1" />
+                                      Ignorar
+                                    </Button>
+                                  </>
+                                )}
+
+                                {isPaidCash && (
                                   <Button
                                     size="sm"
                                     variant="ghost"
-                                    onClick={() => ignoreBillMutation.mutate({ billId: bill.id, nextStatus: 'ignored' })}
-                                    className="h-7 px-2 text-[11px] text-zinc-400 hover:text-zinc-200 cursor-pointer"
-                                    title="Ignorar esta conta na sugestão de baixa em dinheiro"
+                                    onClick={() => undoPayBillMutation.mutate(bill)}
+                                    disabled={undoPayBillMutation.isPending}
+                                    className="h-7 px-2 text-[11px] text-[var(--text-tertiary)] hover:text-rose-300 gap-1 cursor-pointer whitespace-nowrap"
+                                    title="Estornar a baixa em dinheiro e devolver o valor ao cofre"
                                   >
-                                    <EyeOff className="w-3 h-3 mr-1" />
-                                    Ignorar
+                                    <Undo2 className="w-3.5 h-3.5" />
+                                    Desfazer Baixa
                                   </Button>
-                                </>
-                              )}
+                                )}
 
-                              {isPaidCash && (
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => undoPayBillMutation.mutate(bill)}
-                                  disabled={undoPayBillMutation.isPending}
-                                  className="h-7 px-2 text-[11px] text-zinc-400 hover:text-rose-300 gap-1 cursor-pointer"
-                                  title="Estornar a baixa em dinheiro e devolver o valor ao cofre"
-                                >
-                                  <Undo2 className="w-3.5 h-3.5" />
-                                  Desfazer Baixa
-                                </Button>
-                              )}
-
-                              {isIgnored && (
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => ignoreBillMutation.mutate({ billId: bill.id, nextStatus: 'unmatched' })}
-                                  className="h-7 px-2 text-[11px] text-zinc-400 hover:text-indigo-300 cursor-pointer"
-                                >
-                                  Reabrir
-                                </Button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                                {isIgnored && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => ignoreBillMutation.mutate({ billId: bill.id, nextStatus: 'unmatched' })}
+                                    className="h-7 px-2 text-[11px] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] cursor-pointer whitespace-nowrap"
+                                  >
+                                    Reabrir
+                                  </Button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
@@ -1071,22 +1081,22 @@ export function CashVaultCompositionModal({
       {/* Modal Secundário: Registrar Saída Manual em Dinheiro */}
       {isExpenseModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-zinc-950 border border-zinc-800 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+          <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
               <Plus className="w-4 h-4 text-amber-400" />
               Registrar Saída / Pagamento em Dinheiro Vivo
             </h3>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-[var(--text-tertiary)]">
               Registre uma retirada ou despesa paga com o dinheiro em espécie do cofre de uma loja. O saldo em trânsito será abatido automaticamente.
             </p>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="text-zinc-400 block mb-1">Loja de Saída</label>
+                <label className="text-[var(--text-tertiary)] block mb-1">Loja de Saída</label>
                 <select
                   value={expenseStore}
                   onChange={e => setExpenseStore(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-zinc-200"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus:border-amber-500/50 cursor-pointer"
                 >
                   {stores.map((s: any) => {
                     const c = availableInTransitByStore[s.id] || 0;
@@ -1100,14 +1110,14 @@ export function CashVaultCompositionModal({
               </div>
 
               <div>
-                <label className="text-zinc-400 block mb-1">Valor da Saída (R$)</label>
+                <label className="text-[var(--text-tertiary)] block mb-1">Valor da Saída (R$)</label>
                 <input
                   type="number"
                   step="0.01"
                   value={expenseAmount || ''}
                   onChange={e => setExpenseAmount(parseFloat(e.target.value) || 0)}
                   placeholder="0,00"
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 font-mono text-zinc-100 font-bold"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2 font-mono text-[var(--text-primary)] font-bold focus:outline-none focus:border-amber-500/50"
                 />
                 {expenseStore && (
                   <span className="text-[10px] text-amber-400/80 mt-0.5 block">
@@ -1117,11 +1127,11 @@ export function CashVaultCompositionModal({
               </div>
 
               <div>
-                <label className="text-zinc-400 block mb-1">Categoria da Despesa</label>
+                <label className="text-[var(--text-tertiary)] block mb-1">Categoria da Despesa</label>
                 <select
                   value={expenseCategory}
                   onChange={e => setExpenseCategory(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-zinc-200"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus:border-amber-500/50 cursor-pointer"
                 >
                   <option value="Pequenas Despesas / Operacional">Pequenas Despesas / Operacional</option>
                   <option value="Adiantamento / Pró-Labore">Adiantamento / Pró-Labore</option>
@@ -1132,29 +1142,29 @@ export function CashVaultCompositionModal({
               </div>
 
               <div>
-                <label className="text-zinc-400 block mb-1">Motivo / Descrição</label>
+                <label className="text-[var(--text-tertiary)] block mb-1">Motivo / Descrição</label>
                 <input
                   type="text"
                   value={expenseDesc}
                   onChange={e => setExpenseDesc(e.target.value)}
                   placeholder="Ex: Compra de material de limpeza, lanche, adiantamento..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-zinc-200"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus:border-amber-500/50"
                 />
               </div>
 
               <div>
-                <label className="text-zinc-400 block mb-1">Favorecido / Para Quem</label>
+                <label className="text-[var(--text-tertiary)] block mb-1">Favorecido / Para Quem</label>
                 <input
                   type="text"
                   value={expenseRecipient}
                   onChange={e => setExpenseRecipient(e.target.value)}
                   placeholder="Nome da pessoa ou fornecedor (opcional)"
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-zinc-200"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus:border-amber-500/50"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-zinc-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
               <Button size="sm" variant="ghost" onClick={() => setIsExpenseModalOpen(false)}>
                 Cancelar
               </Button>
@@ -1162,7 +1172,7 @@ export function CashVaultCompositionModal({
                 size="sm"
                 onClick={() => createExpenseMutation.mutate()}
                 disabled={createExpenseMutation.isPending || expenseAmount <= 0}
-                className="bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold"
+                className="bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold cursor-pointer"
               >
                 {createExpenseMutation.isPending ? 'Salvando...' : 'Confirmar Saída'}
               </Button>
@@ -1170,14 +1180,6 @@ export function CashVaultCompositionModal({
           </div>
         </div>
       )}
-
-      {/* Footer */}
-      <div className="px-6 py-3 border-t border-zinc-800/80 bg-zinc-950 flex items-center justify-between text-xs text-zinc-500">
-        <span>Data Base: {targetDate}</span>
-        <Button size="sm" variant="outline" onClick={onClose} className="border-zinc-800 text-zinc-300">
-          Fechar
-        </Button>
-      </div>
     </Modal>
   );
 }

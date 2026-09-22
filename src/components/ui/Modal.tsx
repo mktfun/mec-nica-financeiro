@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface ModalProps {
   footer?: ReactNode;
   position?: "center" | "right";
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
+  className?: string;
 }
 
 const sizeClasses: Record<string, string> = {
@@ -20,14 +22,20 @@ const sizeClasses: Record<string, string> = {
   full: "max-w-[95vw]",
 };
 
-export function Modal({ isOpen, onClose, title, children, footer, position = "center", size = "md" }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, footer, position = "center", size = "md", className }: ModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isSheet = position === "right";
   const maxWidthClass = sizeClasses[size] || "max-w-lg";
 
-  return (
+  const modalNode = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -77,4 +85,10 @@ export function Modal({ isOpen, onClose, title, children, footer, position = "ce
       )}
     </AnimatePresence>
   );
+
+  if (!mounted || typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(modalNode, document.body);
 }

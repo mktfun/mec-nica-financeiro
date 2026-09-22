@@ -86,18 +86,41 @@ git push -u origin feature/short-name
 
 ---
 
-## 4. GitHub CLI (`gh`) Automation
+## 4. GitHub Flow & CLI (`gh`) Automation
 
+### 1. Criar Issue Antes de Codificar
+Toda nova feature, correção de bug ou melhoria DEVE ter uma Issue aberta:
 ```bash
-# Create Pull Request non-interactively
-gh pr create --title "feat(api): add stripe billing webhook" --body "Implements webhook signature verification and plan status sync." --base main --head feature/stripe-billing
+gh issue create \
+  --title "feat(<modulo>): <descricao concisa>" \
+  --body "## Objetivo`n`n<Descricao do que sera feito>`n`n## Criterios de Aceite`n- [ ] Criterio 1`n- [ ] Criterio 2"
+```
 
-# Check GitHub Actions CI status
+### 2. Criar Branch Dedicada
+```bash
+git checkout -b feature/<id>-<descricao-curta>
+# ou para bugs:
+git checkout -b fix/<id>-<descricao-curta>
+```
+
+### 3. Criar Pull Request com Vínculo (`Closes #ID`)
+O PR deve obrigatoriamente referenciar a Issue criada para fechamento automático:
+```bash
+gh pr create \
+  --title "feat(<modulo>): <descricao concisa>" \
+  --body "## Resumo`nImplementa <modulo> conforme spec.`n`n## Issue Relacionada`nCloses #<numero-da-issue>`n`n## Alteracoes`n- Adicionado <x>`n- Atualizado <y>`n`n## Testes Realizados`n- [x] Build compila sem erros`n- [x] Testes unitarios passando" \
+  --base main \
+  --head feature/<id>-<descricao-curta>
+```
+
+### 4. CI Status & Release
+```bash
+# Verificar status do CI GitHub Actions
 gh run list --limit 5
 gh run view <run-id> --log-failed
 
-# Release automation
-gh release create v1.0.0 --title "v1.0.0 — Production Release" --notes "Initial production deployment"
+# Automacao de Releases
+gh release create v1.0.0 --title "v1.0.0 — Production Release" --notes "Release de producao validada"
 ```
 
 ---

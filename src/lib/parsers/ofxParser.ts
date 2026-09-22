@@ -16,6 +16,7 @@ export interface OfxParseResult {
   previousBalance?: number;
   accountLimit?: number;
   fileName?: string;
+  closingDayBalance?: number;
 }
 
 import { traceLog } from '../logger';
@@ -93,6 +94,7 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   
   const transactions: OfxTransaction[] = [];
   let previousBalance: number | undefined;
+  let closingDayBalance: number | undefined;
   
   // Extração de blocos STMTTRN suportando:
   // 1. Tags com fechamento </STMTTRN> (XML padrão)
@@ -183,8 +185,23 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
       continue; // Don't add as transaction
     }
     
+    // Capture SALDO TOTAL DISPONÍVEL DIA and Brazilian bank variations before filtering out
+    const isClosingBalMemo = (
+      rawMemo.toUpperCase().includes('SALDO TOTAL DISPONÍVEL') ||
+      rawMemo.toUpperCase().includes('SALDO TOTAL DISPONIVEL') ||
+      rawMemo.toUpperCase().includes('DISPONÍVEL DIA') ||
+      rawMemo.toUpperCase().includes('DISPONIVEL DIA') ||
+      rawMemo.toUpperCase().includes('SALDO DO DIA') ||
+      rawMemo.toUpperCase().includes('SALDO FINAL')
+    );
+
+    if (isClosingBalMemo) {
+      closingDayBalance = (trnType === 'DEBIT' || trnType === 'SRVCHG' || amount < 0) ? -Math.abs(amount) : Math.abs(amount);
+      continue; // Don't add as regular transaction
+    }
+    
     // Filter other junk/balance summary entries
-    const JUNK = ['SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL', 'DISPONÍVEL DIA', 'SALDO FINAL'];
+    const JUNK = ['SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL'];
     if (JUNK.some(k => rawMemo.toUpperCase().includes(k.toUpperCase()))) continue;
     
     // Extract CPF/CNPJ and counterpart name from memo
@@ -228,47 +245,52 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     }
   }
 
-  // LEDGERBAL = actual account balance
+  // Prioriza o saldo de encerramento do dia (closingDayBalance) quando presente, evitando
+  // capturar créditos/débitos parciais que caíram na manhã de D+1 antes da extração do arquivo.
   let bankBalance: number | undefined;
-  const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
-  if (ledgerMatch) {
-    const rawValue = ledgerMatch[1].trim();
-    // 1. Substitui vírgula por ponto se necessário
-    let cleanStr = rawValue.replace(',', '.').trim();
-    // 2. Faz o parse para Float
-    let parsedFloat = parseFloat(cleanStr);
-    
-    if (!isNaN(parsedFloat)) {
-      // Itaú missing dot heuristic:
-      if (!cleanStr.includes('.') && !cleanStr.includes(',')) {
-        const option100 = parsedFloat / 100;
-        const option10 = parsedFloat / 10;
-        const option1 = parsedFloat;
+  if (closingDayBalance !== undefined) {
+    bankBalance = closingDayBalance;
+  } else {
+    const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
+    if (ledgerMatch) {
+      const rawValue = ledgerMatch[1].trim();
+      // 1. Substitui vírgula por ponto se necessário
+      let cleanStr = rawValue.replace(',', '.').trim();
+      // 2. Faz o parse para Float
+      let parsedFloat = parseFloat(cleanStr);
+      
+      if (!isNaN(parsedFloat)) {
+        // Itaú missing dot heuristic:
+        if (!cleanStr.includes('.') && !cleanStr.includes(',')) {
+          const option100 = parsedFloat / 100;
+          const option10 = parsedFloat / 10;
+          const option1 = parsedFloat;
 
-        if (previousBalance !== undefined) {
-          const sumTx = transactions.reduce((acc, t) => acc + (t.type === 'in' ? Math.abs(t.amount) : -Math.abs(t.amount)), 0);
-          const expectedBalance = previousBalance + sumTx;
-          const expectedBalanceNeg = -Math.abs(previousBalance) + sumTx;
-          const expectedBalancePos = Math.abs(previousBalance) + sumTx;
+          if (previousBalance !== undefined) {
+            const sumTx = transactions.reduce((acc, t) => acc + (t.type === 'in' ? Math.abs(t.amount) : -Math.abs(t.amount)), 0);
+            const expectedBalance = previousBalance + sumTx;
+            const expectedBalanceNeg = -Math.abs(previousBalance) + sumTx;
+            const expectedBalancePos = Math.abs(previousBalance) + sumTx;
 
-          // Encontra a opção que tem a menor diferença para o saldo esperado
-          const diffs = [
-            { val: option100, diff: Math.min(Math.abs(option100 - expectedBalance), Math.abs(option100 - expectedBalanceNeg), Math.abs(option100 - expectedBalancePos)) },
-            { val: option10, diff: Math.min(Math.abs(option10 - expectedBalance), Math.abs(option10 - expectedBalanceNeg), Math.abs(option10 - expectedBalancePos)) },
-            { val: option1, diff: Math.min(Math.abs(option1 - expectedBalance), Math.abs(option1 - expectedBalanceNeg), Math.abs(option1 - expectedBalancePos)) }
-          ];
-          diffs.sort((a, b) => a.diff - b.diff);
-          parsedFloat = diffs[0].val;
-        } else {
-          // Fallback seguro: se não tiver saldo anterior, maioria dos casos sem ponto são centavos exatos
-          parsedFloat = parsedFloat / 100;
+            // Encontra a opção que tem a menor diferença para o saldo esperado
+            const diffs = [
+              { val: option100, diff: Math.min(Math.abs(option100 - expectedBalance), Math.abs(option100 - expectedBalanceNeg), Math.abs(option100 - expectedBalancePos)) },
+              { val: option10, diff: Math.min(Math.abs(option10 - expectedBalance), Math.abs(option10 - expectedBalanceNeg), Math.abs(option10 - expectedBalancePos)) },
+              { val: option1, diff: Math.min(Math.abs(option1 - expectedBalance), Math.abs(option1 - expectedBalanceNeg), Math.abs(option1 - expectedBalancePos)) }
+            ];
+            diffs.sort((a, b) => a.diff - b.diff);
+            parsedFloat = diffs[0].val;
+          } else {
+            // Fallback seguro: se não tiver saldo anterior, maioria dos casos sem ponto são centavos exatos
+            parsedFloat = parsedFloat / 100;
+          }
         }
-      }
 
-      // 3. Converte para centavos de forma matemática segura
-      const cents = Math.round(parsedFloat * 100);
-      // Retorna em Reais para salvar na coluna do banco
-      bankBalance = cents / 100;
+        // 3. Converte para centavos de forma matemática segura
+        const cents = Math.round(parsedFloat * 100);
+        // Retorna em Reais para salvar na coluna do banco
+        bankBalance = cents / 100;
+      }
     }
   }
 
@@ -305,5 +327,5 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     });
   }
 
-  return { alias, transactions, bankBalance, previousBalance, accountLimit, fileName: file.name };
+  return { alias, transactions, bankBalance, previousBalance, accountLimit, fileName: file.name, closingDayBalance };
 }

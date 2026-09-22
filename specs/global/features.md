@@ -54,11 +54,14 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 
 ---
 
-## 7. Motores de Conciliação Bancária & Ingestão
-- **Funil de Match PIX / OS (`matchTransactionsV2`)**: `src/lib/matchers/matchTransactionsV2.ts` — Heurística de dois passos (Step 1 Hard Match numérico e temporal; Step 2 Tie-breaker por similaridade de strings decisiva), isolando falsos positivos e órfãos.
-- **Sandbox Local In-Memory (`/teste/import`)**: `src/routes/teste.import.tsx` — Ambiente isolado para teste e depuração de conciliação bancária sem chamadas ao Supabase.
-- **Geração Automática de Recebíveis de OSs**: `src/hooks/useOsImportProcessor.ts` e `useImportProcessor.ts` — Extração de boletos/transferências com nome limpo do cliente e número de OS, com idempotência estrita por filial (`store_id + os_number`).
-- **Parser de Cartoes Rede (redeParser.ts - Spec 419)**: Fallback automatico para grossAmount quando a coluna de valor liquido apresentar traco ("-") ou vazio, e criterio seguro de descarte de lote apenas quando totalNet <= 0 && totalGross <= 0.
-- **Idempotencia Global de Cofre/Dinheiro (store_cash_vault - Spec 420)**: Busca global por store_id e os_number_ref no motor de ingestao (useImportProcessor.ts), impedindo que OSs ja baixadas como depositado sejam reabertas como em_transito em importacoes de datas subsequentes. Reatividade total com invalidacao de queries no wizard (Step3CashVaultDaniel.tsx).
-- **Janela Contabil de Fechamento OFX (CentralImportWizard.tsx & reconciliadorRedeOfx.ts - Spec 423)**: Extensao do calculo de competencia contabil de extratos para janela de ate 4 dias retroativos (diffDays <= 4), harmonizando transacoes bancarias de fim de semana (sexta a segunda) na mesma competencia contabil (target_date = targetDate) enquanto preserva occurred_at original e pareia creditos da adquirente.
-- **Isolamento de Datas Efetivas e Blindagem de Caixa Anterior (useDailySnapshot.ts - Spec 424)**: useAvailableConciliacaoDates desvinculado de patio_os.opened_at, listando estritamente datas com acoes contabeis efetivas e eliminando dias nao trabalhados do seletor. usePreviousDaySnapshot e queries de fechamento com filtro estrito .eq('is_closed', true), garantindo que apenas snapshots consolidados sirvam como baseline D-1 de caixa.
+## 7. MCPs Instalados & Ativos
+
+| MCP | Tools | Quando Usar |
+|---|:---:|---|
+| `lazyweb` | 42 | Nova UI, paywall, pricing, dashboard — pesquisa competitiva de mercado pré-proposal. |
+| `chrome-devtools-mcp` | 29 | Validação visual pós-build: Lighthouse, performance trace, console/network errors. |
+| `supabase` | 27 | DDL, migrations, Edge Functions, logs, RLS em projetos com `project_id` configurado. |
+| `lovable` | 40 | Projetos Lovable: create, send_message, get_diff, set_project_knowledge. |
+
+**Skill dedicada de browser QA:** `skills/browser-qa/SKILL.md`.
+**Projeto Lovable/Supabase ativo:** Financeiro/Conciliação (ver `.agent/memory/infra.md`).

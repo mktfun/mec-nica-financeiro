@@ -44,6 +44,16 @@ interface ResumoDiaPanelProps {
   storesData?: any[];
   availableDates?: string[];
   summary?: DailyReconciliationSummary | null;
+  isSandbox?: boolean;
+  onOpenSandboxModal?: (modal: 'cofre' | 'patio' | 'recebiveis' | 'faturamento' | 'contas' | 'saldos') => void;
+  onSandboxSave?: (overrides: {
+    faturamentoDia: number;
+    odometroHoje: number;
+    dinheiroMp: number;
+    aReceber: number;
+    contasManual: number;
+  }) => void;
+  onSandboxBaixaDinheiro?: (storeId: string, amount: number, itemIds?: string[]) => void;
 }
 
 export function ResumoDiaPanel({
@@ -60,7 +70,11 @@ export function ResumoDiaPanel({
   totalOfxOut = 0,
   storesData = [],
   availableDates = [],
-  summary = null
+  summary = null,
+  isSandbox = false,
+  onOpenSandboxModal,
+  onSandboxSave,
+  onSandboxBaixaDinheiro
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -120,10 +134,15 @@ export function ResumoDiaPanel({
       const ant = faturamentoAnteriorGlobal;
       setFaturamentoAnteriorInput(ant);
 
-      const oiBaseRaw = Number(snapMeta.faturamento_oi_base ?? summary?.faturamento_oi_base ?? 0);
+      const oiBaseRaw = Number(
+        (isSandbox ? (summary?.faturamento_oi_base ?? summary?.faturamento_periodo) : null)
+        ?? snapMeta.faturamento_oi_base 
+        ?? summary?.faturamento_oi_base 
+        ?? 0
+      );
       const oiBase = Math.abs(oiBaseRaw) < 0.01 ? 0 : Math.round((oiBaseRaw + Number.EPSILON) * 100) / 100;
       
-      const odoRaw = Number(snapMeta.odometro_hoje ?? 0);
+      const odoRaw = Number((isSandbox ? summary?.odometro_hoje : null) ?? snapMeta.odometro_hoje ?? 0);
       const odoSnap = Number(currentSnapshot?.faturamento ?? 0);
       const odoHoje = odoRaw > 0 ? odoRaw : (odoSnap > ant ? odoSnap : 0);
 
@@ -142,12 +161,20 @@ export function ResumoDiaPanel({
         setFaturamentoInput(Math.round(((ant + defaultDia) + Number.EPSILON) * 100) / 100);
       }
 
-      setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0));
-      setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0));
+      setDinheiroMpInput(
+        isSandbox
+          ? Number(summary?.dinheiro_mp ?? currentSnapshot?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0)
+          : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0)
+      );
+      setAReceberInput(
+        isSandbox
+          ? Number(summary?.a_receber_manual ?? summary?.a_receber ?? currentSnapshot?.a_receber_manual ?? previousSnapshot?.a_receber_manual ?? 0)
+          : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0)
+      );
       
       const overrideVal = snapMeta.contas_manual_override ?? summary?.contas_override;
       const jurosRedeSummary = Number(summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0);
-      const rawBase = Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);
+      const rawBase = Number((isSandbox ? (summary?.contas_manual || summary?.contas_base) : null) || currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);
       const snapContas = Number(currentSnapshot?.contas_a_pagar || 0);
       // Se summary.contas_base já inclui juros_rede (ex: 42.451,05 = 40.118,13 contas + 2.332,92 juros), deduz para não duplicar na soma do subtotal
       const sanitizedBase = (summary?.contas_base !== undefined && jurosRedeSummary > 0 && rawBase > jurosRedeSummary && snapContas > 0 && Math.abs(rawBase - (snapContas + jurosRedeSummary)) < 0.1)
@@ -192,7 +219,8 @@ export function ResumoDiaPanel({
     : (() => {
         const snapMeta = (currentSnapshot?.metadata as any) || {};
         const raw = Number(
-          snapMeta.faturamento_oi_base 
+          (isSandbox ? (summary?.faturamento_oi_base ?? summary?.faturamento_periodo) : null)
+          ?? snapMeta.faturamento_oi_base 
           ?? (currentSnapshot?.faturamento && Number(currentSnapshot.faturamento) < 100000 ? currentSnapshot.faturamento : null)
           ?? summary?.faturamento_oi_base 
           ?? faturamentoDiaInput
@@ -204,14 +232,26 @@ export function ResumoDiaPanel({
   // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
   const faturamentoAcumuladoHoje = isEditing 
     ? faturamentoInput 
-    : Number((currentSnapshot?.metadata as any)?.odometro_hoje ?? (faturamentoAnteriorInput + faturamentoLiquidoDia || faturamentoInput));
-  const dinheiroMpValor = isEditing ? dinheiroMpInput : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0);
-  const aReceberValor = isEditing ? aReceberInput : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0);
+    : (isSandbox
+        ? Number(summary?.odometro_hoje ?? (summary?.faturamento_anterior ? summary.faturamento_anterior + faturamentoLiquidoDia : faturamentoInput))
+        : Number((currentSnapshot?.metadata as any)?.odometro_hoje ?? (faturamentoAnteriorInput + faturamentoLiquidoDia || faturamentoInput)));
+  const dinheiroMpValor = isEditing 
+    ? dinheiroMpInput 
+    : (isSandbox
+        ? Number(summary?.dinheiro_mp ?? currentSnapshot?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0)
+        : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0));
+  const aReceberValor = isEditing 
+    ? aReceberInput 
+    : (isSandbox
+        ? Number(summary?.a_receber_manual ?? summary?.a_receber ?? currentSnapshot?.a_receber_manual ?? previousSnapshot?.a_receber_manual ?? 0)
+        : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0));
   const contasManualValor = isEditing 
     ? (contasInput + (summary?.contas_extras || 0)) 
     : (contasInput > 0 
         ? (contasInput + (summary?.contas_extras || 0))
-        : (Number(summary?.contas_manual || currentSnapshot?.contas_a_pagar || summary?.contas_base || 0) + (summary?.contas_extras || 0)));
+        : (isSandbox
+            ? (Number(summary?.contas_manual ?? summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0))
+            : (Number(summary?.contas_manual || currentSnapshot?.contas_a_pagar || summary?.contas_base || 0) + (summary?.contas_extras || 0))));
 
   // Totais Bancários Derivados (SSOT compartilhado rigorosamente com o SaldoBancosDetailModal)
   const derivedBankTotals = useMemo(() => {
@@ -341,18 +381,55 @@ export function ResumoDiaPanel({
   const isStoreBreakdownCorrupted = hasMacroMovement && effectiveStoresCount === 0 && effectiveStoreMovement === 0;
 
   const handleCancel = () => {
-    const initialFaturamento = currentSnapshot?.faturamento 
-      ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
+    const initialFaturamento = isSandbox
+      ? (summary?.faturamento_periodo || summary?.faturamento_oi_base || 0)
+      : (currentSnapshot?.faturamento 
+        ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0)));
     setFaturamentoInput(Number(initialFaturamento) || 0);
-    setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
-    setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
-    setContasInput(Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0));
+    setDinheiroMpInput(
+      isSandbox
+        ? Number(summary?.dinheiro_mp ?? 0)
+        : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0)
+    );
+    setAReceberInput(
+      isSandbox
+        ? Number(summary?.a_receber_manual ?? summary?.a_receber ?? 0)
+        : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0)
+    );
+    setContasInput(
+      isSandbox
+        ? Number(summary?.contas_manual ?? summary?.contas_base ?? 0)
+        : Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0)
+    );
     setIsEditing(false);
     toast.info('Edição cancelada. Valores restaurados.');
   };
 
   const handleSave = async () => {
     try {
+      if (isSandbox) {
+        const savedDinheiroMp = isEditing ? dinheiroMpInput : dinheiroMpValor;
+        const savedAReceber = isEditing ? aReceberInput : aReceberValor;
+        const savedContas = isEditing ? (contasInput + (summary?.contas_extras || 0)) : contasManualValor;
+        const savedFaturamentoDia = isEditing ? faturamentoDiaInput : faturamentoLiquidoDia;
+        const savedOdometro = isEditing ? faturamentoInput : faturamentoAcumuladoHoje;
+
+        if (onSandboxSave) {
+          onSandboxSave({
+            faturamentoDia: savedFaturamentoDia,
+            odometroHoje: savedOdometro,
+            dinheiroMp: savedDinheiroMp,
+            aReceber: savedAReceber,
+            contasManual: savedContas,
+          });
+        }
+        setIsSaved(true);
+        setIsEditing(false);
+        toast.success('[SANDBOX] Fechamento e ajustes salvos 100% no Local Storage!');
+        setTimeout(() => setIsSaved(false), 3000);
+        return;
+      }
+
       if (!isEditing && isStoreBreakdownCorrupted) {
         toast.error(
           '⛔ Bloqueio de Segurança: O detalhamento por filiais está zerado enquanto há movimentação bancária consolidada. Fechamento abortado para evitar perda de dados.',
@@ -493,6 +570,9 @@ export function ResumoDiaPanel({
           cash_vault_snapshot: cashVaultSnapshotData || (currentSnapshot?.metadata as any)?.cash_vault_snapshot || null,
           devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
+          caixa_atual: caixaAtualCalculado,
+          a_receber_manual: aReceberValor,
+          manual_a_receber: aReceberValor,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
           is_closed: true,
         },
@@ -586,7 +666,7 @@ export function ResumoDiaPanel({
           <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO EM CAIXA</span>
             <p className="text-xl font-bold font-mono text-[var(--color-accent-teal)]">
-              <AnimatedNumber value={currentSnapshot?.dinheiro_mp || 0} format="currency" />
+              <AnimatedNumber value={dinheiroMpValor} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Conferência física</span>
           </div>
@@ -594,7 +674,7 @@ export function ResumoDiaPanel({
           <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER (BOLETOS)</span>
             <p className="text-xl font-bold font-mono text-[var(--color-primary)]">
-              <AnimatedNumber value={currentSnapshot?.a_receber_manual || 0} format="currency" />
+              <AnimatedNumber value={aReceberValor} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Carteira inicial a liquidar</span>
           </div>
@@ -702,7 +782,9 @@ export function ResumoDiaPanel({
           
           {/* 1. Saldo Bancos + Cartões + Dinheiro */}
           <div 
-            onClick={() => setIsSaldoBancosModalOpen(true)}
+            onClick={() => {
+              setIsSaldoBancosModalOpen(true);
+            }}
             className="lg:col-span-2 p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/60 hover:bg-[var(--bg-surface-hover)] transition-all cursor-pointer flex flex-col justify-between group shadow-sm"
           >
             <div>
@@ -718,7 +800,11 @@ export function ResumoDiaPanel({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsCashVaultModalOpen(true);
+                      if (isSandbox && onOpenSandboxModal) {
+                        onOpenSandboxModal('cofre');
+                      } else {
+                        setIsCashVaultModalOpen(true);
+                      }
                     }}
                     className="flex items-center gap-1 text-[9px] font-semibold bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm"
                     title="Abrir Raio-X e Composição do Dinheiro em Cofre"
@@ -726,7 +812,13 @@ export function ResumoDiaPanel({
                     <Banknote size={11} />
                     <span>Cofre ↗</span>
                   </button>
-                  <div className="flex items-center gap-1 text-[var(--color-primary)] group-hover:underline">
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsSaldoBancosModalOpen(true);
+                    }}
+                    className="flex items-center gap-1 text-[var(--color-primary)] group-hover:underline cursor-pointer"
+                  >
                     <Landmark size={13} />
                     <span className="text-[9px] font-semibold bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded">Ver Lojas ↗</span>
                   </div>
@@ -812,7 +904,14 @@ export function ResumoDiaPanel({
 
           {/* 2. Dinheiro MP */}
           <div 
-            onClick={() => !isEditing && setIsCashVaultModalOpen(true)}
+            onClick={() => {
+              if (isEditing) return;
+              if (isSandbox && onOpenSandboxModal) {
+                onOpenSandboxModal('cofre');
+              } else {
+                setIsCashVaultModalOpen(true);
+              }
+            }}
             className={`p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between shadow-sm transition-all ${
               !isEditing ? 'cursor-pointer hover:border-teal-500/50 hover:bg-[var(--bg-surface-hover)] group' : ''
             }`}
@@ -856,9 +955,15 @@ export function ResumoDiaPanel({
           </div>
 
           {/* 3. A Receber */}
-          <Link
-            to="/recebiveis"
-            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)] transition-all flex flex-col justify-between shadow-sm group"
+          <div
+            onClick={(e) => {
+              if (isEditing) return;
+              if (isSandbox && onOpenSandboxModal) {
+                e.preventDefault();
+                onOpenSandboxModal('recebiveis');
+              }
+            }}
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)] transition-all flex flex-col justify-between shadow-sm group cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-1">
@@ -866,12 +971,21 @@ export function ResumoDiaPanel({
                   <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">A RECEBER</span>
                   <WhisperDot dot={insights?.dots.a_receber} />
                 </div>
-                <span className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all flex items-center gap-1">
-                  Ver Títulos ↗
-                </span>
+                {isSandbox ? (
+                  <span className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all flex items-center gap-1">
+                    Ver Títulos ↗
+                  </span>
+                ) : (
+                  <Link
+                    to="/recebiveis"
+                    className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all flex items-center gap-1"
+                  >
+                    Ver Títulos ↗
+                  </Link>
+                )}
               </div>
               {isEditing ? (
-                <div className="relative mt-1" onClick={(e) => e.preventDefault()}>
+                <div className="relative mt-1" onClick={(e) => e.stopPropagation()}>
                   <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
                   <input
                     type="number"
@@ -891,11 +1005,17 @@ export function ResumoDiaPanel({
             <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[10px] text-[var(--text-tertiary)]">
               <span>Títulos e boletos por filial</span>
             </div>
-          </Link>
+          </div>
 
           {/* 4. Na Loja OS */}
           <div 
-            onClick={() => setIsPatioModalOpen(true)}
+            onClick={() => {
+              if (isSandbox && onOpenSandboxModal) {
+                onOpenSandboxModal('patio');
+              } else {
+                setIsPatioModalOpen(true);
+              }
+            }}
             className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between cursor-pointer hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm"
             title="Clique para ver a lista detalhada de OSs no pátio e comparativo com o dia anterior"
           >
@@ -977,7 +1097,14 @@ export function ResumoDiaPanel({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Faturamento do Dia */}
               <div 
-                onClick={() => !isEditing && setIsFaturamentoModalOpen(true)}
+                onClick={() => {
+                  if (isEditing) return;
+                  if (isSandbox && onOpenSandboxModal) {
+                    onOpenSandboxModal('faturamento');
+                  } else {
+                    setIsFaturamentoModalOpen(true);
+                  }
+                }}
                 className={`bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)] transition-all ${
                   !isEditing ? 'cursor-pointer hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-elevated)] group' : ''
                 }`}
@@ -1061,7 +1188,14 @@ export function ResumoDiaPanel({
 
               {/* Contas (Manual) */}
               <div 
-                onClick={() => !isEditing && setIsContasModalOpen(true)}
+                onClick={() => {
+                  if (isEditing) return;
+                  if (isSandbox && onOpenSandboxModal) {
+                    onOpenSandboxModal('contas');
+                  } else {
+                    setIsContasModalOpen(true);
+                  }
+                }}
                 className={`bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)] transition-all ${
                   !isEditing ? 'cursor-pointer hover:border-red-500/50 hover:bg-[var(--bg-surface-elevated)] group' : ''
                 }`}
@@ -1213,22 +1347,25 @@ export function ResumoDiaPanel({
               <>
                 <Button
                   variant="outline"
-                  disabled={!canEditData}
+                  disabled={!isSandbox && !canEditData}
                   onClick={() => {
-                    if (!canEditData) {
+                    if (!canEditData && !isSandbox) {
                       toast.error('Você não tem permissão para editar dados.');
                       return;
                     }
-                    // Re-sincroniza contasInput do snapshot ao vivo antes de entrar em edição
-                    // Isso garante que o valor atual do ContasManualModal seja preservado
-                    const liveContasValue = Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);
+                    // Re-sincroniza inputs dos valores ativos antes de entrar em edição
+                    setDinheiroMpInput(dinheiroMpValor);
+                    setAReceberInput(aReceberValor);
+                    const liveContasValue = isSandbox 
+                      ? Number(summary?.contas_manual ?? summary?.contas_base ?? 0)
+                      : Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);
                     if (liveContasValue > 0) {
                       setContasInput(liveContasValue);
                     }
                     setIsEditing(true);
                   }}
-                  title={!canEditData ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
-                  className={`gap-2 px-5 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 cursor-pointer ${!canEditData ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  title={(!canEditData && !isSandbox) ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
+                  className={`gap-2 px-5 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 cursor-pointer ${(!canEditData && !isSandbox) ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <Edit2 size={16} />
                   Editar Fechamento
@@ -1237,12 +1374,12 @@ export function ResumoDiaPanel({
                 <Button
                   variant="primary"
                   onClick={handleSave}
-                  disabled={saveSnapshot.isPending || !canEditData || isStoreBreakdownCorrupted}
-                  title={isStoreBreakdownCorrupted ? 'Detalhamento por filiais está zerado. Recalcule antes de fechar.' : undefined}
+                  disabled={saveSnapshot.isPending || (!isSandbox && !canEditData) || (!isSandbox && isStoreBreakdownCorrupted)}
+                  title={(!isSandbox && isStoreBreakdownCorrupted) ? 'Detalhamento por filiais está zerado. Recalcule antes de fechar.' : undefined}
                   className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save size={16} />
-                  {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Fechamento'}
+                  {isSandbox ? 'Salvar no Sandbox' : saveSnapshot.isPending ? 'Salvando...' : 'Salvar Fechamento'}
                 </Button>
               </>
             ) : (
@@ -1263,7 +1400,7 @@ export function ResumoDiaPanel({
                   className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save size={16} />
-                  {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}
+                  {isSandbox ? 'Salvar Alterações (Sandbox)' : saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}
                 </Button>
               </>
             )}
@@ -1293,6 +1430,8 @@ export function ResumoDiaPanel({
         onClose={() => setIsSaldoBancosModalOpen(false)}
         targetDate={selectedDate}
         stores={summary?.stores || []}
+        isSandbox={isSandbox}
+        onSandboxBaixaDinheiro={onSandboxBaixaDinheiro}
       />
 
       {/* Modal de Gestão e Composição Rastreável de Dinheiro em Cofre */}

@@ -146,3 +146,78 @@ Integrity mode: development
 - [ ] Ao fechar a conciliação do dia, a composição detalhada do dinheiro é gravada em daily_snapshots.metadata.
 - [ ] Ao reabrir um dia passado fechado, a tela exibe rigorosamente a foto histórica congelada daquele dia.
 
+## 2026-09-17T15:04:09Z
+
+# Teamwork Project Prompt — Draft
+
+> Status: Launched
+> Goal: Craft prompt → get user approval → delegate to teamwork_preview
+> Requested team: Full team (multi-stage refactor of core system)
+
+Refatoração estrutural da conciliação financeira para garantir uma Fonte Única de Verdade (SSOT) no banco de dados. O objetivo é eliminar cálculos financeiros no navegador, unificar o motor de conciliação no Supabase, e padronizar as rotinas de fechamento do dia.
+
+Working directory: c:\Users\admin\.gemini\antigravity\scratch\financeiro
+Integrity mode: development
+
+## Requirements
+
+### R1. Uma única calculadora do dia no Banco
+1. Escrever uma migração final que redefine `get_daily_reconciliation_summary` como a única fonte de verdade, devolvendo o dia completo em um só objeto: faturamento, contas, saldo, pátio, cofre, por loja, diferença e status.
+2. A regra de "congelado" ou "ao vivo" passa a ser do banco: dia fechado devolve o congelado, dia aberto recalcula sempre.
+3. Tolerância e status são calculados dentro dessa função com vocabulário fixo (`approved` / `divergence`).
+4. Remover a função obsoleta `calculate_daily_conciliation`.
+
+### R2. Um único hook de leitura no frontend
+1. Criar um hook único de resumo do dia (`useDailyReconciliationSummary`) como o **único** ponto que lê o dia, repassando o que o banco devolveu.
+2. Apagar do frontend todos os recálculos (somas de maquininha, cofre, saldos, ajustes) — tudo deve vir pronto do banco.
+3. Chave de cache única por data.
+
+### R3. Inverter a ordem do fechamento (Backend-first)
+1. Criar rotina backend `fechar_dia(data)` transacional: ingestão → pareamentos → recálculo → gravação do snapshot → auditoria.
+2. O botão de fechar passa a chamar apenas essa rotina. O frontend não monta mais o objeto de fechamento nem grava direto em `daily_snapshots`.
+3. A rotina deve ser idempotente.
+
+### R4. Padronizar status no banco
+1. Lista fechada de status (ex: `pending`, `matched`, `batch`, `intercompany`, `cancelled`, `ignored`).
+2. Migração para preencher vazios e converter grafias antigas.
+3. Trocar no código as comparações soltas por um conjunto de constantes.
+
+### R5. Fechar caminhos de escrita quebrados
+1. Leitura e gravação diretas nas tabelas reais (`ofx_transactions`, `pos_transactions`, `manual_transactions`).
+2. Remover inserção/exclusão pela visão `transactions`.
+
+### R6. Simplificar o Fluxo de Usuário
+O fluxo único deve ser:
+1. Enviar arquivos -> ingestão
+2. Revisar pendências -> só o que o backend marcou
+3. Fechar o dia -> `fechar_dia(data)`
+4. Conciliação -> leitura do dia fechado
+
+## Acceptance Criteria
+
+### Verificação da Etapa 1 (Calculadora)
+- [ ] Rodar a nova função `get_daily_reconciliation_summary` para 5 dias reais e conferir que os totais por loja somam o total global com diferença zero.
+- [ ] O banco de dados só possui 1 função de cálculo (calculate_daily_conciliation não existe mais).
+
+### Verificação da Etapa 2 (Frontend Hook)
+- [ ] Importação, Conciliação, loja individual e chat mostram o mesmo número (exato) para o mesmo dia, extraído do único hook `useDailyReconciliationSummary`.
+- [ ] Componentes React não contêm lógica matemática financeira para derivar os totais.
+
+### Verificação da Etapa 3 (Fechamento)
+- [ ] Fechar um dia duas vezes seguidas não altera os números (Idempotência garantida).
+- [ ] O frontend não realiza `INSERT` ou `UPDATE` direto na tabela `daily_snapshots`.
+
+### Verificação da Etapa 4 e 5 (Status e Escrita)
+- [ ] Nenhuma linha nas tabelas `ofx_transactions`, `pos_transactions` e `daily_manual_bills` possui status de pareamento fora da lista constante, e nenhuma está vazia.
+- [ ] Excluir e recriar um lançamento na tela da loja persiste corretamente na tabela real, com verificação no banco.
+
+## 2026-09-17T17:44:42Z
+
+URGENT USER DIRECTIVE: The user explicitly commanded: "bro nao precisa testar nada ok? nao preicsa so build". 
+IMMEDIATELY cancel and skip all test suites, test runners, boundary tests, tier 1-4 tests, and verification test scripts. 
+DO NOT write or run test suites. Focus 100% of your effort directly on:
+1. Writing the SQL migration for the SSOT calculator and applying it.
+2. Creating the unified frontend hook `useDailyReconciliationSummary` and cleaning up component recalculations.
+3. Implementing `fechar_dia(data)` backend RPC.
+4. Standardizing status strings in tables.
+5. The only verification allowed and required is running `npm run build` cleanly. Execute this instruction immediately.

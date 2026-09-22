@@ -25,30 +25,34 @@ interface SaldoBancosDetailModalProps {
   onClose: () => void;
   targetDate: string;
   stores?: StoreReconciliationSummary[];
+  isSandbox?: boolean;
+  onSandboxBaixaDinheiro?: (storeId: string, amount: number, itemIds?: string[]) => void;
 }
 
 export function SaldoBancosDetailModal({
   isOpen,
   onClose,
   targetDate,
-  stores = []
+  stores = [],
+  isSandbox = false,
+  onSandboxBaixaDinheiro
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [baixaModalStore, setBaixaModalStore] = useState<{ storeId: string; storeName: string; amount: number } | null>(null);
   const [isCashVaultModalOpen, setIsCashVaultModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fallback via RPC se stores vier vazio
+  // Fallback via RPC se stores vier vazio (apenas fora do sandbox)
   const { data: fallbackSummary } = useQuery({
     queryKey: ['saldo-bancos-modal-summary', targetDate],
     queryFn: async () => {
       const { data } = await supabase.rpc('get_daily_reconciliation_summary', { p_date: targetDate });
       return data;
     },
-    enabled: isOpen && stores.length === 0
+    enabled: isOpen && !isSandbox && stores.length === 0
   });
 
-  // Consulta canônica de store_cash_vault para garantir exibição de dinheiro em cofre de todas as filiais
+  // Consulta canônica de store_cash_vault para garantir exibição de dinheiro em cofre de todas as filiais (apenas fora do sandbox)
   const { data: vaultEntriesData } = useQuery({
     queryKey: ['store-cash-vault-pending', targetDate],
     queryFn: async () => {
@@ -60,7 +64,7 @@ export function SaldoBancosDetailModal({
       if (error) return [];
       return data || [];
     },
-    enabled: isOpen
+    enabled: isOpen && !isSandbox
   });
 
   const effectiveStores = stores.length > 0 ? stores : (fallbackSummary?.stores || []);
@@ -70,11 +74,11 @@ export function SaldoBancosDetailModal({
     return effectiveStores.map((s: any) => {
       const saldoOfxPuro = Number(s.saldo_banco_ofx ?? s.saldo_banco_itau ?? s.saldo_banco ?? 0);
       
-      // Fallback robusto para Dinheiro no Cofre
-      const storeVaultItems = (vaultEntriesData || []).filter(v => v.store_id === s.store_id);
+      // Fallback robusto para Dinheiro no Cofre (no sandbox usa estritamente o s.dinheiro_loja simulado)
+      const storeVaultItems = isSandbox ? [] : (vaultEntriesData || []).filter(v => v.store_id === s.store_id);
       const storeVaultSum = storeVaultItems.reduce((acc, v) => acc + Number(v.amount || 0), 0);
       const rawDinheiro = Number(s.dinheiro_loja ?? 0);
-      const dinheiroLoja = (vaultEntriesData && vaultEntriesData.length > 0) ? storeVaultSum : (rawDinheiro > 0 ? rawDinheiro : storeVaultSum);
+      const dinheiroLoja = isSandbox ? rawDinheiro : ((vaultEntriesData && vaultEntriesData.length > 0) ? storeVaultSum : (rawDinheiro > 0 ? rawDinheiro : storeVaultSum));
 
       // Fallback robusto para Cartões / Rede que NÃO ENTROU
       const rawNaoEntrou = s.nao_entrou_valor !== undefined && s.nao_entrou_valor !== null ? Number(s.nao_entrou_valor) : undefined;
@@ -87,7 +91,8 @@ export function SaldoBancosDetailModal({
         maquininhaNaoEntrou = rawNaoEntrou;
       } else if (rawCartaoNaoEntrou !== undefined && rawCartaoNaoEntrou > 0) {
         maquininhaNaoEntrou = rawCartaoNaoEntrou;
-      } else if ((s.status_compensacao === 'nao_entrou' || s.status_compensacao === 'a_compensar' || ofxMaqVal === 0) && redeLiquidoVal > 0) {
+      } else if (redeLiquidoVal > 0) {
+        // Spec 426: Vendas de cartão do dia ficam 100% a compensar
         maquininhaNaoEntrou = redeLiquidoVal;
       }
 
@@ -106,7 +111,7 @@ export function SaldoBancosDetailModal({
         statusCompensacao: s.status_compensacao || (maquininhaNaoEntrou > 0 ? 'nao_entrou' : 'entrou')
       };
     });
-  }, [effectiveStores, vaultEntriesData]);
+  }, [effectiveStores, vaultEntriesData, isSandbox]);
 
   const filteredRows = useMemo(() => {
     if (!searchTerm) return rows;
@@ -273,9 +278,15 @@ export function SaldoBancosDetailModal({
                         <Button
                           size="sm"
                           variant="secondary"
-                          onClick={() => setBaixaModalStore({ storeId: row.storeId, storeName: row.storeName, amount: row.dinheiroLoja })}
+                          onClick={() => {
+                            if (isSandbox && onSandboxBaixaDinheiro) {
+                              onSandboxBaixaDinheiro(row.storeId, row.dinheiroLoja);
+                              return;
+                            }
+                            setBaixaModalStore({ storeId: row.storeId, storeName: row.storeName, amount: row.dinheiroLoja });
+                          }}
                           className="h-6 px-2 text-[10px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border-amber-500/40 gap-1 cursor-pointer"
-                          title="Clique para selecionar as OSs e confirmar o depósito deste valor no banco"
+                          title="Clique para dar baixa neste valor"
                         >
                           <ArrowDownToLine className="w-3 h-3" />
                           Dar Baixa
@@ -339,14 +350,23 @@ export function SaldoBancosDetailModal({
           storeName={baixaModalStore.storeName}
           targetDate={targetDate}
           totalDinheiroCofre={baixaModalStore.amount}
+          isSandbox={isSandbox}
+          onSandboxConfirm={(storeId, amount, itemIds) => {
+            if (onSandboxBaixaDinheiro) {
+              onSandboxBaixaDinheiro(storeId, amount, itemIds);
+            }
+            setBaixaModalStore(null);
+          }}
           onSuccess={() => {
-            queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-            queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
-            queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
-            queryClient.invalidateQueries({ queryKey: ['store-cash-vault-pending'] });
-            queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-            queryClient.invalidateQueries({ queryKey: ['reconciliations'] });
-            queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+            if (!isSandbox) {
+              queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+              queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
+              queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
+              queryClient.invalidateQueries({ queryKey: ['store-cash-vault-pending'] });
+              queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+              queryClient.invalidateQueries({ queryKey: ['reconciliations'] });
+              queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+            }
           }}
         />
       )}

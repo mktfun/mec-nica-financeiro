@@ -85,10 +85,10 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
 
               {/* Pilares Empilhados (Vertical Stack - Sem Truncar / Sem Ellipsis) */}
               <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
-                {/* 1. SALDO TOTAL */}
+                {/* 1. SALDO BANCO (OFX) */}
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">
-                    SALDO TOTAL
+                    SALDO BANCO (OFX)
                   </span>
                   <span className={`font-bold text-sm sm:text-base font-mono tabular-nums ${
                     data.isMissingData ? 'text-zinc-500' : saldoBancoValor < 0 ? 'text-rose-400' : 'text-emerald-400'
@@ -228,7 +228,11 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 {/* Contas Conciliadas (Boletos da Filial + Despesas Justificadas) */}
                 <div>
                   <span className="text-[9px] text-zinc-400 block font-medium">Contas / Boletos</span>
-                  <span className="text-[8px] text-zinc-500 block">Despesas da Loja</span>
+                  <span className="text-[8px] text-zinc-500 block truncate" title={data.contasCentralizadas && data.contasCentralizadas > 0 ? `Despesas Locais (C6 Centralizado: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.contasCentralizadas)})` : 'Despesas da Loja'}>
+                    {data.contasCentralizadas && data.contasCentralizadas > 0 
+                      ? (contasLojaValor === 0 ? 'Centralizado C6' : 'Locais (+ C6)') 
+                      : 'Despesas da Loja'}
+                  </span>
                   <p className="font-mono font-bold text-xs sm:text-sm text-zinc-300 mt-0.5">
                     {data.isMissingData ? 'N/D' : <AnimatedNumber value={contasLojaValor} format="currency" />}
                   </p>

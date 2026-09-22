@@ -1,73 +1,96 @@
-# 📐 DESIGN.md — Design System Specification
+﻿# 📐 DESIGN.md — Design System & Semantic Tokens Specification
 
-Este arquivo é a fonte de verdade visual absoluta do projeto. Qualquer código gerado por IA DEVE aderir estritamente aos tokens, escalas e restrições aqui declarados. É terminantemente proibido utilizar classes utilitárias arbitrárias fora desta especificação.
+Este documento é a **fonte absoluta da verdade visual** para qualquer projeto construído com o Antigravity 2.0.
+Qualquer código gerado por IA DEVE aderir estritamente aos tokens semânticos e restrições aqui declaradas.
 
 ---
 
-## 1. Palette & Surface Tokens (Dark-First Zinc-950)
+## 1. Regra Fundamental: ZERO Cores Hardcoded em Componentes
 
-| Token Semântico | Tailwind Class | Hex Value | Finalidade |
+> [!CAUTION]
+> **PROIBIÇÃO TOTAL DE CLASSES ARBITRÁRIAS E CORES BRUTAS:**
+> É terminantemente PROIBIDO usar cores brutas como `bg-black`, `bg-zinc-950`, `bg-gray-900`, `bg-[#09090b]` ou hexadecimais arbitrários nos componentes JSX/HTML.
+> Toda a estilização de superfícies, textos e bordas DEVE usar **EXCLUSIVAMENTE tokens semânticos do Tailwind / Shadcn**.
+
+---
+
+## 2. Dicionário de Tokens Semânticos Obrigatórios
+
+Ao estilizar qualquer elemento, mapeie a intenção para o token semântico correspondente:
+
+| Intenção Visual | Classe Tailwind Obrigatória | CSS Variable Subjacente | Comportamento no Tema Dark |
 |---|---|---|---|
-| `bg-canvas` | `bg-zinc-950` | `#09090b` | Viewport de fundo principal da aplicação |
-| `bg-surface` | `bg-zinc-900` | `#18181b` | Cards primários, painéis, modais |
-| `bg-elevated` | `bg-zinc-900/80 backdrop-blur-md` | `#18181bcc` | Headers fixos, docks, barras flutuantes |
-| `bg-subtle` | `bg-zinc-900/40` | `#18181b66` | Linhas de tabela pares, áreas secundárias |
-| `border-base` | `border-white/10` ou `border-zinc-800` | `#27272a` | Borda delimitadora primária de cards |
-| `border-subtle` | `border-white/5` ou `border-zinc-800/60`| `#27272a99` | Divisores internos, separadores de linha |
-| `accent-primary` | `bg-indigo-600 hover:bg-indigo-500` | `#4f46e5` | Botões primários de ação, call-to-action |
-| `accent-subtle` | `text-indigo-400` | `#818cf8` | Links ativos, ícones de status aceso |
-| `focus-ring` | `ring-2 ring-indigo-500/40 ring-offset-2 ring-offset-zinc-950` | — | Indicador de foco acessível para teclado |
-
-### Feedback Semântico:
-- **Sucesso**: `bg-emerald-500/10 text-emerald-400 border border-emerald-500/20`
-- **Aviso**: `bg-amber-500/10 text-amber-400 border border-amber-500/20`
-- **Perigo / Erro**: `bg-rose-500/10 text-rose-400 border border-rose-500/20`
-- **Info**: `bg-blue-500/10 text-blue-400 border border-blue-500/20`
+| **Fundo da Página (Canvas)** | `bg-background` | `--background` | Zinc-950 (`#09090b`) ou Preto OLED |
+| **Cards & Superfícies** | `bg-card` | `--card` | Superfície elevada com contraste sutil |
+| **Popovers, Modais, Dropdowns**| `bg-popover` | `--popover` | Camada superior com elevação |
+| **Áreas Secundárias / Badges** | `bg-muted` ou `bg-secondary` | `--muted` / `--secondary` | Destaque neutro atenuado |
+| **Bordas de Cards & Divisores**| `border-border` | `--border` | Borda sutil delimitadora (Zinc-800) |
+| **Bordas Atenuadas (Linhas)** | `border-border/40` | `--border` c/ opacidade | Separadores internos de listas |
+| **Texto Principal / Títulos** | `text-foreground` | `--foreground` | Alto contraste (Zinc-50 `#fafafa`) |
+| **Texto Secundário / Legendas**| `text-muted-foreground` | `--muted-foreground`| Contraste médio legível (Zinc-400) |
+| **Ação Primária / Botão CTA** | `bg-primary text-primary-foreground` | `--primary` / `--primary-fg` | Cor de destaque da marca |
+| **Anel de Foco (Acessibilidade)**| `ring-ring ring-offset-background`| `--ring` | Indicador de foco para teclado |
 
 ---
 
-## 2. Typography Scale & Font Rules
+## 3. Como o Tema "Tudo Preto / Dark" Funciona sem Quebrar
 
-- **Família Tipográfica Primária**: `'Inter', 'Outfit', system-ui, sans-serif`
-- **Font-Smoothing**: `-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`
-- **Text-Rendering**: `optimizeLegibility`
+Para garantir que tudo fique preto uniforme sem misturar tons de cinza arbitrários, o controle de tema é centralizado no `globals.css`:
 
-| Nível | Tailwind Class | Tamanho / Line-Height | Peso | Uso |
-|---|---|---|---|---|
-| **Display / Hero** | `text-4xl sm:text-5xl font-semibold tracking-tight` | 36px / 48px | 600 | Título principal de landing page |
-| **Heading 1 (H1)** | `text-2xl sm:text-3xl font-semibold tracking-tight` | 24px / 30px | 600 | Título principal de página/dashboard |
-| **Heading 2 (H2)** | `text-lg sm:text-xl font-medium tracking-normal` | 18px / 24px | 500 | Título de card, cabeçalho de seção |
-| **Body (Padrão)** | `text-sm sm:text-base font-normal text-zinc-300 leading-relaxed` | 14px / 16px | 400 | Texto de leitura corrido, tabelas |
-| **Small / Metadata**| `text-xs font-normal text-zinc-400` | 12px | 400 | Timestamps, tags, legendas |
-| **Input (Mobile)** | `text-base md:text-sm text-zinc-100` | ≥ 16px (mobile) | 400 | Campos de formulário (anti-zoom iOS) |
+```css
+@layer base {
+  :root {
+    /* Modo Escuro Padrão (Zinc-950 Profissional) */
+    --background: 240 10% 3.9%;     /* #09090b */
+    --foreground: 0 0% 98%;          /* #fafafa */
+    --card: 240 10% 3.9%;            /* #09090b */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 240 5.9% 90%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;        /* #27272a */
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.5rem;
+  }
+}
+```
+
+> [!TIP]
+> Se o usuário solicitar **"Preto Absoluto / OLED Black"**, altere apenas as variáveis no `globals.css`:
+> `--background: 0 0% 0%;` e `--card: 0 0% 4%;`.
+> Como os componentes usam `bg-background` e `bg-card`, a aplicação inteira escurece de forma idêntica e harmônica, sem deixar nenhum card ou div cinza!
 
 ---
 
-## 3. Corner Radius Scale (Escala de Bordas)
+## 4. Escala Tipográfica & Espaçamento
 
-- **sm**: `rounded-md` (6px) — Badges, tags, botões pequenos
-- **md**: `rounded-lg` (8px) — Inputs, botões primários
-- **lg**: `rounded-xl` (12px) — Cards principais, caixas de diálogo pequenas
-- **xl**: `rounded-2xl` (16px) — Modais principais, painéis amplos
-- **Fórmula de Aninhamento Obrigatória**: $R_{\text{filho}} = R_{\text{pai}} - \text{padding}$
+### Escala de Espaçamento (Grade de 4px / 8px)
+- Use estritamente múltiplos: `p-1` (4px), `p-2` (8px), `p-3` (12px), `p-4` (16px), `p-6` (24px), `p-8` (32px).
+- **PROIBIDO** valores arbitrários (ex.: `p-[13px]`, `gap-[19px]`).
 
----
-
-## 4. Spacing Rhythm (Grade de 4px / 8px)
-
-Utilizar múltiplos estritos da escala Tailwind:
-- `p-1` (4px), `p-2` (8px), `p-3` (12px), `p-4` (16px), `p-6` (24px), `p-8` (32px), `p-12` (48px)
-- Proibido usar valores arbitrários (ex.: `p-[15px]`, `gap-[21px]`).
+### Escala Tipográfica
+- **Hero / Display**: `text-4xl sm:text-5xl font-semibold tracking-tight text-foreground`
+- **Heading 1 (H1)**: `text-2xl sm:text-3xl font-semibold tracking-tight text-foreground`
+- **Heading 2 (H2)**: `text-lg sm:text-xl font-medium text-foreground`
+- **Body / Leitura**: `text-sm sm:text-base text-muted-foreground leading-relaxed`
+- **Small / Metadata**: `text-xs text-muted-foreground`
 
 ---
 
-## 5. Negative Constraints (Anti-Slop Hard Limits)
+## 5. Anti-Slop Hard Limits (Restrições Negativas)
 
-1. ❌ **PROIBIDO** fundo `#000000` puro sem elevação de superfícies.
-2. ❌ **PROIBIDO** gradientes roxos/azuis arbitrários em botões ou títulos (`purple-violet-gradient`).
-3. ❌ **PROIBIDO** cards dentro de outros cards sem redução de elevação (`cardocalypse`).
-4. ❌ **PROIBIDO** alterar `font-weight` no hover (previne layout shift).
-5. ❌ **PROIBIDO** animações de micro-interação acima de 200ms.
-6. ❌ **PROIBIDO** inputs com fonte menor que 16px no mobile.
-7. ❌ **PROIBIDO** emojis como ícones de botões ou navegação.
-8. ❌ **PROIBIDO** criar componentes interativos do zero sem buscar referência no **Shoogle** (`shoogle.dev`).
+1. ❌ **PROIBIDO** inventar cores hexadecimais inline (`bg-[#...]`, `text-[#...]`).
+2. ❌ **PROIBIDO** misturar cinzas aleatórios (`bg-gray-800` num lugar e `bg-zinc-900` em outro).
+3. ❌ **PROIBIDO** gradientes roxos/azuis arbitrários em botões sem especificação no plano.
+4. ❌ **PROIBIDO** alterar `font-weight` no hover (evita layout shift).
+5. ❌ **PROIBIDO** criar botões, inputs, cards ou modais do zero sem antes checar o diretório de componentes Shadcn existente (`components/ui/`).

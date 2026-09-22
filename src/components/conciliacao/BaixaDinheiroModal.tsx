@@ -18,6 +18,7 @@ import {
   Plus
 } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { loadSandboxSession } from '@/lib/sandbox/sandboxStorage';
 
 export interface BaixaDinheiroModalProps {
   isOpen: boolean;
@@ -26,6 +27,8 @@ export interface BaixaDinheiroModalProps {
   storeName: string;
   targetDate: string;
   totalDinheiroCofre: number;
+  isSandbox?: boolean;
+  onSandboxConfirm?: (storeId: string, amount: number, itemIds: string[]) => void;
   onSuccess?: () => void;
 }
 
@@ -45,6 +48,8 @@ export function BaixaDinheiroModal({
   storeName,
   targetDate,
   totalDinheiroCofre,
+  isSandbox = false,
+  onSandboxConfirm,
   onSuccess
 }: BaixaDinheiroModalProps) {
   const queryClient = useQueryClient();
@@ -54,8 +59,8 @@ export function BaixaDinheiroModal({
   const [customOsNumber, setCustomOsNumber] = useState('');
   const [customAmount, setCustomAmount] = useState<number>(0);
 
-  // Busca lançamentos em trânsito no cofre da loja
-  const { data: vaultItems = [], isLoading } = useQuery<VaultItem[]>({
+  // Busca lançamentos em trânsito no cofre da loja (somente em produção)
+  const { data: dbVaultItems = [], isLoading: isLoadingDb } = useQuery<VaultItem[]>({
     queryKey: ['store-cash-vault-pending', storeId, targetDate],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -77,8 +82,42 @@ export function BaixaDinheiroModal({
         status: row.status
       }));
     },
-    enabled: isOpen && !!storeId
+    enabled: isOpen && !!storeId && !isSandbox
   });
+
+  // Em modo sandbox, lê 100% da memória local (localStorage) sem tocar no banco
+  const sandboxVaultItems = useMemo<VaultItem[]>(() => {
+    if (!isSandbox) return [];
+    const sess = loadSandboxSession();
+    const entries = (sess?.cashVaultEntries || []).filter(
+      e => e.store_id === storeId && e.status === 'em_transito'
+    );
+    if (entries.length > 0) {
+      return entries.map(e => ({
+        id: e.id,
+        amount: Number(e.amount || 0),
+        entry_date: e.entry_date,
+        description: `OS #${e.os_number_ref} (${e.store_name || storeName})`,
+        os_number_ref: e.os_number_ref,
+        status: e.status
+      }));
+    }
+    // Se não houver itens detalhados individuais, gera lançamento sintético do fechamento
+    if (totalDinheiroCofre > 0) {
+      return [{
+        id: `sandbox-vault-synth-${storeId}`,
+        amount: totalDinheiroCofre,
+        entry_date: targetDate,
+        description: `Fechamento Espécie - ${storeName}`,
+        os_number_ref: 'FECHAMENTO',
+        status: 'em_transito'
+      }];
+    }
+    return [];
+  }, [isSandbox, storeId, storeName, targetDate, totalDinheiroCofre]);
+
+  const vaultItems = isSandbox ? sandboxVaultItems : dbVaultItems;
+  const isLoading = isSandbox ? false : isLoadingDb;
 
   // Inicializa a seleção ao carregar itens
   useEffect(() => {
@@ -140,6 +179,22 @@ export function BaixaDinheiroModal({
 
     setIsDepositing(true);
     try {
+      if (isSandbox) {
+        // MODO SANDBOX: 100% LOCAL / LOCALSTORAGE, ZERO CHAMADAS AO BANCO DE DADOS
+        const totalBaixado = totalToDeposit + (customAmount || 0);
+        if (totalBaixado <= 0) {
+          toast.error('Informe um valor válido maior que zero para dar baixa.');
+          return;
+        }
+
+        if (onSandboxConfirm) {
+          onSandboxConfirm(storeId, totalBaixado, selectedIds);
+        }
+        if (onSuccess) onSuccess();
+        onClose();
+        return;
+      }
+
       // 1. Processa itens selecionados do cofre
       for (const id of selectedIds) {
         const amountToDeposit = selectedItems[id];
@@ -150,7 +205,8 @@ export function BaixaDinheiroModal({
           p_deposit_date: targetDate
         });
         if (rpcErr) throw rpcErr;
-        if (rpcRes && (rpcRes as any).success === false) {
+        // In Supabase RPC, if RETURNS jsonb, rpcRes is the JSON object directly or an array? It's an object.
+        if (rpcRes && typeof rpcRes === 'object' && 'success' in (rpcRes as object) && !(rpcRes as any).success) {
           throw new Error((rpcRes as any).error || 'Falha ao baixar item do cofre');
         }
       }
@@ -164,7 +220,7 @@ export function BaixaDinheiroModal({
           p_deposit_date: targetDate
         });
         if (rpcErr) throw rpcErr;
-        if (rpcRes && (rpcRes as any).success === false) {
+        if (rpcRes && typeof rpcRes === 'object' && 'success' in (rpcRes as object) && !(rpcRes as any).success) {
           throw new Error((rpcRes as any).error || 'Falha ao baixar valor avulso do cofre');
         }
       }

@@ -149,3 +149,37 @@ export default nextConfig
 ## 5. Deployment Runbook Pointer
 
 For multi-target launch procedures (Vercel, Lovable, VPS Docker/Nginx/SSL, smoke tests), see `references/checklist-launch.md`.
+
+---
+
+## 6. Validação de Produção com Chrome DevTools MCP
+
+> [!IMPORTANT]
+> **Lembrete para IA e usuário:** O MCP Chrome DevTools está instalado e ativo. Após deploy ou implementação de nova tela, valide com Lighthouse e inspecione erros de console/network usando as tools abaixo.
+
+### Sequência de Validação Pós-Deploy
+
+```
+1. navigate_page { pageId, url: "<preview_url>" }
+2. lighthouse_audit { pageId, device: "desktop"|"mobile", mode: "navigation" }
+   → Targets: Accessibility ≥ 90, Best Practices ≥ 90, SEO ≥ 90
+3. list_console_messages { pageId }   → verificar erros JS em runtime
+4. list_network_requests { pageId }   → verificar 4xx/5xx e recursos lentos
+```
+
+### Profiling de Performance
+
+```
+1. performance_start_trace { pageId }
+2. navigate_page { pageId, url: "<url_alvo>" }   → navegar durante o trace
+3. performance_stop_trace { pageId }
+4. performance_analyze_insight { traceId }       → LCP, CLS, INP insights
+```
+
+### Targets de Core Web Vitals
+- **LCP** ≤ 2.5s — se falhar: `<Image priority />`, AVIF/WebP.
+- **INP** ≤ 200ms — se falhar: `dynamic(() => import(...), { ssr: false })`.
+- **CLS** ≤ 0.1 — se falhar: `width`/`height` explícitos ou `aspect-ratio`.
+
+> **Regra:** Chrome DevTools é validação **adicional** pós-`npm run build`. Nunca substitui o Terminal Gate.
+

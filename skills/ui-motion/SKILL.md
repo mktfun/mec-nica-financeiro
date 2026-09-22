@@ -81,3 +81,52 @@ Consulte `skills/ui-motion/references/recipes.md` para os códigos TypeScript/Ta
 - ❌ **NEVER** deixe animações de partículas ou rotação infinita rodando fora do viewport.
 - ❌ **NEVER** crie animações de entrada com transição de `margin` ou `height` (layout thrashing).
 - ❌ **NEVER** exceda 200ms em transições de navegação e micro-interações de clique.
+
+---
+
+## 5. Padrões Obrigatórios de Estados Assíncronos & Skeletons
+
+### 1. Skeleton Loading Obrigatório:
+É **PROIBIDO** deixar telas em branco ou exibir spinners genéricos bloqueando a página. Utilize sempre Skeletons proporcionais à estrutura do conteúdo esperado:
+```tsx
+{isLoading ? (
+  <CustomerListSkeleton count={4} />
+) : (
+  <CustomerList customers={customers} />
+)}
+```
+
+### 2. Animações Suaves de Entrada & Saída (GPU-Only):
+```css
+/* Entrada suave de cards e listas (240ms) */
+.motion-fade-slide-in {
+  animation: slideIn 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Saída suave antes da exclusão física do elemento (200ms) */
+.motion-fade-slide-out {
+  animation: slideOut 200ms cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+```

@@ -28,7 +28,7 @@ export const ConciliacaoLojasView: React.FC<ConciliacaoLojasViewProps> = ({
       const orfasEntradas = Number(rawLog?.dif_entradas ?? rawLog?.diferenca_entradas ?? (ofxEntradas - concEntradas));
 
       const ofxSaidas = Number(rawLog?.ofx_saidas_total ?? rawLog?.saidas_ofx ?? 0);
-      const concSaidas = Number(rawLog?.contas_conciliadas ?? rawLog?.contas_loja ?? 0);
+      const concSaidas = Number(rawLog?.contas_conciliadas ?? rawLog?.contas_loja_total ?? rawLog?.contas_loja ?? 0);
       const orfasSaidas = Number(rawLog?.dif_saidas ?? rawLog?.diferenca_saidas ?? (ofxSaidas - concSaidas));
 
       return {
@@ -46,6 +46,8 @@ export const ConciliacaoLojasView: React.FC<ConciliacaoLojasViewProps> = ({
         diferencaEntradas: isMissing ? null : orfasEntradas,
         saidasOfx: isMissing ? null : ofxSaidas,
         contasLoja: isMissing ? null : concSaidas,
+        contasCentralizadas: isMissing ? null : Number(rawLog?.contas_centralizadas ?? 0),
+        contasLocais: isMissing ? null : Number(rawLog?.contas_locais ?? 0),
         diferencaSaidas: isMissing ? null : orfasSaidas,
         dinheiroLoja: isMissing ? null : Number(rawLog?.dinheiro_loja ?? 0),
         ofxMaquininhas: isMissing ? null : Number(rawLog?.ofx_maquininhas ?? 0),
