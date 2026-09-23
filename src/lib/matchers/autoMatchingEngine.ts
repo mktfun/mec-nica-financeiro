@@ -157,6 +157,53 @@ function isSameDate(txDate: string | undefined | null, targetDate: string): bool
   return cleanTx === cleanTarget;
 }
 
+/**
+ * Validação rigorosa de Duplo Fator para Casamento PIX x OS.
+ * Exige CUMULATIVAMENTE:
+ * 1. Não ser adquirente, rendimento ou transferência interna / intercompany.
+ * 2. A OS DEVE ter registrado forma de pagamento PIX / Transferência.
+ * 3. O valor do PIX deve bater com a parcela de PIX da OS (tolerância <= 0.05).
+ * 4. Correspondência inequívoca de Identidade do Cliente (CPF/CNPJ exato ou Tokens de Nome fortes).
+ */
+export function isStrictPixOsMatch(
+  txAmount: number,
+  fullOfxText: string,
+  os: any,
+  tolerance: number = 0.05
+): boolean {
+  if (!os || !fullOfxText || txAmount <= 0) return false;
+
+  // 1. Filtro Negativo Eliminatório
+  const upper = fullOfxText.toUpperCase();
+  if (/REDE|REDECARD|CIELO|GETNET|STONE|PAGSEGURO|BIN|ADQ|MAST|VISA|ELO|REND\s*PAGO|APLIC|RESG|CDB|LCI|LCA|JUROS|POUP|AUT\s*APR|TRANSF\s*ENTRE\s*LOJAS|INTERCOMPANY/i.test(upper)) {
+    return false;
+  }
+
+  // 2. A OS DEVE ter registrado recebimento em PIX / Transferência
+  const osPix = Number(os.parsed_pix_transfer ?? os.pix_transfer_value ?? 0);
+  const pm = String(os.payment_method || os.formOfPayment || '').toLowerCase();
+  const isPixTagged = pm.includes('pix') || pm.includes('transf') || pm.includes('ted') || pm.includes('doc') || pm.includes('conta');
+
+  if (osPix <= 0 && !isPixTagged) {
+    return false;
+  }
+
+  // 3. Valor deve bater com a parcela de PIX (ou paid_value se a OS for 100% PIX)
+  const osPaid = Number(os.paid_value ?? os.paidValue ?? 0);
+  const osTotal = Number(os.total_value ?? os.totalValue ?? 0);
+  const targetOsVal = osPix > 0 ? osPix : osPaid;
+
+  const valueMatches = Math.abs(targetOsVal - txAmount) <= tolerance ||
+                       (osTotal > 0 && Math.abs(osTotal - txAmount) <= tolerance);
+
+  if (!valueMatches) {
+    return false;
+  }
+
+  // 4. Identidade do Cliente DEVE ter correspondência (Zero Match Cego por Valor)
+  return matchClientTokens(os.client_name, fullOfxText);
+}
+
 export function executeAutoMatchingEngine(
   results: UnifiedImportResult,
   mapping: Record<string, string>,
@@ -258,22 +305,6 @@ export function executeAutoMatchingEngine(
           });
         }
 
-        // Tier 4: Match único e inequívoco por valor na filial (sem colisão)
-        if (!matchedOs) {
-          const candidateOss = storeOss.filter(os => {
-            if (matchedOsNumbers.has(String(os.os_number))) return false;
-            const paid = Number(os.paid_value || 0);
-            const total = Number(os.total_value || 0);
-            const matchesGross = Math.abs(paid - gross) <= TOLERANCE || Math.abs(total - gross) <= TOLERANCE;
-            const matchesNet = Math.abs(paid - net) <= TOLERANCE || Math.abs(total - net) <= TOLERANCE;
-            return matchesGross || matchesNet;
-          });
-
-          if (candidateOss.length === 1) {
-            matchedOs = candidateOss[0];
-          }
-        }
-
         if (matchedOs) {
           matchedOsNumbers.add(String(matchedOs.os_number));
           resolvedMatches.push({
@@ -328,79 +359,25 @@ export function executeAutoMatchingEngine(
         const storeOss = osByStore.get(storeId) || [];
         const storeReceivables = receivablesByStore.get(storeId) || [];
 
-        // Tier 1: Match por Nome / CNPJ do Cliente + Valor Exato (em parsed_pix, paid_value, total_value ou receivables)
+        // Tier 1: Match Rigoroso de Duplo Fator (Valor Exato + Identidade do Cliente + Forma PIX na OS)
         let matchedOs = storeOss.find(os => {
           if (matchedOsNumbers.has(String(os.os_number))) return false;
-          const osPix = Number(os.parsed_pix_transfer || 0);
-          const osPaid = Number(os.paid_value || 0);
-          const osTotal = Number(os.total_value || 0);
-
-          const valueMatches = Math.abs(osPix - txAmount) <= TOLERANCE ||
-                               Math.abs(osPaid - txAmount) <= TOLERANCE ||
-                               Math.abs(osTotal - txAmount) <= TOLERANCE;
-
-          if (!valueMatches) return false;
-
-          return matchClientTokens(os.client_name, fullOfxText);
+          return isStrictPixOsMatch(txAmount, fullOfxText, os, TOLERANCE);
         });
 
-        // Tier 1.5: Match de Pagamento Parcial (Valor Menor ou Igual) + Match Forte de Nome
-        if (!matchedOs) {
-          const partialMatches = storeOss.filter(os => {
-            if (matchedOsNumbers.has(String(os.os_number))) return false;
-            const osTotal = Number(os.total_value || 0);
-            if (txAmount > osTotal + TOLERANCE) return false;
-            return matchClientTokens(os.client_name, fullOfxText);
-          });
-          if (partialMatches.length === 1) {
-            matchedOs = partialMatches[0];
-          }
-        }
-
-        // Tier 2: Match via receivablesArray de Transferência/PIX da Loja (BLINDAGEM: Boletos futuros NÃO entram aqui)
+        // Tier 2: Match via recebíveis de Transferência/PIX da Loja com validação estrita de identidade
         if (!matchedOs) {
           const matchedReceivable = storeReceivables.find(rec => {
             if (!rec.os_number || matchedOsNumbers.has(String(rec.os_number))) return false;
             const recVal = Number(rec.value || 0);
-            if (rec.type === 'Boleto' && Math.abs(recVal - txAmount) > TOLERANCE) {
-              return false;
-            }
-            const isTransferOrPix = /TRANSF|PIX|TED|DOC|CONTA/i.test(rec.type || '') || /TRANSF|PIX|TED|DOC/i.test(rec.description || '') || rec.type === 'Boleto';
+            if (Math.abs(recVal - txAmount) > TOLERANCE) return false;
+            const isTransferOrPix = /TRANSF|PIX|TED|DOC|CONTA/i.test(rec.type || '') || /TRANSF|PIX|TED|DOC/i.test(rec.description || '');
             if (!isTransferOrPix) return false;
-            return Math.abs(recVal - txAmount) <= TOLERANCE;
+            return matchClientTokens(rec.client_name, fullOfxText);
           });
 
           if (matchedReceivable && matchedReceivable.os_number) {
             matchedOs = storeOss.find(os => String(os.os_number) === String(matchedReceivable.os_number));
-          }
-        }
-
-        // Tier 3: Match por parsed_pix_transfer ou payment_method contendo PIX/Transf
-        if (!matchedOs) {
-          matchedOs = storeOss.find(os => {
-            if (matchedOsNumbers.has(String(os.os_number))) return false;
-            const osPix = Number(os.parsed_pix_transfer || 0);
-            if (osPix > 0 && Math.abs(osPix - txAmount) <= TOLERANCE) return true;
-
-            const pm = String(os.payment_method || '').toLowerCase();
-            const isPixTagged = pm.includes('pix') || pm.includes('transf') || pm.includes('ted') || pm.includes('doc') || pm.includes('dep') || pm.includes('conta');
-            const osVal = Number(os.paid_value || 0) || Number(os.total_value || 0);
-
-            return isPixTagged && Math.abs(osVal - txAmount) <= TOLERANCE;
-          });
-        }
-
-        // Tier 4: Match único e inequívoco por valor na filial (sem colisão de múltiplas OSs)
-        if (!matchedOs) {
-          const candidateOss = storeOss.filter(os => {
-            if (matchedOsNumbers.has(String(os.os_number))) return false;
-            const paid = Number(os.paid_value || 0);
-            const total = Number(os.total_value || 0);
-            return Math.abs(paid - txAmount) <= TOLERANCE || Math.abs(total - txAmount) <= TOLERANCE;
-          });
-
-          if (candidateOss.length === 1) {
-            matchedOs = candidateOss[0];
           }
         }
 

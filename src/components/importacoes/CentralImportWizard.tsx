@@ -50,7 +50,7 @@ import { OcrBatchProgressBar } from './OcrBatchProgressBar';
 import { OcrBatchReviewGrid } from './OcrBatchReviewGrid';
 import { PatioManagementDualModal } from './patio/PatioManagementDualModal';
 import { PatioManualStoreGrid, EditablePatioOsItem } from './patio/PatioManualStoreGrid';
-import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
+import { executeAutoMatchingEngine, PendingUnmatchedTransaction, isStrictPixOsMatch } from '@/lib/matchers/autoMatchingEngine';
 import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
 import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTerminal';
@@ -1532,39 +1532,18 @@ export function CentralImportWizard({
           let matched_os_number = null;
           
           if (tx.type === 'in') {
-            const isRendimento = /REND|APLIC|RESG|CDB|LCA|LCI|TESOURO|JUROS|IOF|AUT APR/i.test(`${tx.title || ''} ${tx.counterpart_name || ''}`);
-            const isAdquirente = /REDE|CIELO|GETNET|STONE|REDECARD|MAST|VISA|ELO|PAGSEGURO|ADQ|CART/i.test(`${tx.title || ''} ${tx.counterpart_name || ''}`);
-            const isEligibleForMatch = Number(tx.amount || 0) >= 10.0 && !isRendimento && !isAdquirente;
+            const fullOfxText = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
+            const txAmount = Number(tx.amount || 0);
 
-            let foundMatch = false;
-            if (isEligibleForMatch && matched_store_id && autoMatchMap[matched_store_id]) {
+            // Validação Estrita de Duplo Fator: APENAS na mesma loja, forma PIX e correspondência de identidade
+            if (matched_store_id && autoMatchMap[matched_store_id] && txAmount > 0) {
               const matchedOs = autoMatchMap[matched_store_id].find(os => {
-                 const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                 const pixVal = Number(os.pix_transfer_value || 0) > 0 ? Number(os.pix_transfer_value) : Number(delta || 0);
-                 if (pixVal <= 0) return false;
-                 return Math.abs(pixVal - Number(tx.amount || 0)) < 0.10;
+                return isStrictPixOsMatch(txAmount, fullOfxText, os, 0.05);
               });
               if (matchedOs) {
                 matched_os_number = matchedOs.os_number;
+                // Remove a OS para evitar que múltiplos PIX casem com a mesma OS
                 autoMatchMap[matched_store_id] = autoMatchMap[matched_store_id].filter(os => os.os_number !== matchedOs.os_number);
-                foundMatch = true;
-              }
-            }
-            
-            if (isEligibleForMatch && !foundMatch) {
-              for (const [s_id, osList] of Object.entries(autoMatchMap)) {
-                const matchedOs = osList.find(os => {
-                   const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                   const pixVal = Number(os.pix_transfer_value || 0) > 0 ? Number(os.pix_transfer_value) : Number(delta || 0);
-                   if (pixVal <= 0) return false;
-                   return Math.abs(pixVal - Number(tx.amount || 0)) < 0.10;
-                });
-                if (matchedOs) {
-                  matched_store_id = s_id;
-                  matched_os_number = matchedOs.os_number;
-                  autoMatchMap[s_id] = osList.filter(os => os.os_number !== matchedOs.os_number);
-                  break;
-                }
               }
             }
           }

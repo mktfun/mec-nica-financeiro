@@ -1,3 +1,19 @@
+## [2026-09-23] — [Feature ID: 436-motor-matching-estrito-regras-permissivas]
+
+**Contexto:** Blindagem da RPC `run_autonomous_reconciliation_loop` e saneamento forense de `ofx_transactions` via migration `20260923000001_harden_reconciliation_loop_remove_revenue_injection.sql`.
+
+**Regra aprendida:**
+1. **Remoção de Injeção Automática em `daily_revenue_adjustments`:**
+   - A RPC `run_autonomous_reconciliation_loop` possuía um loop (Step 3) que buscava termos no extrato OFX (`DANIEL`, `ROGERIO`, `RAPHAEL`, `APORTE`, `TRANSFERENCIA`) e inseria registros em `daily_revenue_adjustments` para tentar forçar a redução da diferença contábil.
+   - Esse comportamento violava a governança fiduciária, inflando a receita e mascarando divergências reais. O Step 3 foi sumariamente expurgado da função PL/pgSQL.
+2. **Saneamento e Governança em `ofx_transactions`:**
+   - Desvinculados registros espúrios de rendimentos bancários (`REND PAGO APLIC AUT APR`) e PIX com clientes divergentes indevidamente associados a OSs no dia 22/09/2026.
+   - O schema e as RPCs operam agora exclusivamente sob duplo fator para PIX x OS.
+
+**Risco identificado / Anti-pattern:** Usar funções autônomas PL/pgSQL para inserir registros em tabelas contábeis de receitas com base em heurísticas de string no extrato bancário.
+
+---
+
 ## [2026-09-16] — [Feature ID: 411-fechamento-estrito-1609-e-gestao-dinheiro-cofre]
 
 **Contexto:** Migration `20260916000001_enhance_store_cash_vault_and_rpc.sql` estendendo `store_cash_vault` com suporte a saídas e despesas (`entry_type`, `expense_category`, `paid_to`, `bill_id`), vínculo em `daily_manual_bills` (`matched_cash_vault_id`), índices de performance e atualização canônica da RPC `get_daily_reconciliation_summary` com blindagem imutável de snapshots.

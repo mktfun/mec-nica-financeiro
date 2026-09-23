@@ -1,3 +1,23 @@
+## [2026-09-23] — [Feature ID: 436-motor-matching-estrito-regras-permissivas]
+
+**Contexto:** Eliminação definitiva de falsos positivos no motor de conciliação automática (`autoMatchingEngine.ts`, `CentralImportWizard.tsx` e RPC `run_autonomous_reconciliation_loop`). O sistema estava vinculando transações bancárias (inclusive rendimentos de R$ 0,01 e PIX de valores e clientes divergentes) a OSs aleatórias e injetando aportes de sócios automaticamente no faturamento (`daily_revenue_adjustments`).
+
+**Regra aprendida:**
+1. **Regra de Ouro dos 4 Únicos Motores Autorizados:**
+   - **Rede x OS:** Exclusivamente mesma loja (`store_id`) + OS com parcela de cartão (`credit_value + debit_value > 0`) + valor compatível ($\le 0,05$).
+   - **PIX x OS:** Duplo fator cumulativo obrigatório: Mesma filial + OS com parcela em PIX (`pix_transfer_value > 0`) + valor compatível ($\le 0,05$) + correspondência inequívoca de identidade (`matchClientTokens` forte ou documento CPF/CNPJ).
+   - **Contas x Saídas:** Casamento de contas a pagar (`daily_manual_bills`) com saídas bancárias via favorecido e valor (`expenseMatcher.ts`).
+   - **Intercompany:** Detecção e conciliação de transferências bancárias entre contas do próprio grupo com impacto zero no faturamento.
+   - **De resto, proibido tudo:** Zero match de rendimentos de aplicação (`REND PAGO`, `AUT APR`), adquirentes, tarifas ou transferências externas com OSs. Zero inferência cega por valor único sem validação de nome de cliente.
+2. **Proibição Absoluta de Auto-Injeção no Faturamento:**
+   - A RPC `run_autonomous_reconciliation_loop` e qualquer script de automação estão terminantemente proibidos de criar linhas em `daily_revenue_adjustments` com base em palavras-chave no extrato bancário. Todo ajuste de faturamento deve ser 100% justificado manualmente pelo operador humano.
+3. **Isolamento Estrito por Filial na Ingestão:**
+   - O loop de importação bancária jamais pode cruzar transações com OSs de filiais vizinhas (`autoMatchMap`). Cada transação é avaliada unicamente contra candidatos da mesma filial (`matched_store_id`).
+
+**Risco identificado / Anti-pattern:** Permitir fallbacks do tipo "Tier 4: se há apenas uma OS com esse valor na loja, casar sem olhar o nome". Isso levou rendimentos de R$ 0,01 a casarem com OSs de R$ 6.000 e PIX de clientes diferentes a casarem com OSs pagas em cartão de crédito.
+
+---
+
 ## [2026-09-22] — [Feature ID: 435-fix-matcher-rede-ofx-saldos-filiais]
 
 **Contexto:** Correção de falha crítica de matching entre vendas de maquininhas Rede e créditos bancários do extrato OFX que causava o desaparecimento do "A Compensar" nas filiais (Jorge Beretta, Piraporinha, Jabaquara) e duplicações/divergências em Mauá e Jorge Beretta.

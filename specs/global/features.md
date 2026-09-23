@@ -65,3 +65,10 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 
 **Skill dedicada de browser QA:** `skills/browser-qa/SKILL.md`.
 **Projeto Lovable/Supabase ativo:** Financeiro/Conciliação (ver `.agent/memory/infra.md`).
+
+---
+
+## 8. Motores de Conciliação Canônicos (Spec 436)
+- `autoMatchingEngine.ts`: Motor estrito com os 4 únicos fluxos de conciliação autorizados (`Rede x OS`, `PIX x OS` com duplo fator cumulativo de cliente e forma de pagamento, `Contas x Saídas`, `Intercompany`).
+- `isStrictPixOsMatch`: Validador canônico exportado para duplo fator de PIX x OS com filtro negativo eliminatório de adquirentes e rendimentos.
+- `run_autonomous_reconciliation_loop`: RPC de fechamento blindada contra auto-injeção de receitas em `daily_revenue_adjustments`.
