@@ -1,3 +1,21 @@
+## [2026-09-22] — [Feature ID: 437-baixa-pendencia-rede-sem-os]
+
+**Contexto:** Na tela de detalhes da conciliação por filial (`/conciliacao/:lojaId`), na aba "1. Cartão / Maquininha" (`StoreCartaoMaquininhaView.tsx`), transações da Rede sem Ordem de Serviço vinculada (`matched_os_number IS NULL`) agora contam com paridade funcional ao fluxo de PIX sem OS.
+
+**Regra aprendida:**
+1. **Ações Rápidas em Linha para Transações Órfãs da Rede:**
+   - Em vez de rótulo estático "Lote Rede Consolidado", linhas sem OS expõem botões diretos de 1 clique: `[ Vincular OS ]` (abre `ManualMatchOsModal` com pré-filtro por filial e ordenação por valor/similaridade) e `[ Dar Baixa ]` (abre `OrphanCategorizationModal` em modo crédito para classificar como Venda Balcão, Pendente, Estorno, etc.).
+   - Quando categorizada, a linha exibe badge informativo com a categoria/justificativa e botão de reabertura para edição.
+   - Quando vinculada a uma OS, exibe badge com o número da OS e botão discreto `[ Desvincular ]` com ícone `Unlink`.
+2. **Invalidação de Queries no React Query:**
+   - Ao vincular, categorizar ou desvincular, invalidar em bloco as chaves de query `store_pos_transactions`, `pos_transactions`, `triple-reconciliation` e `pos_triple_reconciliation` para reatividade imediata sem reload.
+
+**Risco identificado:** A RPC `link_manual_rede_to_os` no PostgreSQL exige o parâmetro obrigatório `p_store_id`. Chamá-la sem esse argumento dispara erro de função inexistente no Supabase.
+
+**Não fazer:** Nunca travar transações de cartão da Rede em estados estáticos sem permitir ao operador categorizar entradas avulsas ou vincular ordens de serviço.
+
+---
+
 ## [2026-09-16] — [Feature ID: 411-fechamento-estrito-1609-e-gestao-dinheiro-cofre]
 
 **Contexto:** Criação do modal de gestão e rastreabilidade fiduciária de dinheiro em cofre (`CashVaultCompositionModal.tsx`), com abas analíticas por fração de OS e motor de sugestões de saídas de contas sem débito no OFX, além de gatilhos visuais dedicados no painel de conciliação.

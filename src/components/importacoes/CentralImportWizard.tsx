@@ -2265,6 +2265,9 @@ export function CentralImportWizard({
         if (redeEntries.length > 0) {
           for (const [sId, redeItems] of redeEntries) {
             const storeOfx = results.ofxResults.filter(o => (resolveStoreForOfx(o) || mapping[o.alias]) === sId);
+            const prevBalance = storeOfx.length > 0 ? storeOfx[0].previousBalance : undefined;
+            const bankTotal = storeOfx.length > 0 ? (storeOfx[0].bankBalance ?? storeOfx[0].balance) : undefined;
+
             const ofxRawCredits = storeOfx.flatMap(o => o.transactions.filter((t: any) => {
               const isCredit = t.type === 'in' || t.amount > 0;
               const cleanDate = (t.date || '').replace(/[-/]/g, '').slice(0, 8);
@@ -2304,7 +2307,9 @@ export function CentralImportWizard({
               redeItems[0]?.storeName || sId,
               targetDate,
               ofxRawCredits,
-              redeSaleItems
+              redeSaleItems,
+              prevBalance,
+              bankTotal
             );
             const reconResult = reconciliador.executarReconciliacao();
 
@@ -2315,39 +2320,40 @@ export function CentralImportWizard({
               .eq('store_id', sId)
               .eq('target_date', targetDate);
 
-            // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 435: Zero canetada de saldo)
+            // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 436)
             if (storePosTxs && storePosTxs.length > 0) {
-              const enteredPosIds: string[] = [];
-              const pendingPosIds: string[] = [];
-
-              storePosTxs.forEach((t: any) => {
+              for (const t of storePosTxs) {
                 const net = Number(t.net_amount || 0);
-                const isMatched = reconResult.conciliados.some(c => 
-                  Math.abs(c.valorLiquido - net) <= 0.01 ||
+                const matchedSale = reconResult.conciliados.find(c => 
+                  Math.abs(c.valorLiquido - net) <= 0.05 ||
                   (t.dedup_hash && c.saleId && t.dedup_hash.includes(c.saleId))
                 );
-                if (isMatched) {
-                  enteredPosIds.push(t.id);
-                } else {
-                  pendingPosIds.push(t.id);
-                }
-              });
 
-              if (enteredPosIds.length > 0) {
-                await supabase
-                  .from('pos_transactions')
-                  .update({ settlement_status: 'entrou', settled_date: targetDate })
-                  .in('id', enteredPosIds);
-              }
-              if (pendingPosIds.length > 0) {
-                await supabase
-                  .from('pos_transactions')
-                  .update({ settlement_status: 'a_compensar', settled_date: null })
-                  .in('id', pendingPosIds);
+                if (matchedSale) {
+                  await supabase
+                    .from('pos_transactions')
+                    .update({ 
+                      settlement_status: 'entrou', 
+                      settled_date: targetDate,
+                      settled_amount: net 
+                    })
+                    .eq('id', t.id);
+                } else {
+                  await supabase
+                    .from('pos_transactions')
+                    .update({ 
+                      settlement_status: 'a_compensar', 
+                      settled_date: null,
+                      settled_amount: 0 
+                    })
+                    .eq('id', t.id);
+                }
               }
 
               // Atualiza match_status nos créditos do OFX que foram vinculados aos lotes da Rede
-              const matchedFitids = reconResult.conciliados.map(c => c.fitidBancoVinculado).filter(Boolean);
+              const matchedFitids = reconResult.conciliados
+                .map(c => c.fitidBancoVinculado)
+                .filter(f => f && !f.startsWith('ofx-balance-absorbed'));
               if (matchedFitids.length > 0) {
                 await supabase
                   .from('ofx_transactions')

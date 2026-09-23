@@ -259,7 +259,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       try {
         const { data: posData, error: posErr } = await supabase
           .from('pos_transactions')
-          .select('store_id, net_amount, settlement_status')
+          .select('store_id, net_amount, settlement_status, settled_amount')
           .eq('target_date', date);
 
         if (!posErr && posData && posData.length > 0) {
@@ -268,10 +268,13 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
             if (posUnsettledByStore[sid] === undefined) {
               posUnsettledByStore[sid] = 0;
             }
-            if (p.settlement_status !== 'entrou' && p.settlement_status !== 'liquidado') {
-              const val = Number(p.net_amount || 0);
-              posUnsettledByStore[sid] += val;
-              totalPosUnsettled += val;
+            const isSettled = p.settlement_status === 'entrou' || p.settlement_status === 'liquidado';
+            if (!isSettled) {
+              const net = Number(p.net_amount || 0);
+              const settled = Number(p.settled_amount || 0);
+              const val = Math.max(0, Number((net - settled).toFixed(2)));
+              posUnsettledByStore[sid] = Number((posUnsettledByStore[sid] + val).toFixed(2));
+              totalPosUnsettled = Number((totalPosUnsettled + val).toFixed(2));
             }
           });
           posQuerySuccess = true;

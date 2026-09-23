@@ -321,47 +321,53 @@ export function Step4FinalAuditAndClose({
               occurred_at: o.occurred_at || targetDate
             }));
 
+          const prevBalance = store.previous_balance !== undefined ? Number(store.previous_balance) : undefined;
+          const bankTotal = store.saldo_banco !== undefined ? Number(store.saldo_banco) : (store.saldo_banco_ofx !== undefined ? Number(store.saldo_banco_ofx) : undefined);
+
           const reconciliador = new ReconciliadorRedeOFX(
             store.store_id,
             store.store_name,
             targetDate,
             rawOfxCredits,
-            redeSales
+            redeSales,
+            prevBalance,
+            bankTotal
           );
           const reconResult = reconciliador.executarReconciliacao();
 
-          // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 435: Zero canetada de saldo)
+          // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 436)
           if (redeSales && redeSales.length > 0) {
-            const enteredIds: string[] = [];
-            const pendingIds: string[] = [];
-
-            redeSales.forEach((s: any) => {
+            for (const s of redeSales) {
               const net = Number(s.net_amount || s.netAmount || 0);
-              const isMatched = reconResult.conciliados.some(c =>
+              const matchedSale = reconResult.conciliados.find(c =>
                 c.saleId === s.id ||
-                Math.abs(c.valorLiquido - net) <= 0.01
+                Math.abs(c.valorLiquido - net) <= 0.05
               );
-              if (isMatched && s.id) {
-                enteredIds.push(s.id);
+
+              if (matchedSale && s.id) {
+                await supabase
+                  .from('pos_transactions')
+                  .update({ 
+                    settlement_status: 'entrou', 
+                    settled_date: targetDate,
+                    settled_amount: net 
+                  })
+                  .eq('id', s.id);
               } else if (s.id) {
-                pendingIds.push(s.id);
+                await supabase
+                  .from('pos_transactions')
+                  .update({ 
+                    settlement_status: 'a_compensar', 
+                    settled_date: null,
+                    settled_amount: 0 
+                  })
+                  .eq('id', s.id);
               }
-            });
-
-            if (enteredIds.length > 0) {
-              await supabase
-                .from('pos_transactions')
-                .update({ settlement_status: 'entrou', settled_date: targetDate })
-                .in('id', enteredIds);
-            }
-            if (pendingIds.length > 0) {
-              await supabase
-                .from('pos_transactions')
-                .update({ settlement_status: 'a_compensar', settled_date: null })
-                .in('id', pendingIds);
             }
 
-            const matchedFitids = reconResult.conciliados.map(c => c.fitidBancoVinculado).filter(Boolean);
+            const matchedFitids = reconResult.conciliados
+              .map(c => c.fitidBancoVinculado)
+              .filter(f => f && !f.startsWith('ofx-balance-absorbed'));
             if (matchedFitids.length > 0) {
               await supabase
                 .from('ofx_transactions')

@@ -1,15 +1,32 @@
 import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle2, AlertTriangle, Info, ExternalLink, CreditCard, Percent, Landmark, ArrowRight } from 'lucide-react';
+import { 
+  CheckCircle2, 
+  AlertTriangle, 
+  Info, 
+  ExternalLink, 
+  CreditCard, 
+  Percent, 
+  Landmark, 
+  ArrowRight,
+  Link2,
+  FileEdit,
+  Unlink
+} from 'lucide-react';
 import { usePosTripleReconciliation } from '@/hooks/useBackendConciliacao';
+import { useManualMatch } from '@/hooks/useManualMatch';
+import { useCategorizeOrphan } from '@/hooks/useCategorizeOrphan';
+import { ManualMatchOsModal } from './ManualMatchOsModal';
+import { OrphanCategorizationModal } from './OrphanCategorizationModal';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
 import { formatCurrency } from '@/lib/utils';
 import { AmountCell } from '@/components/finance/AmountCell';
+import { toast } from 'sonner';
 
 interface StoreCartaoMaquininhaViewProps {
   storeId: string;
@@ -17,8 +34,15 @@ interface StoreCartaoMaquininhaViewProps {
 }
 
 export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquininhaViewProps) {
+  const queryClient = useQueryClient();
   const { data: tripleReconData } = usePosTripleReconciliation(date);
+  const { unlinkTransaction } = useManualMatch();
+  const { categorize } = useCategorizeOrphan();
+
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
+  const [matchingPos, setMatchingPos] = useState<any | null>(null);
+  const [categorizingPos, setCategorizingPos] = useState<any | null>(null);
+  const [isUnlinkingId, setIsUnlinkingId] = useState<string | null>(null);
 
   // Consulta direta na tabela pos_transactions para a filial e data
   const { data: posRows = [], isLoading } = useQuery({
@@ -99,11 +123,71 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
           client_name: osData.client_name || '',
           vehicle: osData.plate || '',
         } : null,
+        manual_category: pos.manual_category || null,
+        manual_justification: pos.manual_justification || null,
+        occurred_at: pos.occurred_at,
         settlement_status: pos.settlement_status,
         is_settled: isSettledInBank,
       };
     });
   }, [posRows, patioOsList]);
+
+  const handleOpenMatch = (row: any) => {
+    setMatchingPos({
+      id: row.id,
+      title: `${row.bandeira} - ${row.payment_method}`,
+      counterpart_name: row.bandeira,
+      amount: row.rede_bruto,
+      occurred_at: row.occurred_at || date,
+      store_id: storeId,
+      source: 'rede',
+      payment_method: row.payment_method
+    });
+  };
+
+  const handleOpenCategorize = (row: any) => {
+    setCategorizingPos({
+      id: row.id,
+      title: `Cartão ${row.bandeira} - ${row.payment_method}`,
+      amount: row.rede_bruto,
+      type: 'in'
+    });
+  };
+
+  const handleUnlink = async (posId: string, osNumber: string) => {
+    try {
+      setIsUnlinkingId(posId);
+      const res = await unlinkTransaction(posId, osNumber, 'rede');
+      if (res.success) {
+        toast.success(`Vínculo da venda de cartão com a OS #${osNumber} desfeito com sucesso!`);
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] }),
+          queryClient.invalidateQueries({ queryKey: ['patio_os_for_store'] }),
+          queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+          queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] }),
+          queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] })
+        ]);
+      } else {
+        toast.error(`Falha ao desvincular: ${res.error}`);
+      }
+    } catch (err: any) {
+      toast.error(`Erro ao desvincular: ${err.message || err}`);
+    } finally {
+      setIsUnlinkingId(null);
+    }
+  };
+
+  const handleCategorizationSuccess = async () => {
+    toast.success('Baixa / Justificativa salva com sucesso!');
+    setCategorizingPos(null);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] }),
+      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+      queryClient.invalidateQueries({ queryKey: ['daily_revenue_adjustments'] }),
+      queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] }),
+      queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] })
+    ]);
+  };
 
   if (isLoading) {
     return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando conciliação de cartões..." /></div>;
@@ -256,24 +340,77 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
                       {/* OS Vinculada */}
                       <td className="py-3 px-4">
                         {hasOs ? (
-                          <div className="flex flex-col">
-                            <button
-                              onClick={() => setSelectedOsData(row.os_data || { os_number: row.os_number.replace('OS #', ''), total_value: row.rede_bruto, paid_value: row.rede_liquido, status: 'paga' })}
-                              className="font-semibold text-blue-400 hover:underline flex items-center gap-1 text-left cursor-pointer"
+                          <div className="flex items-center justify-between gap-2 max-w-[260px]">
+                            <div className="flex flex-col min-w-0">
+                              <button
+                                onClick={() => setSelectedOsData(row.os_data || { os_number: row.os_number.replace('OS #', ''), total_value: row.rede_bruto, paid_value: row.rede_liquido, status: 'paga' })}
+                                className="font-semibold text-blue-400 hover:underline flex items-center gap-1 text-left cursor-pointer truncate"
+                              >
+                                {row.os_number}
+                                <ExternalLink size={11} />
+                              </button>
+                              {row.os_data && (
+                                <span className="text-[10px] text-[var(--text-tertiary)] truncate">
+                                  {row.os_data.client_name || row.os_data.vehicle || ''}
+                                </span>
+                              )}
+                            </div>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => handleUnlink(row.id, row.raw_os_number)}
+                              disabled={isUnlinkingId === row.id}
+                              title="Desvincular OS"
+                              className="h-6 w-6 p-0 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 shrink-0"
                             >
-                              {row.os_number}
-                              <ExternalLink size={11} />
-                            </button>
-                            {row.os_data && (
-                              <span className="text-[10px] text-[var(--text-tertiary)] truncate max-w-[180px]">
-                                {row.os_data.client_name || row.os_data.vehicle || ''}
-                              </span>
-                            )}
+                              <Unlink size={11} />
+                            </Button>
+                          </div>
+                        ) : row.manual_category ? (
+                          <div className="flex items-center justify-between gap-2 max-w-[260px]">
+                            <div className="flex flex-col min-w-0">
+                              <Badge variant="brand" className="text-[10px] px-1.5 py-0.5 truncate w-fit">
+                                {row.manual_category}
+                              </Badge>
+                              {row.manual_justification && (
+                                <span className="text-[10px] text-[var(--text-tertiary)] truncate mt-0.5" title={row.manual_justification}>
+                                  {row.manual_justification}
+                                </span>
+                              )}
+                            </div>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => handleOpenCategorize(row)}
+                              title="Editar Justificativa"
+                              className="h-6 w-6 p-0 text-zinc-500 hover:text-purple-400 hover:bg-purple-500/10 shrink-0"
+                            >
+                              <FileEdit size={11} />
+                            </Button>
                           </div>
                         ) : (
-                          <span className="text-[11px] text-[var(--text-tertiary)] italic">
-                            Lote Rede Consolidado
-                          </span>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <Button
+                              size="xs"
+                              variant="outline"
+                              onClick={() => handleOpenMatch(row)}
+                              className="h-6 px-2 text-[10px] bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20 gap-1 font-medium"
+                              title="Vincular a uma OS em aberto ou cadastrar nova OS"
+                            >
+                              <Link2 size={11} />
+                              Vincular OS
+                            </Button>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => handleOpenCategorize(row)}
+                              className="h-6 px-2 text-[10px] text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 gap-1 font-medium"
+                              title="Dar baixa avulsa (Venda Balcão, Pendente, etc.)"
+                            >
+                              <FileEdit size={11} />
+                              Dar Baixa
+                            </Button>
+                          </div>
                         )}
                       </td>
 
@@ -305,6 +442,44 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
           onClose={() => setSelectedOsData(null)}
           os={selectedOsData}
           storeId={storeId}
+        />
+      )}
+
+      {/* Modal de Vínculo com OS */}
+      {matchingPos && (
+        <ManualMatchOsModal
+          isOpen={!!matchingPos}
+          onClose={() => setMatchingPos(null)}
+          transaction={matchingPos}
+          storeId={storeId}
+          targetDate={date}
+          onSuccess={async () => {
+            setMatchingPos(null);
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] }),
+              queryClient.invalidateQueries({ queryKey: ['patio_os_for_store'] }),
+              queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+              queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] }),
+              queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] })
+            ]);
+          }}
+        />
+      )}
+
+      {/* Modal de Justificativa / Baixa Avulsa */}
+      {categorizingPos && (
+        <OrphanCategorizationModal
+          transactionId={categorizingPos.id}
+          transactionTitle={categorizingPos.title || 'Venda em Cartão'}
+          transactionAmount={Number(categorizingPos.amount || 0)}
+          transactionType="in"
+          storeId={storeId}
+          targetDate={date}
+          onClose={() => setCategorizingPos(null)}
+          onSuccess={handleCategorizationSuccess}
+          categorizeOrphan={(id, cat, just, impacts) =>
+            categorize(id, cat, just, impacts, Number(categorizingPos.amount || 0), date, 'in', storeId)
+          }
         />
       )}
     </div>

@@ -190,6 +190,10 @@ export function useManualMatch() {
       await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
       await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
       await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['pos_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] });
+      await queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] });
 
       return { success: true, data };
     } catch (err: any) {
@@ -238,6 +242,10 @@ export function useManualMatch() {
       await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
       await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
       await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['pos_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] });
+      await queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] });
 
       return { success: true };
     } catch (err: any) {
@@ -273,6 +281,10 @@ export function useManualMatch() {
       await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
       await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
       await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['pos_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] });
+      await queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] });
 
       return { success: true };
     } catch (err: any) {

@@ -199,6 +199,10 @@ export function useCategorizeOrphan() {
         queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] }),
         queryClient.invalidateQueries({ queryKey: ['extrato'] }),
         queryClient.invalidateQueries({ queryKey: ['store_extrato_bancario'] }),
+        queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['pos_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] }),
+        queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] }),
         queryClient.invalidateQueries({ queryKey: ['historical_reconciled'] })
       ]);
 

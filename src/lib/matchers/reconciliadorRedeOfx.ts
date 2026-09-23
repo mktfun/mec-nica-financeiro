@@ -79,19 +79,25 @@ export class ReconciliadorRedeOFX {
   private targetDate: string;
   private ofxTransactions: RawOfxItem[];
   private redeSales: RawRedeSale[];
+  private previousBalance?: number;
+  private bankTotal?: number;
 
   constructor(
     storeId: string,
     storeName: string,
     targetDate: string,
     ofxTransactions: RawOfxItem[] = [],
-    redeSales: RawRedeSale[] = []
+    redeSales: RawRedeSale[] = [],
+    previousBalance?: number,
+    bankTotal?: number
   ) {
     this.storeId = storeId;
     this.storeName = storeName;
     this.targetDate = targetDate;
     this.ofxTransactions = ofxTransactions;
     this.redeSales = redeSales;
+    this.previousBalance = previousBalance !== undefined && !isNaN(Number(previousBalance)) ? Number(previousBalance) : undefined;
+    this.bankTotal = bankTotal !== undefined && !isNaN(Number(bankTotal)) ? Number(bankTotal) : undefined;
   }
 
   /**
@@ -152,6 +158,41 @@ export class ReconciliadorRedeOFX {
    */
   public executarReconciliacao(): ReconciliadorRedeOfxOutput {
     const bancoCreditos = this.parseEFiltrarOfx();
+
+    // Detecção de créditos de adquirente absorvidos na variação de saldo bancário (Spec 436)
+    // Se a variação de saldo (bankTotal - previousBalance) for superior à soma dos lançamentos do extrato,
+    // significa que o banco consolidou liquidações no saldo final sem linha avulsa de extrato.
+    if (this.previousBalance !== undefined && this.bankTotal !== undefined) {
+      const sumOfxCredits = this.ofxTransactions
+        .filter(tx => {
+          const rawType = String(tx.type || '').toLowerCase();
+          return rawType === 'in' || rawType === 'credit' || rawType === 'c' || (Number(tx.amount || 0) > 0 && rawType !== 'out' && rawType !== 'debit');
+        })
+        .reduce((acc, tx) => acc + Math.abs(Number(tx.amount || 0)), 0);
+
+      const sumOfxDebits = this.ofxTransactions
+        .filter(tx => {
+          const rawType = String(tx.type || '').toLowerCase();
+          return rawType === 'out' || rawType === 'debit' || rawType === 'd' || (Number(tx.amount || 0) < 0);
+        })
+        .reduce((acc, tx) => acc + Math.abs(Number(tx.amount || 0)), 0);
+
+      const expectedFinal = Number((this.previousBalance + sumOfxCredits - sumOfxDebits).toFixed(2));
+      const unitemizedCredit = Number((this.bankTotal - expectedFinal).toFixed(2));
+
+      if (unitemizedCredit > 0.05) {
+        bancoCreditos.push({
+          fitid: `ofx-balance-absorbed-${this.storeId}-${unitemizedCredit}`,
+          dataBanco: this.targetDate,
+          valorBanco: unitemizedCredit,
+          memo: `CRÉDITO ADQUIRENTE ABSORVIDO NO SALDO BANCÁRIO (Diferença de Fechamento: R$ ${unitemizedCredit.toFixed(2)})`,
+          brand: 'Outros',
+          statusMatch: false,
+          remainingAmount: unitemizedCredit,
+          vinculadoSaleIds: []
+        });
+      }
+    }
 
     // Padroniza as vendas da Rede com resolução precisa e tolerante de bandeira
     const salesList: MatchedRedeSale[] = this.redeSales.map((s, idx) => {
@@ -220,7 +261,10 @@ export class ReconciliadorRedeOFX {
 
       const matchIdx = bancoCreditos.findIndex(c => {
         if (c.statusMatch || c.remainingAmount <= 0) return false;
-        if (Math.abs(c.remainingAmount - sale.valorLiquido) > 0.05) return false;
+
+        const isAbsorbedCredit = c.fitid.startsWith('ofx-balance-absorbed');
+        const tolerance = isAbsorbedCredit ? Math.max(0.05, sale.valorLiquido * 0.03) : 0.05;
+        if (Math.abs(c.remainingAmount - sale.valorLiquido) > tolerance) return false;
 
         // Se ambos especificarem tipo (debito vs credito), respeitar
         const creditIsDebit = /[\s\b](db|deb|débito|debito)[\s\b\d]/i.test(c.memo);
@@ -236,10 +280,15 @@ export class ReconciliadorRedeOFX {
         sale.statusMatch = true;
         sale.fitidBancoVinculado = credit.fitid;
         sale.valorBancoVinculado = sale.valorLiquido;
-        sale.reasoning = `Match determinístico 1:1 no extrato bancário (R$ ${sale.valorLiquido.toFixed(2)})`;
+        sale.reasoning = credit.fitid.startsWith('ofx-balance-absorbed')
+          ? `Liquidado no saldo bancário absorvido (R$ ${sale.valorLiquido.toFixed(2)})`
+          : `Match determinístico 1:1 no extrato bancário (R$ ${sale.valorLiquido.toFixed(2)})`;
 
-        credit.statusMatch = true;
-        credit.remainingAmount = 0;
+        credit.remainingAmount = Math.max(0, Number((credit.remainingAmount - sale.valorLiquido).toFixed(2)));
+        if (credit.remainingAmount <= 0.05 || credit.fitid.startsWith('ofx-balance-absorbed')) {
+          credit.statusMatch = true;
+          credit.remainingAmount = 0;
+        }
         credit.vinculadoSaleIds.push(sale.saleId);
       }
     }
@@ -305,7 +354,7 @@ export class ReconciliadorRedeOFX {
     // =========================================================================
     const conciliados = salesList.filter(s => s.statusMatch);
     const naoEntrou = salesList.filter(s => !s.statusMatch);
-    const orfaosBanco = bancoCreditos.filter(c => !c.statusMatch || c.remainingAmount > 0.05);
+    const orfaosBanco = bancoCreditos.filter(c => (!c.statusMatch || c.remainingAmount > 0.05) && !c.fitid.startsWith('ofx-balance-absorbed'));
 
     const totalNaoEntrou = Number(naoEntrou.reduce((acc, s) => acc + s.valorLiquido, 0).toFixed(2));
     const totalOrfaosBanco = Number(orfaosBanco.reduce((acc, c) => acc + c.remainingAmount, 0).toFixed(2));

@@ -1242,3 +1242,20 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 3. **Pátio Físico Acumulado (90 dias):** O valor de Carros em Pátio (total_patio) é um estoque acumulado de veículos físicos em oficina (R$ 64.685,02 em 18/09) e jamais deve ser calculado apenas pelas poucas OSs contidas na planilha importada do dia.
 **Risco identificado:** Abertura de ordens de serviço em oficinas no sábado/domingo poluindo o calendário financeiro com dias não trabalhados e descalibrando o caixa anterior do fechamento de segunda-feira.
 **Não fazer:** Nunca montar o seletor de conciliações a partir de eventos operacionais de pátio e nunca buscar previousSnapshot sem .eq('is_closed', true).
+
+## [2026-09-22] — [Feature ID: 436-cartoes-compensar-e-saldo-consolidado-filiais]
+
+**Contexto:** Erro de contagem dupla de cartões já creditados no extrato: se uma venda de cartão de R$ 100 já caiu no banco R$ 1, apenas R$ 99 devem ficar a compensar (ou R$ 0 se liquidado integralmente). O cálculo somava cegamente todas as vendas de cartão do dia que não recebiam status 'liquidado' do motor.
+**Regra aprendida:**
+1. **Fórmula Estrita de Cartões a Compensar:** Cartão a compensar é exclusivamente o saldo remanescente que NÃO entrou no extrato bancário: `nao_entrou_valor = Math.max(0, rede_liquido - creditado_ofx)`.
+2. **Saldo Consolidado:** `Saldo Consolidado = Saldo Extrato + Dinheiro no Cofre + Cartões a Compensar (saldo não liquidado)`.
+**Risco identificado:** Contar duas vezes o crédito da adquirente quando o lote já foi liquidado no banco.
+
+## [2026-09-22] — [Feature ID: 437-baixa-pendencia-rede-sem-os]
+
+**Contexto:** Vendas de cartão da Rede sem OS vinculada ficavam como texto estático inerte na aba de cartões, impedindo o operador de dar baixa em vendas de balcão ou vincular OSs que a oficina não lançou no ERP Oficina Inteligente.
+**Regra aprendida:**
+1. **Paridade de Ações Cartão vs PIX:** Toda venda da adquirente sem OS vinculada deve oferecer ações imediatas de interface: (a) Vincular a uma OS em aberto no pátio ou cadastrar nova OS manual rápida via `ManualMatchOsModal`; (b) Dar Baixa Justificada via `OrphanCategorizationModal` (Venda Balcão, Pendente, etc.), atualizando `manual_category` e `manual_justification` em `pos_transactions`.
+2. **Desvinculação Reversível:** Toda OS vinculada a transação de cartão deve poder ser desvinculada pelo operador (`unlinkTransaction` com `source: 'rede'`).
+**Risco identificado:** Falta de passagem de `p_store_id` para RPCs de banco Postgres com assinaturas sobrecarregadas.
+
