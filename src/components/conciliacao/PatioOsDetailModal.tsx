@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Card } from '@/components/ui/Card';
+import { ModalKpiCard } from '@/components/ui/ModalKpiCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { AmountCell } from '@/components/finance/AmountCell';
@@ -324,63 +325,59 @@ export function PatioOsDetailModal({
           </div>
         )}
 
-        {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
+        {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio via ModalKpiCard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Total Restante no Pátio */}
-          <Card className="border-l-4 border-l-amber-500">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-              Saldo Total no Pátio
-            </p>
-            <p className="font-display font-bold text-2xl font-mono text-amber-400">
-              <AmountCell value={totalPatioGlobal} tone="warning" />
-            </p>
-            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
-              <span>Filtrado na tela:</span>
-              <span className="text-zinc-200 font-semibold">{formatCurrency(totalPatioFiltrado)}</span>
-            </div>
-          </Card>
+          <ModalKpiCard
+            variant="border-l"
+            color="amber"
+            label="Saldo Total no Pátio"
+            value={<AmountCell value={totalPatioGlobal} tone="warning" />}
+            subtitleExtra={
+              <div className="flex justify-between items-center w-full">
+                <span>Filtrado na tela:</span>
+                <span className="text-zinc-200 font-semibold">{formatCurrency(totalPatioFiltrado)}</span>
+              </div>
+            }
+          />
 
-          {/* Card 2: Valor Total Bruto */}
-          <Card className="border-l-4 border-l-blue-500">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-              Valor Total das OSs
-            </p>
-            <p className="font-display font-bold text-2xl font-mono text-zinc-100">
-              <AmountCell value={totalValorOriginalGlobal} tone="neutral" />
-            </p>
-            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
-              <span>Total Pago Acumulado:</span>
-              <span className="text-emerald-400 font-semibold">{formatCurrency(totalPagoAcumuladoGlobal)}</span>
-            </div>
-          </Card>
+          <ModalKpiCard
+            variant="border-l"
+            color="blue"
+            label="Valor Total das OSs"
+            value={<AmountCell value={totalValorOriginalGlobal} tone="neutral" />}
+            subtitleExtra={
+              <div className="flex justify-between items-center w-full">
+                <span>Total Pago Acumulado:</span>
+                <span className="text-emerald-400 font-semibold">{formatCurrency(totalPagoAcumuladoGlobal)}</span>
+              </div>
+            }
+          />
 
-          {/* Card 3: Quantidade de Veículos / OSs */}
-          <Card className="border-l-4 border-l-purple-500">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-              Veículos no Pátio
-            </p>
-            <p className="font-display font-bold text-2xl font-mono text-purple-400">
-              {patioOsList.length} OSs
-            </p>
-            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
-              <span>Exibidas no filtro:</span>
-              <span className="text-zinc-200 font-semibold">{filteredOsList.length} OSs</span>
-            </div>
-          </Card>
+          <ModalKpiCard
+            variant="border-l"
+            color="purple"
+            label="Veículos no Pátio"
+            value={`${patioOsList.length} OSs`}
+            subtitleExtra={
+              <div className="flex justify-between items-center w-full">
+                <span>Exibidas no filtro:</span>
+                <span className="text-zinc-200 font-semibold">{filteredOsList.length} OSs</span>
+              </div>
+            }
+          />
 
-          {/* Card 4: Filiais Ativas */}
-          <Card className="border-l-4 border-l-emerald-500">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-              Lojas com OS Aberta
-            </p>
-            <p className="font-display font-bold text-2xl font-mono text-emerald-400">
-              {new Set(patioOsList.map((os) => os.store_id)).size} de {stores.length}
-            </p>
-            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
-              <span>Data Base:</span>
-              <span className="text-zinc-200 font-semibold">{formattedDate}</span>
-            </div>
-          </Card>
+          <ModalKpiCard
+            variant="border-l"
+            color="emerald"
+            label="Lojas com OS Aberta"
+            value={`${new Set(patioOsList.map((os) => os.store_id)).size} de ${stores.length}`}
+            subtitleExtra={
+              <div className="flex justify-between items-center w-full">
+                <span>Data Base:</span>
+                <span className="text-zinc-200 font-semibold">{formattedDate}</span>
+              </div>
+            }
+          />
         </div>
 
         {/* Barra de Filtros e Busca Padronizada */}

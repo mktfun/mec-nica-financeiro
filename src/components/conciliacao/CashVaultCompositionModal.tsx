@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { ModalKpiCard } from '@/components/ui/ModalKpiCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils';
@@ -646,51 +647,35 @@ export function CashVaultCompositionModal({
           </Button>
         </div>
 
-        {/* Cards de Métricas Consolidadas */}
+        {/* Cards de Métricas Consolidadas via ModalKpiCard */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-              Em Trânsito / No Cofre
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-amber-300">
-              {formatCurrency(metrics.totalEmTransito)}
-            </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Conta no Caixa Atual</div>
-          </div>
+          <ModalKpiCard
+            color="amber"
+            label="Em Trânsito / No Cofre"
+            value={formatCurrency(metrics.totalEmTransito)}
+            subtitle="Conta no Caixa Atual"
+          />
 
-          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              Depositado no Banco
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
-              {formatCurrency(metrics.totalDepositado)}
-            </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Entrou no Extrato OFX</div>
-          </div>
+          <ModalKpiCard
+            color="emerald"
+            label="Depositado no Banco"
+            value={formatCurrency(metrics.totalDepositado)}
+            subtitle="Entrou no Extrato OFX"
+          />
 
-          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-rose-400"></span>
-              Saídas / Despesas Pagas
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-rose-300">
-              {formatCurrency(metrics.totalSaidas)}
-            </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Abatido do Cofre</div>
-          </div>
+          <ModalKpiCard
+            color="rose"
+            label="Saídas / Despesas Pagas"
+            value={formatCurrency(metrics.totalSaidas)}
+            subtitle="Abatido do Cofre"
+          />
 
-          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-[11px] font-semibold uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-[var(--text-tertiary)]"></span>
-              Total Movimentado
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
-              {formatCurrency(metrics.totalGeral)}
-            </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">{vaultItems.length} frações registradas</div>
-          </div>
+          <ModalKpiCard
+            color="default"
+            label="Total Movimentado"
+            value={formatCurrency(metrics.totalGeral)}
+            subtitle={`${vaultItems.length} frações registradas`}
+          />
         </div>
 
         {/* Navegação por Abas */}

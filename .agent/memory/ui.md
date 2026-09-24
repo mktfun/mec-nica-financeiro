@@ -1,3 +1,20 @@
+## [2026-09-24] — [Feature ID: 440-modal-kpi-card-unificado]
+
+**Contexto:** Unificação do design dos cards de KPI de topo nos modais analíticos de conciliação (`PatioOsDetailModal`, `SaldoBancosDetailModal` e `CashVaultCompositionModal`), eliminando variações arbitrárias de layout, tamanhos de fonte desproporcionais e duplicações manuais de CSS.
+
+**Regra aprendida:**
+1. **Componente Canônico de KPI em Modais (`ModalKpiCard.tsx`):**
+   - O padrão ouro adotado em modais é o do Cofre: container `bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1`, indicador dot `w-2 h-2 rounded-full` semântico ou ícone Lucide, label uppercase `text-[var(--text-tertiary)] text-[11px] font-semibold tracking-wider`, valor principal `text-lg sm:text-xl font-bold font-sans tabular-nums` e subtítulo `text-[10px] text-[var(--text-tertiary)]`.
+   - Modais analíticos de pátio adotam a variante `variant="border-l"` (`border-l-4`), preservando a consistência tipográfica (`text-lg sm:text-xl`) em vez de fontes gigantes (`text-2xl`).
+2. **Tratamento de Alerta Fiduciário (`danger={true}`):**
+   - Para saldos devedores ou passivos (ex: Cheque Especial no `SaldoBancosDetailModal`), o card deve sobrescrever o fundo para `bg-red-500/10 border border-red-500/30` com tipografia `text-red-400`, mantendo o alinhamento visual com os demais cards.
+3. **Interatividade Contextual:**
+   - Cards com ação associada (ex: "Dinheiro no Cofre" abrindo a composição analítica) suportam `interactive={true}` e `actionLabel="Ver Frações ↗"` com hover refinado.
+
+**Risco identificado / Anti-pattern:** Estilizar cards de KPI inline em cada modal com classes e tamanhos arbitrários. Toda nova tela ou modal analítico DEVE reutilizar `ModalKpiCard.tsx`.
+
+---
+
 ## [2026-09-22] — [Feature ID: 437-baixa-pendencia-rede-sem-os]
 
 **Contexto:** Na tela de detalhes da conciliação por filial (`/conciliacao/:lojaId`), na aba "1. Cartão / Maquininha" (`StoreCartaoMaquininhaView.tsx`), transações da Rede sem Ordem de Serviço vinculada (`matched_os_number IS NULL`) agora contam com paridade funcional ao fluxo de PIX sem OS.

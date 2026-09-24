@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { ModalKpiCard } from '@/components/ui/ModalKpiCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils';
@@ -156,71 +157,53 @@ export function SaldoBancosDetailModal({
       size="2xl"
     >
       <div className="space-y-6">
-        {/* Header Cards com o Resumo Segregado */}
+        {/* Header Cards com o Resumo Segregado via ModalKpiCard */}
         <div className={`grid grid-cols-1 sm:grid-cols-2 ${hasNegativo ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-3`}>
-          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
-              <Landmark className="w-3.5 h-3.5 text-[var(--color-accent-light-blue)]" />
-              Bancos Positivos (OFX)
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
-              {formatCurrency(totals.ofxPositivo)}
-            </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Contas e filiais credoras</div>
-          </div>
+          <ModalKpiCard
+            icon={Landmark}
+            color="default"
+            label="Bancos Positivos (OFX)"
+            value={formatCurrency(totals.ofxPositivo)}
+            subtitle="Contas e filiais credoras"
+          />
 
           {hasNegativo && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3.5 space-y-1">
-              <div className="flex items-center gap-1.5 text-red-400 text-xs font-semibold uppercase tracking-wider">
-                <Landmark className="w-3.5 h-3.5 text-red-400" />
-                (-) Cheque Especial (Real)
-              </div>
-              <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-red-400">
-                - {formatCurrency(totals.ofxNegativo > 0 ? totals.ofxNegativo : totals.devedorReal)}
-              </div>
-              <div className="text-[10px] text-red-400/80">Deduzido no Caixa Atual</div>
-            </div>
+            <ModalKpiCard
+              danger={true}
+              icon={Landmark}
+              label="(-) Cheque Especial (Real)"
+              value={`- ${formatCurrency(totals.ofxNegativo > 0 ? totals.ofxNegativo : totals.devedorReal)}`}
+              subtitle="Deduzido no Caixa Atual"
+            />
           )}
 
-          <div 
+          <ModalKpiCard
+            icon={Banknote}
+            color="amber"
+            label="Dinheiro no Cofre"
+            value={`+ ${formatCurrency(totals.dinheiro)}`}
+            subtitle="Pendente de depósito"
+            actionLabel="Ver Frações ↗"
+            interactive={true}
             onClick={() => setIsCashVaultModalOpen(true)}
-            className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-3.5 space-y-1 hover:border-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all group/cofre shadow-sm"
             title="Clique para abrir a Composição Completa do Dinheiro em Cofre e Sugestões de Saídas"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-                <Banknote className="w-3.5 h-3.5 text-amber-400" />
-                Dinheiro no Cofre
-              </div>
-              <span className="text-[9px] text-amber-300 underline opacity-70 group-hover/cofre:opacity-100">Ver Frações ↗</span>
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-amber-300">
-              + {formatCurrency(totals.dinheiro)}
-            </div>
-            <div className="text-[10px] text-amber-400/80">Pendente de depósito</div>
-          </div>
+          />
 
-          <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-              <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
-              A Compensar
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
-              + {formatCurrency(totals.maquininhas)}
-            </div>
-            <div className="text-[10px] text-emerald-400/80">Rede D+1 / Cartões</div>
-          </div>
+          <ModalKpiCard
+            icon={CreditCard}
+            color="emerald"
+            label="A Compensar"
+            value={`+ ${formatCurrency(totals.maquininhas)}`}
+            subtitle="Rede D+1 / Cartões"
+          />
 
-          <div className="bg-[var(--bg-canvas)] border border-emerald-500/40 rounded-xl p-3.5 space-y-1 shadow-sm">
-            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-              <Building2 className="w-3.5 h-3.5 text-emerald-400" />
-              Total Saldo Banco
-            </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
-              {formatCurrency(totals.ofxPositivo + totals.dinheiro + totals.maquininhas)}
-            </div>
-            <div className="text-[10px] text-emerald-400/80">Bancos + Cofre + Cartões</div>
-          </div>
+          <ModalKpiCard
+            icon={Building2}
+            color="emerald"
+            label="Total Saldo Banco"
+            value={formatCurrency(totals.ofxPositivo + totals.dinheiro + totals.maquininhas)}
+            subtitle="Bancos + Cofre + Cartões"
+          />
         </div>
 
         {/* Barra de Busca */}

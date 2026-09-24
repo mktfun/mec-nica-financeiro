@@ -92,3 +92,11 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Eliminação de fases cegas (2B e 2C) por saldo residual sem identidade.
   - Exclusão de adquirentes e transferências de empresas do grupo do auto-match de recebíveis.
 - Saneamento forense e reprocessamento canônico do dia 24/09/2026.
+
+---
+
+## 11. Componentes Canônicos de KPI em Modais (Spec 440)
+- `ModalKpiCard.tsx`: Componente atômico para cards de métricas de topo em modais analíticos.
+  - Padrão visual baseado no Cofre (`bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1`).
+  - Suporte a variantes (`dot` e `border-l`), indicadores semânticos (`amber`, `emerald`, `rose`, `blue`, `purple`, `red`, `default`), estado de atenção (`danger={true}` para cheque especial/passivos), interatividade e subtítulos dinâmicos.
+  - Adotado em `PatioOsDetailModal.tsx`, `SaldoBancosDetailModal.tsx` e `CashVaultCompositionModal.tsx`.
