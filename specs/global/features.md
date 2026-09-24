@@ -72,3 +72,11 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 - `autoMatchingEngine.ts`: Motor estrito com os 4 únicos fluxos de conciliação autorizados (`Rede x OS`, `PIX x OS` com duplo fator cumulativo de cliente e forma de pagamento, `Contas x Saídas`, `Intercompany`).
 - `isStrictPixOsMatch`: Validador canônico exportado para duplo fator de PIX x OS com filtro negativo eliminatório de adquirentes e rendimentos.
 - `run_autonomous_reconciliation_loop`: RPC de fechamento blindada contra auto-injeção de receitas em `daily_revenue_adjustments`.
+
+---
+
+## 9. Padrões de Apresentação Contábil (Spec 437)
+- `ResumoDiaPanel.tsx` e `StoreCardModulo1.tsx`:
+  - **Bipolaridade cromática estrita:** Números normais (estáticos/patrimoniais) sempre em `text-white font-mono`.
+  - **Cálculos/Deltas:** `text-emerald-400 font-mono` para conformidade/superávit e `text-rose-400 font-mono` para divergência/déficit.
+  - **Exceções:** `valor_disp_contas` e `contas_manual` permanecem em branco normal (`text-white font-mono`). Saldo bancário de filial é branco se positivo e vermelho se devedor.

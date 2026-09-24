@@ -91,7 +91,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                     SALDO BANCO (OFX)
                   </span>
                   <span className={`font-bold text-sm sm:text-base font-mono tabular-nums ${
-                    data.isMissingData ? 'text-zinc-500' : saldoBancoValor < 0 ? 'text-rose-400' : 'text-emerald-400'
+                    data.isMissingData ? 'text-zinc-500' : saldoBancoValor < 0 ? 'text-rose-400' : 'text-white'
                   }`}>
                     {data.isMissingData ? 'N/D' : <AnimatedNumber value={saldoBancoValor} format="currency" />}
                   </span>
@@ -103,7 +103,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                     REDE TOTAL
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                    <span className={`font-bold text-sm font-mono tabular-nums ${data.isMissingData ? 'text-zinc-500' : 'text-cyan-400'}`}>
+                    <span className={`font-bold text-sm font-mono tabular-nums ${data.isMissingData ? 'text-zinc-500' : 'text-white'}`}>
                       {data.isMissingData ? 'N/D' : <AnimatedNumber value={redeTotalValor} format="currency" />}
                     </span>
                     {!data.isMissingData && (
@@ -133,7 +133,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">
                     SALDO EM PÁTIO
                   </span>
-                  <span className={`font-bold text-sm font-mono tabular-nums ${data.isMissingData ? 'text-zinc-500' : 'text-amber-400'}`}>
+                  <span className={`font-bold text-sm font-mono tabular-nums ${data.isMissingData ? 'text-zinc-500' : 'text-white'}`}>
                     {data.isMissingData ? 'N/D' : <AnimatedNumber value={patioOsValor} format="currency" />}
                   </span>
                 </div>
@@ -167,7 +167,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                       ? `Rede D-1: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.ofxMaquininhas)}`
                       : 'Crédito no Banco'}
                   </span>
-                  <p className="font-mono font-bold text-xs sm:text-sm text-emerald-400 mt-0.5">
+                  <p className="font-mono font-bold text-xs sm:text-sm text-white mt-0.5">
                     {data.isMissingData ? 'N/D' : <AnimatedNumber value={entradasRealizadasValor} format="currency" />}
                   </p>
                 </div>
@@ -188,7 +188,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                     {isDifEntradasOk ? '100% Conciliado' : 'Crédito Órfão'}
                   </span>
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
-                    data.isMissingData ? 'text-zinc-500' : isDifEntradasOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                    data.isMissingData ? 'text-zinc-500' : isDifEntradasOk ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
                     {data.isMissingData ? 'N/D' : (
                       <>
@@ -220,7 +220,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <div>
                   <span className="text-[9px] text-zinc-400 block font-medium">Saídas OFX</span>
                   <span className="text-[8px] text-zinc-500 block">Débito no Banco</span>
-                  <p className="font-mono font-bold text-xs sm:text-sm text-rose-400 mt-0.5">
+                  <p className="font-mono font-bold text-xs sm:text-sm text-white mt-0.5">
                     {data.isMissingData ? 'N/D' : <AnimatedNumber value={saidasOfxValor} format="currency" />}
                   </p>
                 </div>
@@ -245,7 +245,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                     {isDifSaidasOk ? '100% Conciliado' : 'Débito Órfão'}
                   </span>
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
-                    data.isMissingData ? 'text-zinc-500' : isDifSaidasOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                    data.isMissingData ? 'text-zinc-500' : isDifSaidasOk ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
                     {data.isMissingData ? 'N/D' : (
                       <>

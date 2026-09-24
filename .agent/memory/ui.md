@@ -793,3 +793,15 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 2. **Prioridade de Metadados Canônicos:** Quando houver possibilidade de a RPC do backend desatualizada retornar cálculos inconsistentes, a interface deve priorizar os metadados canônicos persistidos (`currentSnapshot.metadata.faturamento_oi_base`, `currentSnapshot.metadata.faturamento_periodo`) antes de recorrer a campos brutos da RPC.
 **Risco identificado / Anti-pattern:** Usar uma fonte de dados para desenhar o componente em modo de leitura (ex.: `summary.faturamento_periodo`) e uma fórmula diferente em modo de edição (ex.: `faturamentoDiaInput + ajustes`), gerando efeito de "salto" ou distorção de números na UI ao alternar ou salvar.
 
+## [2026-09-24] — [Feature ID: 437-padronizacao-visual-conciliacao-eliminacao-salada-cores]
+
+**Contexto:** Eliminação da dispersão cromática ("salada de cores") na tela de conciliação diária (`ResumoDiaPanel.tsx` e `StoreCardModulo1.tsx`), estabelecendo padronização visual estrita em conformidade com o Dark UI Zinc-950.
+**Regra aprendida:**
+1. **Bipolaridade Visual Estrita (Branco vs Cálculos):**
+   - Todos os números nominais/estáticos (patrimoniais, fechamentos brutos, sub-chips informativos) DEVEM ser exibidos em branco cristalino (`text-white font-mono`).
+   - Cores semânticas são estritamente reservadas para resultados de cálculo / apuração de deltas: Verde (`text-emerald-400 font-mono`) para superávit/conformidade ($\Delta \ge 0$ ou tolerância $\le 0,05$) e Vermelho (`text-rose-400 font-mono`) para déficit ou divergência pendente de justificativa.
+2. **Exceções Expressas de Negócio:**
+   - `valor_disp_contas` e `contas_manual` são valores patrimoniais/orçamentários nominais e devem permanecer em branco normal (`text-white font-mono`), sem alertas visuais alarmistas indevidos.
+   - Saldo bancário de filial em `StoreCardModulo1` é branco se positivo (`text-white font-mono`) e vermelho (`text-rose-400 font-mono`) apenas se estiver negativo (cheque especial devedor).
+**Risco identificado:** Adoção indiscriminada de gradientes saturados ou cores de alerta (`text-amber-*`, `text-cyan-*`, `text-teal-*`) para métricas puramente estáticas gera sobrecarga cognitiva e cega o operador contábil para as verdadeiras divergências.
+**Não fazer:** Nunca colorir montantes brutos de extrato (ex.: OFX Entradas ou OFX Saídas) de verde ou vermelho; a cor semântica pertence única e exclusivamente à coluna de apuração da divergência ("Dif. a Justificar").

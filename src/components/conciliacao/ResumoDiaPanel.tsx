@@ -657,7 +657,7 @@ export function ResumoDiaPanel({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCÁRIO INICIAL</span>
-            <p className="text-xl font-bold font-mono text-[var(--color-accent-light-blue)]">
+            <p className="text-xl font-bold font-mono text-white">
               <AnimatedNumber value={currentSnapshot?.saldo_bancario || 0} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato OFX Marco Zero</span>
@@ -665,7 +665,7 @@ export function ResumoDiaPanel({
 
           <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO EM CAIXA</span>
-            <p className="text-xl font-bold font-mono text-[var(--color-accent-teal)]">
+            <p className="text-xl font-bold font-mono text-white">
               <AnimatedNumber value={dinheiroMpValor} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Conferência física</span>
@@ -673,7 +673,7 @@ export function ResumoDiaPanel({
 
           <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER (BOLETOS)</span>
-            <p className="text-xl font-bold font-mono text-[var(--color-primary)]">
+            <p className="text-xl font-bold font-mono text-white">
               <AnimatedNumber value={aReceberValor} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Carteira inicial a liquidar</span>
@@ -681,7 +681,7 @@ export function ResumoDiaPanel({
 
           <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">ESTOQUE / OS PÁTIO</span>
-            <p className="text-xl font-bold font-mono text-[var(--color-accent-warning)]">
+            <p className="text-xl font-bold font-mono text-white">
               <AnimatedNumber value={currentSnapshot?.total_patio || 0} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Carros no pátio implantados</span>
@@ -764,11 +764,11 @@ export function ResumoDiaPanel({
           <div className="flex gap-6 text-right font-sans tabular-nums">
             <div>
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Apurado Sistema (Fechamento)</p>
-              <p className="text-xl font-display font-bold text-[var(--text-primary)]"><AnimatedNumber value={totalSistema} format="currency" /></p>
+              <p className="text-xl font-display font-bold font-mono text-white"><AnimatedNumber value={totalSistema} format="currency" /></p>
             </div>
             <div>
-              <p className="text-[10px] text-[var(--color-primary)] uppercase tracking-wider mb-1">Entradas OFX (Fechamento)</p>
-              <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalBancarioIn} format="currency" /></p>
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider mb-1">Entradas OFX (Fechamento)</p>
+              <p className="text-xl font-display font-bold font-mono text-white"><AnimatedNumber value={totalBancarioIn} format="currency" /></p>
             </div>
           </div>
         </div>
@@ -806,7 +806,7 @@ export function ResumoDiaPanel({
                         setIsCashVaultModalOpen(true);
                       }
                     }}
-                    className="flex items-center gap-1 text-[9px] font-semibold bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-1 text-[9px] font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm"
                     title="Abrir Raio-X e Composição do Dinheiro em Cofre"
                   >
                     <Banknote size={11} />
@@ -817,15 +817,15 @@ export function ResumoDiaPanel({
                       e.stopPropagation();
                       setIsSaldoBancosModalOpen(true);
                     }}
-                    className="flex items-center gap-1 text-[var(--color-primary)] group-hover:underline cursor-pointer"
+                    className="flex items-center gap-1 text-zinc-400 hover:text-white group-hover:underline cursor-pointer"
                   >
                     <Landmark size={13} />
-                    <span className="text-[9px] font-semibold bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded">Ver Lojas ↗</span>
+                    <span className="text-[9px] font-semibold bg-zinc-800 px-1.5 py-0.5 rounded">Ver Lojas ↗</span>
                   </div>
                 </div>
               </div>
 
-              <p className="text-2xl sm:text-3xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
+              <p className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white">
                 <AnimatedNumber 
                   value={derivedBankTotals.totalPositivoConsolidado > 0 
                     ? derivedBankTotals.totalPositivoConsolidado 
@@ -861,38 +861,38 @@ export function ResumoDiaPanel({
                     <span className="text-[8px] text-[var(--text-tertiary)] uppercase font-semibold truncate">
                       Extrato OFX (Positivo)
                     </span>
-                    <span className="font-mono font-bold text-[var(--text-primary)] text-xs truncate">
+                    <span className="font-mono font-bold text-white text-xs truncate">
                       <AnimatedNumber value={displayOfxPos} format="currency" />
                     </span>
                   </div>
 
                   {hasCofre && (
                     <div 
-                      className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400"
+                      className="bg-[var(--bg-canvas)] border border-zinc-800 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-zinc-300"
                       title="Fração em espécie guardada nos cofres das filiais"
                     >
-                      <span className="text-[8px] text-amber-400/80 uppercase font-semibold truncate flex items-center justify-between">
+                      <span className="text-[8px] text-zinc-400 uppercase font-semibold truncate flex items-center justify-between">
                         <span>Dinheiro no Cofre</span>
                       </span>
-                      <span className="font-mono font-bold text-amber-300 text-xs truncate">
+                      <span className="font-mono font-bold text-white text-xs truncate">
                         + <AnimatedNumber value={displayCofre} format="currency" />
                       </span>
                     </div>
                   )}
 
                   {hasMaq && (
-                    <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-emerald-400">
-                      <span className="text-[8px] text-emerald-400/80 uppercase font-semibold truncate">A Compensar</span>
-                      <span className="font-mono font-bold text-emerald-300 text-xs truncate">
+                    <div className="bg-[var(--bg-canvas)] border border-zinc-800 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-zinc-300">
+                      <span className="text-[8px] text-zinc-400 uppercase font-semibold truncate">A Compensar</span>
+                      <span className="font-mono font-bold text-white text-xs truncate">
                         + <AnimatedNumber value={displayMaq} format="currency" />
                       </span>
                     </div>
                   )}
 
                   {hasNeg && (
-                    <div className="bg-red-500/10 border border-red-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-red-400">
-                      <span className="text-[8px] text-red-400 uppercase font-semibold truncate">(-) Cheque Esp.</span>
-                      <span className="font-mono font-bold text-red-400 text-xs truncate">
+                    <div className="bg-rose-500/10 border border-rose-500/20 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-rose-400">
+                      <span className="text-[8px] text-rose-400 uppercase font-semibold truncate">(-) Cheque Esp.</span>
+                      <span className="font-mono font-bold text-rose-400 text-xs truncate">
                         - <AnimatedNumber value={displayNeg} format="currency" />
                       </span>
                     </div>
@@ -913,22 +913,22 @@ export function ResumoDiaPanel({
               }
             }}
             className={`p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between shadow-sm transition-all ${
-              !isEditing ? 'cursor-pointer hover:border-teal-500/50 hover:bg-[var(--bg-surface-hover)] group' : ''
+              !isEditing ? 'cursor-pointer hover:border-zinc-700 hover:bg-[var(--bg-surface-hover)] group' : ''
             }`}
           >
             <div>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-teal-400 transition-colors">DINHEIRO MP</span>
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-zinc-200 transition-colors">DINHEIRO MP</span>
                   <WhisperDot dot={insights?.dots.dinheiro_mp} />
                 </div>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <span className="text-[9px] font-semibold text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[9px] font-semibold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                       Gerenciar ↗
                     </span>
                   )}
-                  <Wallet size={15} className="text-[var(--color-accent-teal)]" />
+                  <Wallet size={15} className="text-zinc-400" />
                 </div>
               </div>
               {isEditing ? (
@@ -940,11 +940,11 @@ export function ResumoDiaPanel({
                     value={dinheiroMpInput || ''}
                     onChange={(e) => setDinheiroMpInput(Number(e.target.value))}
                     placeholder="0,00"
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-teal)]/40 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-[var(--color-accent-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-teal)]"
+                    className="w-full bg-[var(--bg-canvas)] border border-zinc-700 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
                   />
                 </div>
               ) : (
-                <p className="text-2xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
+                <p className="text-2xl font-bold font-mono tabular-nums text-white">
                   <AnimatedNumber value={dinheiroMpValor} format="currency" />
                 </p>
               )}
@@ -963,22 +963,22 @@ export function ResumoDiaPanel({
                 onOpenSandboxModal('recebiveis');
               }
             }}
-            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)] transition-all flex flex-col justify-between shadow-sm group cursor-pointer"
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-zinc-700 hover:bg-[var(--bg-surface-hover)] transition-all flex flex-col justify-between shadow-sm group cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">A RECEBER</span>
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-zinc-200 transition-colors">A RECEBER</span>
                   <WhisperDot dot={insights?.dots.a_receber} />
                 </div>
                 {isSandbox ? (
-                  <span className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all flex items-center gap-1">
+                  <span className="text-[9px] font-semibold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded group-hover:bg-zinc-700 transition-all flex items-center gap-1">
                     Ver Títulos ↗
                   </span>
                 ) : (
                   <Link
                     to="/recebiveis"
-                    className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all flex items-center gap-1"
+                    className="text-[9px] font-semibold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded group-hover:bg-zinc-700 transition-all flex items-center gap-1"
                   >
                     Ver Títulos ↗
                   </Link>
@@ -993,11 +993,11 @@ export function ResumoDiaPanel({
                     value={aReceberInput || ''}
                     onChange={(e) => setAReceberInput(Number(e.target.value))}
                     placeholder="0,00"
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                    className="w-full bg-[var(--bg-canvas)] border border-zinc-700 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
                   />
                 </div>
               ) : (
-                <p className="text-2xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
+                <p className="text-2xl font-bold font-mono tabular-nums text-white">
                   <AnimatedNumber value={summary?.a_receber ?? aReceberValor} format="currency" />
                 </p>
               )}
@@ -1016,25 +1016,25 @@ export function ResumoDiaPanel({
                 setIsPatioModalOpen(true);
               }
             }}
-            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between cursor-pointer hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm"
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between cursor-pointer hover:border-zinc-700 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm"
             title="Clique para ver a lista detalhada de OSs no pátio e comparativo com o dia anterior"
           >
             <div>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-amber-400 transition-colors">NA LOJA OS (PÁTIO)</span>
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-zinc-200 transition-colors">NA LOJA OS (PÁTIO)</span>
                   <WhisperDot dot={insights?.dots.na_loja_os} />
                 </div>
-                <span className="text-[9px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded group-hover:bg-amber-500/20 transition-all flex items-center gap-1">
+                <span className="text-[9px] font-semibold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded group-hover:bg-zinc-700 transition-all flex items-center gap-1">
                   Ver OSs ↗
                 </span>
               </div>
-              <p className="text-2xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)] group-hover:text-amber-300 transition-colors">
+              <p className="text-2xl font-bold font-mono tabular-nums text-white">
                 <AnimatedNumber value={naLojaValor} format="currency" />
               </p>
             </div>
             <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[10px] text-[var(--text-tertiary)] flex items-center justify-between font-mono">
-              <span className="font-semibold text-amber-400 font-sans">OSs do Pátio</span>
+              <span className="font-semibold text-zinc-400 font-sans">OSs do Pátio</span>
               {previousSnapshot?.total_patio !== undefined && (
                 <span className="text-[9px] text-[var(--text-tertiary)]">
                   Ant: {formatCurrency(Number(previousSnapshot.total_patio))}
@@ -1064,7 +1064,7 @@ export function ResumoDiaPanel({
               {/* Caixa Atual */}
               <div className="bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Caixa Atual</span>
-                <p className="text-xl font-bold text-[var(--text-primary)] font-mono mt-0.5">
+                <p className="text-xl font-bold text-white font-mono mt-0.5">
                   <AnimatedNumber value={caixaAtualCalculado} format="currency" />
                 </p>
                 <span className="text-[10px] text-[var(--text-tertiary)] truncate block">
@@ -1077,7 +1077,7 @@ export function ResumoDiaPanel({
               {/* Caixa Anterior */}
               <div className="bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Caixa Anterior</span>
-                <p className="text-xl font-bold text-[var(--text-secondary)] font-mono mt-0.5">
+                <p className="text-xl font-bold text-white font-mono mt-0.5">
                   <AnimatedNumber value={caixaAnteriorGlobal} format="currency" />
                 </p>
                 <span className="text-[10px] text-[var(--text-tertiary)]">Fechamento do dia anterior</span>
@@ -1086,7 +1086,7 @@ export function ResumoDiaPanel({
               {/* Fluxo de Caixa */}
               <div className="bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Fluxo de Caixa</span>
-                <p className={`text-xl font-bold font-mono mt-0.5 ${fluxoCaixaCalculado >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                <p className={`text-xl font-bold font-mono mt-0.5 ${fluxoCaixaCalculado >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {fluxoCaixaCalculado >= 0 ? '+' : ''}<AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
                 </p>
                 <span className="text-[10px] text-[var(--text-tertiary)]">Caixa Atual - Caixa Ant.</span>
@@ -1106,15 +1106,15 @@ export function ResumoDiaPanel({
                   }
                 }}
                 className={`bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)] transition-all ${
-                  !isEditing ? 'cursor-pointer hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-elevated)] group' : ''
+                  !isEditing ? 'cursor-pointer hover:border-zinc-700 hover:bg-[var(--bg-surface-elevated)] group' : ''
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold group-hover:text-[var(--color-primary)] transition-colors">
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold group-hover:text-zinc-200 transition-colors">
                     Faturamento do Dia
                   </span>
                   {!isEditing && (
-                    <span className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded">
+                    <span className="text-[9px] font-semibold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded">
                       Ver Detalhes ↗
                     </span>
                   )}
@@ -1132,7 +1132,7 @@ export function ResumoDiaPanel({
                         value={faturamentoInput || ''}
                         onChange={(e) => handleOdometroHojeChange(Number(e.target.value))}
                         placeholder="0,00"
-                        className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded py-1 px-2 text-xs font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] mt-0.5"
+                        className="w-full bg-[var(--bg-surface)] border border-zinc-700 rounded py-1 px-2 text-xs font-bold font-mono text-white focus:outline-none focus:border-zinc-500 mt-0.5"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[var(--border-subtle)]">
@@ -1164,7 +1164,7 @@ export function ResumoDiaPanel({
                   </div>
                 ) : (
                   <div>
-                    <p className="text-xl font-bold text-[var(--text-primary)] font-mono mt-0.5 group-hover:text-emerald-400 transition-colors">
+                    <p className="text-xl font-bold text-white font-mono mt-0.5">
                       <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
                     </p>
                     <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
@@ -1180,7 +1180,7 @@ export function ResumoDiaPanel({
               {/* Valor Disp. Contas */}
               <div className="bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Valor Disp. Contas</span>
-                <p className="text-xl font-bold text-[var(--color-primary-bright)] font-mono mt-0.5">
+                <p className="text-xl font-bold text-white font-mono mt-0.5">
                   <AnimatedNumber value={valorDispContasCalculado} format="currency" />
                 </p>
                 <span className="text-[10px] text-[var(--text-tertiary)]">Faturamento - Fluxo Caixa</span>
@@ -1197,12 +1197,12 @@ export function ResumoDiaPanel({
                   }
                 }}
                 className={`bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)] transition-all ${
-                  !isEditing ? 'cursor-pointer hover:border-red-500/50 hover:bg-[var(--bg-surface-elevated)] group' : ''
+                  !isEditing ? 'cursor-pointer hover:border-zinc-700 hover:bg-[var(--bg-surface-elevated)] group' : ''
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase group-hover:text-red-400 transition-colors">
+                    <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase group-hover:text-zinc-200 transition-colors">
                       Contas (Manual)
                     </span>
                     {!isEditing && (summary?.has_contas_override || (currentSnapshot?.metadata as any)?.has_contas_override) && (
@@ -1212,7 +1212,7 @@ export function ResumoDiaPanel({
                     )}
                   </div>
                   {!isEditing && (
-                    <span className="text-[9px] font-semibold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">
+                    <span className="text-[9px] font-semibold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded">
                       Ver Contas ↗
                     </span>
                   )}
@@ -1224,11 +1224,11 @@ export function ResumoDiaPanel({
                     value={contasInput || ''}
                     onChange={(e) => setContasInput(Number(e.target.value))}
                     placeholder="0,00"
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-danger)]/40 rounded py-1 px-2 text-sm font-bold font-mono text-[var(--color-accent-danger)] mt-1"
+                    className="w-full bg-[var(--bg-canvas)] border border-zinc-700 rounded py-1 px-2 text-sm font-bold font-mono text-white mt-1 focus:outline-none focus:ring-1 focus:ring-zinc-500"
                   />
                 ) : (
                   <div>
-                    <p className="text-xl font-bold text-[var(--color-accent-danger)] font-mono mt-0.5">
+                    <p className="text-xl font-bold text-white font-mono mt-0.5">
                       <AnimatedNumber value={contasManualValor} format="currency" />
                     </p>
                     <div className="text-[10px] text-[var(--text-tertiary)] flex flex-col gap-0.5 mt-0.5">
@@ -1255,7 +1255,7 @@ export function ResumoDiaPanel({
                 <span className="font-semibold text-[var(--text-secondary)]">Subtotal: Total de Contas a Cobrir</span>
                 <span className="text-[10px] block text-[var(--text-tertiary)]">Contas (Manual) + Juros (REDE)</span>
               </div>
-              <div className="font-mono text-sm font-bold text-[var(--color-accent-warning)]">
+              <div className="font-mono text-sm font-bold text-white">
                 <AnimatedNumber value={subtotalContasCalculado} format="currency" />
               </div>
             </div>
