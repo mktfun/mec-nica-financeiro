@@ -1,4 +1,26 @@
-## [2026-09-23] — [Feature ID: 436-motor-matching-estrito-regras-permissivas]
+## [2026-09-24] — [Feature ID: 438-e-439-blindagem-match-pix-os-e-intercompany]
+
+**Contexto:** Eliminação definitiva de falsos positivos no matching PIX x OS em todas as 4 camadas da aplicação: na tela (`StoreExtratoBancarioView.tsx`), no hook de conciliação (`useConciliacao.ts`), no motor em memória (`autoMatchingEngine.ts`) e no banco de dados PostgreSQL (`auto_match_daily_transactions` e `auto_match_receivables`).
+
+**Regra aprendida:**
+1. **Isolamento de OS na Apresentação (`StoreExtratoBancarioView.tsx`):**
+   - Vínculo de OS nunca pode ser herdado via chave composta fraca `valor_título` (`histByComposite`). Herança de OS de dias anteriores só é permitida via `histByFitid` (FITID bancário exato).
+2. **Proibição de Casamento Cego por Unicidade de Valor (`useConciliacao.ts`):**
+   - A antiga "Prioridade C" (`if (candidates.length === 1)`) que casava qualquer PIX a uma OS se ela fosse a única com aquele valor na filial foi categoricamente extirpada. O match exige correspondência explícita de identidade de cliente (`matchClientTokens`).
+3. **Proibição de Bypass por Total da OS (`autoMatchingEngine.ts`):**
+   - O valor do PIX deve bater com a parcela PIX real da OS (`targetOsVal`), com tolerância $\le 0.05$. O fallback `(osTotal > 0 && Math.abs(osTotal - txAmount) <= tolerance)` foi eliminado. Se a OS totaliza R$ 5.000 mas o PIX é de R$ 200, ela jamais casará com uma transferência de R$ 5.000.
+4. **Proteção Contra Pessoas Jurídicas e Empresas Externas:**
+   - Adicionada guarda documental (divergência de CPF/CNPJ) e bloqueio para remetentes PJ (CNPJ 14 dígitos) sem correspondência forte de cliente.
+   - Stopwords corporativas ampliadas com `RECEBIMENTO`, `RECEBIMENTOS`, `AUTOMOTIVO`, `AUTOMOVEIS`, `OFICINA`, `CENTRO`.
+5. **Roteamento Exclusivo de Intercompany no Banco (`auto_match_daily_transactions`):**
+   - Transações do grupo (`MP AUTO MECANICA`, `MP JABAQUARA`, `EMPORIO`, `HOLDING`, etc.) são compulsoriamente catalogadas como `Transferência Entre Lojas [Apenas Conciliar]`, com `matched_os_number = NULL`.
+   - O banco jamais casa transferências intercompany ou de oficinas terceiras com ordens de serviço de balcão.
+
+**Risco identificado / Anti-pattern:** Usar a existência de apenas um candidato de mesmo valor para inferir casamento ("se tem só 1 de 5.000, deve ser essa OS"). Isso uniu uma transferência de oficina parceira à OS de uma cliente física sem qualquer relação.
+
+---
+
+
 
 **Contexto:** Eliminação definitiva de falsos positivos no motor de conciliação automática (`autoMatchingEngine.ts`, `CentralImportWizard.tsx` e RPC `run_autonomous_reconciliation_loop`). O sistema estava vinculando transações bancárias (inclusive rendimentos de R$ 0,01 e PIX de valores e clientes divergentes) a OSs aleatórias e injetando aportes de sócios automaticamente no faturamento (`daily_revenue_adjustments`).
 

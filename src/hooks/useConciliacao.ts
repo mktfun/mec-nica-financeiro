@@ -637,14 +637,6 @@ export function useModulo1StoresData(date: string) {
             });
           }
 
-          // Prioridade C: Unicidade de valor na filial
-          if (!matchedOs) {
-            const candidates = osPixItems.filter(os => !matchedOsIds.has(os.id) && Math.abs(os.amount - amt) < 0.05);
-            if (candidates.length === 1) {
-              matchedOs = candidates[0];
-            }
-          }
-
           if (matchedOs) {
             pixOsMatched += amt;
             matchedOsIds.add(matchedOs.id);

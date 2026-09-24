@@ -1,4 +1,21 @@
-## [2026-09-23] — [Feature ID: 436-motor-matching-estrito-regras-permissivas]
+## [2026-09-24] — [Feature ID: 439-blindagem-rpc-auto-match-saneamento-e-reconciliacao]
+
+**Contexto:** Migration `20260924160000_strict_auto_match_daily_transactions.sql` blindando as RPCs `auto_match_daily_transactions` e `auto_match_receivables` contra falsos positivos PIX x OS e contaminação por transferências entre lojas (intercompany). Saneamento forense de vínculos espúrios de 24/09/2026.
+
+**Regra aprendida:**
+1. **Eliminação de Casamentos Cegos por Valor em RPC:**
+   - As Fases 2B e 2C da RPC no banco buscavam OSs por `total_value` ou `total_value - paid_value` sem checar identidade de cliente. Essas buscas foram totalmente eliminadas.
+   - O pareamento de PIX exige compulsoriamente duplo fator: `COALESCE(pix_transfer_value, 0) > 0`, tolerância $\le 0.05$ e correspondência de identidade (documento CPF/CNPJ coincidente ou tokens fortes de nome).
+2. **Isolamento de Entidades Intercompany:**
+   - Transferências de/para empresas do grupo (`MP AUTO MECANICA`, `MP JABAQUARA`, `EMPORIO`, `HOLDING`, etc.) são roteadas na Fase 0C para `manual_category = 'Transferência Entre Lojas [Apenas Conciliar]'`, `match_status = 'intercompany_paired'` e `matched_os_number = NULL`. Elas jamais podem ser vinculadas a OSs ou recebíveis.
+3. **Blindagem em `auto_match_receivables`:**
+   - Adquirentes e transferências intercompany são expressamente bloqueadas de realizarem baixa automática em carteira de recebíveis.
+
+**Risco identificado / Anti-pattern:** Usar `ABS(total_value - amount) <= 0.05` em RPCs PL/pgSQL como fallback para depósitos PIX, o que causava a apropriação indevida de transferências intercompany de outras filiais para OSs de clientes.
+
+---
+
+
 
 **Contexto:** Blindagem da RPC `run_autonomous_reconciliation_loop` e saneamento forense de `ofx_transactions` via migration `20260923000001_harden_reconciliation_loop_remove_revenue_injection.sql`.
 

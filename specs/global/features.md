@@ -80,3 +80,15 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - **Bipolaridade cromática estrita:** Números normais (estáticos/patrimoniais) sempre em `text-white font-mono`.
   - **Cálculos/Deltas:** `text-emerald-400 font-mono` para conformidade/superávit e `text-rose-400 font-mono` para divergência/déficit.
   - **Exceções:** `valor_disp_contas` e `contas_manual` permanecem em branco normal (`text-white font-mono`). Saldo bancário de filial é branco se positivo e vermelho se devedor.
+
+---
+
+## 10. Blindagem de Conciliação PIX x OS & Intercompany (Specs 438 & 439)
+- `StoreExtratoBancarioView.tsx`: Isolamento de herança histórica de OS estritamente via `histByFitid` (eliminado fallback de chave fraca por valor/título).
+- `useConciliacao.ts`: Eliminação de casamento cego por unicidade de valor ("Prioridade C"). Validação estrita por tokens de nome do cliente.
+- `autoMatchingEngine.ts`: Eliminação de bypass por total da OS (`osTotal`); correspondência documental CPF/CNPJ e bloqueio de remetentes PJ (14 dígitos) sem correspondência forte; ampliação de stopwords corporativas (`RECEBIMENTO`, `CENTRO`, etc.).
+- `auto_match_daily_transactions` & `auto_match_receivables` (Migration `20260924160000`):
+  - Roteamento compulsório de transações intercompany (`MP AUTO MECANICA`, `MP JABAQUARA`, `EMPORIO`, `HOLDING`, etc.) para `Transferência Entre Lojas [Apenas Conciliar]` com `matched_os_number = NULL`.
+  - Eliminação de fases cegas (2B e 2C) por saldo residual sem identidade.
+  - Exclusão de adquirentes e transferências de empresas do grupo do auto-match de recebíveis.
+- Saneamento forense e reprocessamento canônico do dia 24/09/2026.

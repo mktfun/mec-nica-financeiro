@@ -120,7 +120,8 @@ export function matchClientTokens(clientName: string | null | undefined, counter
     'LTDA', 'ME', 'EPP', 'EIRELI', 'SA', 'S/A', 'DE', 'DA', 'DO', 'DOS', 'DAS', 'E', 'EM',
     'POSTO', 'AUTO', 'MECANICA', 'SERVICOS', 'COMERCIO', 'ENTRADA', 'PIX', 'TRANSF', 'QRS',
     'TRANSFERENCIA', 'CLIENTE', 'PAGTO', 'PAGAMENTO', 'BANCO', 'BRADESCO', 'ITAU', 'SANTANDER',
-    'CAIXA', 'NUBANK', 'INTER', 'C6', 'MERCADO', 'PAGO'
+    'CAIXA', 'NUBANK', 'INTER', 'C6', 'MERCADO', 'PAGO',
+    'RECEBIMENTO', 'RECEBIMENTOS', 'AUTOMOTIVO', 'AUTOMOVEIS', 'OFICINA', 'CENTRO'
   ]);
 
   const clientTokens = normClient.split(' ').filter(t => t.length >= 3 && !STOPWORDS.has(t));
@@ -188,19 +189,32 @@ export function isStrictPixOsMatch(
     return false;
   }
 
-  // 3. Valor deve bater com a parcela de PIX (ou paid_value se a OS for 100% PIX)
+  // 3. Valor deve bater estritamente com a parcela de PIX (ou paid_value se a OS for 100% PIX)
   const osPaid = Number(os.paid_value ?? os.paidValue ?? 0);
   const osTotal = Number(os.total_value ?? os.totalValue ?? 0);
-  const targetOsVal = osPix > 0 ? osPix : osPaid;
+  const targetOsVal = osPix > 0 ? osPix : (osPaid > 0 ? osPaid : osTotal);
 
-  const valueMatches = Math.abs(targetOsVal - txAmount) <= tolerance ||
-                       (osTotal > 0 && Math.abs(osTotal - txAmount) <= tolerance);
+  const valueMatches = Math.abs(targetOsVal - txAmount) <= tolerance;
 
   if (!valueMatches) {
     return false;
   }
 
   // 4. Identidade do Cliente DEVE ter correspondência (Zero Match Cego por Valor)
+  // 4.1 Guard: se documentos (CPF/CNPJ) constarem em ambos e divergirem -> rejeitar
+  const txDoc = extractDocDigits(fullOfxText);
+  const osDoc = extractDocDigits(os.client_name || os.client_cpf_cnpj || os.cnpj_cpf || '');
+  if (txDoc && osDoc && txDoc !== osDoc) {
+    return false;
+  }
+
+  // 4.2 Guard: se remetente bancário for PJ (CNPJ 14 dígitos), exige match estrito de tokens
+  if (txDoc && txDoc.length === 14) {
+    if (!matchClientTokens(os.client_name, fullOfxText)) {
+      return false;
+    }
+  }
+
   return matchClientTokens(os.client_name, fullOfxText);
 }
 
