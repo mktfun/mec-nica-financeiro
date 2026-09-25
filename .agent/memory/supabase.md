@@ -1263,3 +1263,12 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
    - Ao apurar `contas_loja`, quando um débito bancário é vinculado a uma conta manual (`daily_manual_bills`), somar `bst.contas_loja_total + sofx.saidas_justificadas` duplica a despesa. A fórmula canônica deve usar `GREATEST(bst.contas_loja_total, sofx.saidas_justificadas)` ou priorizar a conta da loja.
 3. **Colunas de Identificação em ofx_transactions:**
    - A tabela `ofx_transactions` possui as colunas `counterpart_name` e `bank_name`. Ela NÃO possui a coluna `title`. Consultas SQL com `title` geram erro `42703 (column does not exist)`.
+
+## [2026-09-25] — [Feature ID: 442-edicao-caixa-atual-e-anterior]
+**Contexto:** Atualização da RPC `get_daily_reconciliation_summary` (Migration `20260925000001_allow_caixa_manual_override_in_rpc.sql`) para suporte a overrides manuais de Caixa Atual e Caixa Anterior tanto no Ramal 1 (dia fechado) quanto no Ramal 2 (dia aberto/dinâmico).
+**Regra aprendida:**
+1. **Respeito a Overrides no Ramal Dinâmico:** Se um dia estiver em modo dinâmico ou aberto, a RPC deve verificar se o snapshot possui `is_caixa_atual_override = true` e honrar `v_snapshot.caixa_atual`.
+2. **Prioridade de Caixa Anterior:** A RPC deve priorizar `v_snapshot.metadata->>'caixa_anterior'`, com fallback para `v_prev_snapshot.caixa_atual`, evitando discrepâncias em dias com Marco Zero ou correções manuais de virada contábil.
+3. **Consistência em Cascade:** Ao calcular `v_fluxo_caixa = v_caixa_atual - v_caixa_anterior`, os campos dependentes (`v_valor_disp_contas` e `v_diferenca_final`) adaptam-se imediatamente no Postgres, garantindo paridade 1:1 com o frontend.
+**Risco identificado / Anti-pattern:** Recalcular `caixa_atual` a partir do zero no Ramal 2 desconsiderando flags de override gravadas pelo operador.
+

@@ -100,3 +100,15 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Padrão visual baseado no Cofre (`bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1`).
   - Suporte a variantes (`dot` e `border-l`), indicadores semânticos (`amber`, `emerald`, `rose`, `blue`, `purple`, `red`, `default`), estado de atenção (`danger={true}` para cheque especial/passivos), interatividade e subtítulos dinâmicos.
   - Adotado em `PatioOsDetailModal.tsx`, `SaldoBancosDetailModal.tsx` e `CashVaultCompositionModal.tsx`.
+
+---
+
+## 12. Edição Manual de Caixa Atual e Caixa Anterior (Spec 442)
+- `ResumoDiaPanel.tsx`:
+  - Edição interativa controlada dos campos **Caixa Atual** e **Caixa Anterior** durante modo de edição (`isEditing === true`).
+  - Inputs com tokens Zinc-950 (`bg-[var(--bg-surface)]`, `border-zinc-700`, `text-white font-mono`).
+  - Ação rápida "Restaurar" para retornar ao valor derivado automaticamente dos 5 Pilares (`caixaAtualCalculado`) ou D-1 (`caixaAnteriorGlobal`).
+  - Reatividade imediata de `fluxo_caixa`, `valor_disp_contas` e `diferenca_final`.
+- `useBackendConciliacao.ts`: Preservação de `caixa_atual` gravado no snapshot sem sobrescrita involuntária pelo cálculo dinâmico bruto em dias fechados.
+- `get_daily_reconciliation_summary` (Migration `20260925000001_allow_caixa_manual_override_in_rpc.sql`):
+  - Suporte a `is_caixa_atual_override` e priorização de `metadata.caixa_anterior` no Ramal 2 (dia aberto/dinâmico).

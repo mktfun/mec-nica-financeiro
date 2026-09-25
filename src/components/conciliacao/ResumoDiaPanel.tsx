@@ -104,6 +104,10 @@ export function ResumoDiaPanel({
   const [dinheiroMpInput, setDinheiroMpInput] = useState<number>(0);
   const [aReceberInput, setAReceberInput] = useState<number>(0);
   const [contasInput, setContasInput] = useState<number>(0);
+  const [caixaAtualInput, setCaixaAtualInput] = useState<number>(0);
+  const [caixaAnteriorInput, setCaixaAnteriorInput] = useState<number>(0);
+  const [hasCaixaAtualOverride, setHasCaixaAtualOverride] = useState<boolean>(false);
+  const [hasCaixaAnteriorOverride, setHasCaixaAnteriorOverride] = useState<boolean>(false);
 
   // Odômetro Anterior (Ant) deve SEMPRE ser o odômetro acumulado fechado de ontem (metadata.odometro_hoje),
   // e NUNCA o faturamento líquido diário calculado de ontem (faturamento).
@@ -185,8 +189,22 @@ export function ResumoDiaPanel({
         ? (Number(overrideVal) - Number(summary?.contas_extras || 0))
         : sanitizedBase;
       setContasInput(initialContas);
+
+      const isOverrideCaixaAnt = Boolean(snapMeta.is_caixa_anterior_override);
+      const antCaixa = (snapMeta.caixa_anterior !== undefined && snapMeta.caixa_anterior !== null)
+        ? Number(snapMeta.caixa_anterior)
+        : caixaAnteriorGlobal;
+      setCaixaAnteriorInput(antCaixa);
+      setHasCaixaAnteriorOverride(isOverrideCaixaAnt);
+
+      const isOverrideCaixaAtual = Boolean(snapMeta.is_caixa_atual_override);
+      const snapCaixaAtual = (currentSnapshot?.caixa_atual !== undefined && currentSnapshot?.caixa_atual !== null)
+        ? Number(currentSnapshot.caixa_atual)
+        : (summary?.caixa_atual ? Number(summary.caixa_atual) : 0);
+      setCaixaAtualInput(snapCaixaAtual > 0 ? snapCaixaAtual : 0);
+      setHasCaixaAtualOverride(isOverrideCaixaAtual);
     }
-  }, [currentSnapshot, summary, previousSnapshot, isEditing, faturamentoAnteriorGlobal]);
+  }, [currentSnapshot, summary, previousSnapshot, isEditing, faturamentoAnteriorGlobal, caixaAnteriorGlobal]);
 
   // Handlers para cálculo bidirecional (Odômetro Hoje <-> Líquido Dia)
   const handleOdometroHojeChange = (val: number) => {
@@ -323,7 +341,23 @@ export function ResumoDiaPanel({
   // Matemática Consolidada — 100% CANÔNICA, REATIVA E IDÊNTICA EM MODO NORMAL E MODO EDIÇÃO
   const caixaAtualCalculado = Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100;
 
-  const fluxoCaixaCalculado = Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100;
+  const isSnapCaixaAtualOverride = Boolean((currentSnapshot?.metadata as any)?.is_caixa_atual_override);
+  const effectiveCaixaAtual = isEditing
+    ? (hasCaixaAtualOverride && caixaAtualInput > 0 ? caixaAtualInput : caixaAtualCalculado)
+    : (isSnapCaixaAtualOverride && currentSnapshot?.caixa_atual !== undefined && currentSnapshot?.caixa_atual !== null
+        ? Number(currentSnapshot.caixa_atual)
+        : (currentSnapshot?.is_closed && currentSnapshot?.caixa_atual !== undefined && currentSnapshot?.caixa_atual !== null
+            ? Number(currentSnapshot.caixa_atual)
+            : caixaAtualCalculado));
+
+  const isSnapCaixaAnteriorOverride = Boolean((currentSnapshot?.metadata as any)?.is_caixa_anterior_override);
+  const effectiveCaixaAnterior = isEditing
+    ? (hasCaixaAnteriorOverride && caixaAnteriorInput > 0 ? caixaAnteriorInput : caixaAnteriorGlobal)
+    : ((currentSnapshot?.metadata as any)?.caixa_anterior !== undefined && (currentSnapshot?.metadata as any)?.caixa_anterior !== null
+        ? Number((currentSnapshot!.metadata as any).caixa_anterior)
+        : caixaAnteriorGlobal);
+
+  const fluxoCaixaCalculado = Math.round(((effectiveCaixaAtual - effectiveCaixaAnterior) + Number.EPSILON) * 100) / 100;
 
   const valorDispContasCalculado = Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100;
 
@@ -401,6 +435,18 @@ export function ResumoDiaPanel({
         ? Number(summary?.contas_manual ?? summary?.contas_base ?? 0)
         : Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0)
     );
+    setCaixaAtualInput(
+      isSnapCaixaAtualOverride && currentSnapshot?.caixa_atual !== undefined
+        ? Number(currentSnapshot.caixa_atual)
+        : caixaAtualCalculado
+    );
+    setHasCaixaAtualOverride(isSnapCaixaAtualOverride);
+    setCaixaAnteriorInput(
+      (currentSnapshot?.metadata as any)?.caixa_anterior !== undefined
+        ? Number((currentSnapshot!.metadata as any).caixa_anterior)
+        : caixaAnteriorGlobal
+    );
+    setHasCaixaAnteriorOverride(isSnapCaixaAnteriorOverride);
     setIsEditing(false);
     toast.info('Edição cancelada. Valores restaurados.');
   };
@@ -508,7 +554,7 @@ export function ResumoDiaPanel({
         a_receber_manual: aReceberValor,
         total_recebiveis: dinheiroMpValor + aReceberValor,
         total_patio: naLojaValor,
-        caixa_atual: caixaAtualCalculado,
+        caixa_atual: effectiveCaixaAtual,
         faturamento: faturamentoTotalComAjustes,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
@@ -532,7 +578,12 @@ export function ResumoDiaPanel({
         notes: 'Fechamento diário consolidado e blindado via painel de conciliação.',
         metadata: {
           ...(currentSnapshot?.metadata || {}),
-          caixa_anterior: caixaAnteriorGlobal,
+          caixa_anterior: effectiveCaixaAnterior,
+          caixa_atual: effectiveCaixaAtual,
+          is_caixa_atual_override: hasCaixaAtualOverride || isSnapCaixaAtualOverride,
+          caixa_atual_override: (hasCaixaAtualOverride || isSnapCaixaAtualOverride) ? effectiveCaixaAtual : null,
+          is_caixa_anterior_override: hasCaixaAnteriorOverride || isSnapCaixaAnteriorOverride,
+          caixa_anterior_override: (hasCaixaAnteriorOverride || isSnapCaixaAnteriorOverride) ? effectiveCaixaAnterior : null,
           fluxo_caixa: fluxoCaixaCalculado,
           faturamento_anterior: faturamentoAnteriorInput,
           odometro_hoje: effectiveAccumulatedFaturamento,
@@ -570,7 +621,7 @@ export function ResumoDiaPanel({
           cash_vault_snapshot: cashVaultSnapshotData || (currentSnapshot?.metadata as any)?.cash_vault_snapshot || null,
           devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
-          caixa_atual: caixaAtualCalculado,
+          caixa_atual: effectiveCaixaAtual,
           a_receber_manual: aReceberValor,
           manual_a_receber: aReceberValor,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
@@ -1063,24 +1114,90 @@ export function ResumoDiaPanel({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Caixa Atual */}
               <div className="bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Caixa Atual</span>
-                <p className="text-xl font-bold text-white font-mono mt-0.5">
-                  <AnimatedNumber value={caixaAtualCalculado} format="currency" />
-                </p>
-                <span className="text-[10px] text-[var(--text-tertiary)] truncate block">
-                  {saldoNegativoItau > 0
-                    ? `Ativos - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoNegativoItau)} (Negativo)`
-                    : 'Patrimônio disponível'}
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Caixa Atual</span>
+                  {isEditing && hasCaixaAtualOverride && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCaixaAtualInput(caixaAtualCalculado);
+                        setHasCaixaAtualOverride(false);
+                      }}
+                      className="text-[9px] text-amber-400 hover:text-amber-300 underline font-sans cursor-pointer"
+                    >
+                      Restaurar
+                    </button>
+                  )}
+                </div>
+                {isEditing ? (
+                  <div className="relative mt-1">
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={hasCaixaAtualOverride ? (caixaAtualInput || '') : (caixaAtualInput > 0 ? caixaAtualInput : (caixaAtualCalculado || ''))}
+                      onChange={(e) => {
+                        setCaixaAtualInput(Number(e.target.value));
+                        setHasCaixaAtualOverride(true);
+                      }}
+                      placeholder="0,00"
+                      className="w-full bg-[var(--bg-surface)] border border-zinc-700 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-xl font-bold text-white font-mono mt-0.5">
+                    <AnimatedNumber value={effectiveCaixaAtual} format="currency" />
+                  </p>
+                )}
+                <span className="text-[10px] text-[var(--text-tertiary)] truncate block mt-1">
+                  {hasCaixaAtualOverride
+                    ? 'Ajuste manual (override ativo)'
+                    : (saldoNegativoItau > 0
+                      ? `Ativos - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoNegativoItau)} (Negativo)`
+                      : 'Patrimônio disponível')}
                 </span>
               </div>
 
               {/* Caixa Anterior */}
               <div className="bg-[var(--bg-canvas)] p-3.5 rounded-xl border border-[var(--border-subtle)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Caixa Anterior</span>
-                <p className="text-xl font-bold text-white font-mono mt-0.5">
-                  <AnimatedNumber value={caixaAnteriorGlobal} format="currency" />
-                </p>
-                <span className="text-[10px] text-[var(--text-tertiary)]">Fechamento do dia anterior</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">Caixa Anterior</span>
+                  {isEditing && hasCaixaAnteriorOverride && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCaixaAnteriorInput(caixaAnteriorGlobal);
+                        setHasCaixaAnteriorOverride(false);
+                      }}
+                      className="text-[9px] text-amber-400 hover:text-amber-300 underline font-sans cursor-pointer"
+                    >
+                      Restaurar
+                    </button>
+                  )}
+                </div>
+                {isEditing ? (
+                  <div className="relative mt-1">
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={hasCaixaAnteriorOverride ? (caixaAnteriorInput || '') : (caixaAnteriorInput > 0 ? caixaAnteriorInput : (caixaAnteriorGlobal || ''))}
+                      onChange={(e) => {
+                        setCaixaAnteriorInput(Number(e.target.value));
+                        setHasCaixaAnteriorOverride(true);
+                      }}
+                      placeholder="0,00"
+                      className="w-full bg-[var(--bg-surface)] border border-zinc-700 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-xl font-bold text-white font-mono mt-0.5">
+                    <AnimatedNumber value={effectiveCaixaAnterior} format="currency" />
+                  </p>
+                )}
+                <span className="text-[10px] text-[var(--text-tertiary)] block mt-1">
+                  {hasCaixaAnteriorOverride ? 'Ajuste manual de D-1' : 'Fechamento do dia anterior'}
+                </span>
               </div>
 
               {/* Fluxo de Caixa */}
@@ -1356,6 +1473,8 @@ export function ResumoDiaPanel({
                     // Re-sincroniza inputs dos valores ativos antes de entrar em edição
                     setDinheiroMpInput(dinheiroMpValor);
                     setAReceberInput(aReceberValor);
+                    setCaixaAtualInput(effectiveCaixaAtual);
+                    setCaixaAnteriorInput(effectiveCaixaAnterior);
                     const liveContasValue = isSandbox 
                       ? Number(summary?.contas_manual ?? summary?.contas_base ?? 0)
                       : Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);

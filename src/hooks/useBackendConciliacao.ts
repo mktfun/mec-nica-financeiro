@@ -492,11 +492,14 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const finalNaLojaOs = livePatio > 0 ? livePatio : snapPatio;
 
       const calculatedCaixaAtual = Number((finalTotalSaldoBancoPositivo + finalDinheiroMp + finalAReceber + finalNaLojaOs - baseBancoNegativo).toFixed(2));
-      const finalCaixaAtual = Number(
-        (snapMeta.is_marco_zero && snapshotData?.caixa_atual !== undefined && snapshotData?.caixa_atual !== null)
-          ? snapshotData.caixa_atual
-          : calculatedCaixaAtual
+      const hasCaixaAtualOverride = Boolean(
+        snapMeta.is_caixa_atual_override || 
+        snapMeta.is_marco_zero || 
+        (snapshotData?.is_closed && snapshotData?.caixa_atual !== undefined && snapshotData?.caixa_atual !== null)
       );
+      const finalCaixaAtual = hasCaixaAtualOverride && snapshotData?.caixa_atual !== undefined && snapshotData?.caixa_atual !== null
+        ? Number(snapshotData.caixa_atual)
+        : calculatedCaixaAtual;
       const finalCaixaAnterior = Number(snapMeta.caixa_anterior ?? raw.caixa_anterior ?? 0);
       const finalFluxoCaixa = Number((finalCaixaAtual - finalCaixaAnterior).toFixed(2));
 

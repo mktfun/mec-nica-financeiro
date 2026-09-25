@@ -1301,3 +1301,14 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 2. **Desvinculação Reversível:** Toda OS vinculada a transação de cartão deve poder ser desvinculada pelo operador (`unlinkTransaction` com `source: 'rede'`).
 **Risco identificado:** Falta de passagem de `p_store_id` para RPCs de banco Postgres com assinaturas sobrecarregadas.
 
+## [2026-09-25] — [Feature ID: 442-edicao-caixa-atual-e-anterior]
+
+**Contexto:** Habilitação da edição controlada dos campos Caixa Atual e Caixa Anterior no painel de fechamento (`ResumoDiaPanel.tsx`) pós-importações, com sincronização em cascata do fluxo contábil e compatibilidade estrita na RPC e nos snapshots.
+**Regra aprendida:**
+1. **Override Reativo de Caixa:** Quando o operador altera Caixa Atual ou Caixa Anterior no modo de edição, o sistema ativa flags de override (`is_caixa_atual_override` / `is_caixa_anterior_override`), recalcula imediatamente `fluxo_caixa = (caixa_atual - caixa_anterior)`, `valor_disp_contas = (faturamento - fluxo_caixa)` e `diferenca_final = (valor_disp_contas - subtotal_contas)`.
+2. **Ação Rápida "Restaurar":** Sempre disponibilizar ação de restauração com 1 clique para voltar ao valor calculado automaticamente pelos 5 Pilares (`caixaAtualCalculado`) ou ao fechamento do dia útil anterior (`caixaAnteriorGlobal`).
+3. **Persistência Coerente no Snapshot:** O valor consolidado deve ser gravado tanto na coluna `daily_snapshots.caixa_atual` quanto no `metadata.caixa_anterior`, `metadata.caixa_atual` e flags de override, garantindo que a RPC canônica (`get_daily_reconciliation_summary`) e o hook `useBackendConciliacao.ts` preservem o valor em recargas futuras.
+**Risco identificado:** O hook `useBackendConciliacao.ts` sobrescrever `caixa_atual` com o cálculo dinâmico bruto para dias normais (não Marco Zero) fechados.
+**Não fazer:** Nunca bloquear a edição de Caixa Atual/Anterior ou obrigar intervenção manual via script SQL para correções contábeis de fechamento.
+
+
