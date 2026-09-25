@@ -9,14 +9,65 @@ export interface OfxTransaction {
   counterpart_name?: string;
 }
 
+export type BalanceSource = 
+  | 'saldo_total_disponivel_dia' 
+  | 'saldo_anterior_plus_tx' 
+  | 'ledgerbal_exact' 
+  | 'ledgerbal_fallback';
+
 export interface OfxParseResult {
   alias: string;
   transactions: OfxTransaction[];
   bankBalance?: number;
   previousBalance?: number;
+  previousBalanceDate?: string;
   accountLimit?: number;
   fileName?: string;
   closingDayBalance?: number;
+  closingDayDate?: string;
+  ledgerBalance?: number;
+  ledgerBalanceDate?: string;
+  calculatedClosingBalance?: number;
+  balanceSource?: BalanceSource;
+}
+
+export interface ParseOfxOptions {
+  sessionId?: string;
+  targetDate?: string;
+}
+
+// Normaliza texto de MEMO para comparação resiliente a variações de UTF-8 / Windows-1252 / acentos
+export function normalizeMemoText(text: string): string {
+  if (!text) return '';
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove diacríticos (acentos)
+    .replace(/[^a-zA-Z0-9\s]/g, ' ') // substitui símbolos e caracteres estranhos por espaço
+    .replace(/\s+/g, ' ')           // colapsa múltiplos espaços em 1
+    .trim()
+    .toUpperCase();
+}
+
+// Detecção estrita de Saldo do Dia (SALDO TOTAL DISPONÍVEL DIA, etc.)
+export function isClosingDayBalanceMemo(norm: string): boolean {
+  return (
+    /SALDO\s*(?:TOTAL)?\s*DISPON[^\n\r<]*?DIA/i.test(norm) ||
+    /DISPONIVEL\s*DIA/i.test(norm) ||
+    /SALDO\s*DO\s*DIA/i.test(norm) ||
+    /SDO\s*(?:FDO|FIM|FINAL)/i.test(norm) ||
+    /SALDO\s*FINAL/i.test(norm)
+  );
+}
+
+// Detecção estrita de Saldo Anterior (SALDO ANTERIOR, etc.)
+export function isPreviousBalanceMemo(norm: string): boolean {
+  return (
+    norm.includes('SALDO ANTERIOR') ||
+    norm.includes('SDO ANTERIOR') ||
+    norm.includes('SLD ANTERIOR') ||
+    norm.includes('SALDO INICIAL') ||
+    norm.includes('DISPONIVEL ANTERIOR')
+  );
 }
 
 import { traceLog } from '../logger';
@@ -40,7 +91,7 @@ function extractDocument(memo: string): { doc: string | undefined; name: string 
   return { doc: undefined, name: undefined };
 }
 
-export async function parseOFXFile(file: File, options?: { sessionId?: string }): Promise<OfxParseResult> {
+export async function parseOFXFile(file: File, options?: ParseOfxOptions): Promise<OfxParseResult> {
   if (file.name.toLowerCase().endsWith('.pdf')) {
     const { parseItauBankStatementPDF } = await import('./itauPdfParser');
     return parseItauBankStatementPDF(file, options);
@@ -49,8 +100,13 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   let text = '';
   try {
     const buffer = await file.arrayBuffer();
-    // Decodifica como windows-1252 (padrão Itaú/bancos BR) e fallback
-    text = new TextDecoder('windows-1252').decode(buffer);
+    try {
+      // Tenta UTF-8 estrito primeiro (padrão de downloads modernos)
+      text = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+    } catch {
+      // Fallback para windows-1252 (padrão Itaú SGML legado)
+      text = new TextDecoder('windows-1252').decode(buffer);
+    }
   } catch {
     text = await file.text();
   }
@@ -94,7 +150,9 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   
   const transactions: OfxTransaction[] = [];
   let previousBalance: number | undefined;
+  let previousBalanceDate: string | undefined;
   let closingDayBalance: number | undefined;
+  let closingDayDate: string | undefined;
   
   // Extração de blocos STMTTRN suportando:
   // 1. Tags com fechamento </STMTTRN> (XML padrão)
@@ -166,46 +224,30 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     // Extract MEMO
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/i);
     const rawMemo = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
+    const normMemo = normalizeMemoText(rawMemo);
     
-    // Capture SALDO ANTERIOR and all Brazilian bank variations before filtering out
-    const isPrevBalMemo = (
-      rawMemo.toUpperCase().includes('SALDO ANTERIOR') ||
-      rawMemo.toUpperCase().includes('SDO ANTERIOR') ||
-      rawMemo.toUpperCase().includes('SLD ANTERIOR') ||
-      rawMemo.toUpperCase().includes('SALDO INICIAL') ||
-      rawMemo.toUpperCase().includes('SALDO DEVEDOR') ||
-      rawMemo.toUpperCase().includes('SALDO DO DIA') ||
-      rawMemo.toUpperCase().includes('DISPONIVEL ANTERIOR') ||
-      rawMemo.toUpperCase().includes('DISPONÍVEL ANTERIOR')
-    );
-
-    if (isPrevBalMemo) {
-      // Preserve sign (positive for credit balance, negative if indicated or negative amount)
-      previousBalance = (trnType === 'DEBIT' || trnType === 'SRVCHG') ? -Math.abs(amount) : amount;
-      continue; // Don't add as transaction
-    }
-    
-    // Capture SALDO TOTAL DISPONÍVEL DIA and Brazilian bank variations before filtering out
-    const isClosingBalMemo = (
-      rawMemo.toUpperCase().includes('SALDO TOTAL DISPONÍVEL') ||
-      rawMemo.toUpperCase().includes('SALDO TOTAL DISPONIVEL') ||
-      rawMemo.toUpperCase().includes('DISPONÍVEL DIA') ||
-      rawMemo.toUpperCase().includes('DISPONIVEL DIA') ||
-      rawMemo.toUpperCase().includes('SALDO DO DIA') ||
-      rawMemo.toUpperCase().includes('SDO FDO DIA') ||
-      rawMemo.toUpperCase().includes('SDO FIM DIA') ||
-      rawMemo.toUpperCase().includes('SDO FINAL') ||
-      rawMemo.toUpperCase().includes('SALDO FINAL')
-    );
-
-    if (isClosingBalMemo) {
+    // 1. Capture SALDO TOTAL DISPONÍVEL DIA and variations (prioridade absoluta de fechamento)
+    if (isClosingDayBalanceMemo(normMemo)) {
       closingDayBalance = (trnType === 'DEBIT' || trnType === 'SRVCHG' || amount < 0) ? -Math.abs(amount) : Math.abs(amount);
+      closingDayDate = dateStr.substring(0, 10);
+      continue; // Don't add as regular transaction
+    }
+
+    // 2. Capture SALDO ANTERIOR and opening variations
+    if (isPreviousBalanceMemo(normMemo)) {
+      previousBalance = (trnType === 'DEBIT' || trnType === 'SRVCHG' || amount < 0) ? -Math.abs(amount) : Math.abs(amount);
+      previousBalanceDate = dateStr.substring(0, 10);
       continue; // Don't add as regular transaction
     }
     
-    // Filter other junk/balance summary entries
-    const JUNK = ['SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL'];
-    if (JUNK.some(k => rawMemo.toUpperCase().includes(k.toUpperCase()))) continue;
+    // 3. Filter other junk/balance summary entries (apenas APÓS checagem de fechamento e anterior)
+    const isJunk = (
+      normMemo === 'SALDO TOTAL' ||
+      normMemo === 'SALDO DISPONIVEL' ||
+      normMemo.startsWith('SALDO TOTAL ') ||
+      normMemo.startsWith('SALDO DISPONIVEL ')
+    );
+    if (isJunk) continue;
     
     // Extract CPF/CNPJ and counterpart name from memo
     const { doc, name } = extractDocument(rawMemo);
@@ -248,53 +290,86 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     }
   }
 
-  // Prioriza o saldo de encerramento do dia (closingDayBalance) quando presente, evitando
-  // capturar créditos/débitos parciais que caíram na manhã de D+1 antes da extração do arquivo.
-  let bankBalance: number | undefined;
-  if (closingDayBalance !== undefined) {
-    bankBalance = closingDayBalance;
-  } else {
-    const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
-    if (ledgerMatch) {
-      const rawValue = ledgerMatch[1].trim();
-      // 1. Substitui vírgula por ponto se necessário
-      let cleanStr = rawValue.replace(',', '.').trim();
-      // 2. Faz o parse para Float
-      let parsedFloat = parseFloat(cleanStr);
-      
-      if (!isNaN(parsedFloat)) {
-        // Itaú missing dot heuristic:
-        if (!cleanStr.includes('.') && !cleanStr.includes(',')) {
-          const option100 = parsedFloat / 100;
-          const option10 = parsedFloat / 10;
-          const option1 = parsedFloat;
+  // Extração do <LEDGERBAL> e <DTASOF> (Saldo bruto do arquivo com data/hora)
+  let ledgerBalance: number | undefined;
+  let ledgerBalanceDate: string | undefined;
+  const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/i);
+  if (ledgerMatch) {
+    const rawValue = ledgerMatch[1].trim();
+    let cleanStr = rawValue.replace(',', '.').trim();
+    let parsedFloat = parseFloat(cleanStr);
 
-          if (previousBalance !== undefined) {
-            const sumTx = transactions.reduce((acc, t) => acc + (t.type === 'in' ? Math.abs(t.amount) : -Math.abs(t.amount)), 0);
-            const expectedBalance = previousBalance + sumTx;
-            const expectedBalanceNeg = -Math.abs(previousBalance) + sumTx;
-            const expectedBalancePos = Math.abs(previousBalance) + sumTx;
-
-            // Encontra a opção que tem a menor diferença para o saldo esperado
-            const diffs = [
-              { val: option100, diff: Math.min(Math.abs(option100 - expectedBalance), Math.abs(option100 - expectedBalanceNeg), Math.abs(option100 - expectedBalancePos)) },
-              { val: option10, diff: Math.min(Math.abs(option10 - expectedBalance), Math.abs(option10 - expectedBalanceNeg), Math.abs(option10 - expectedBalancePos)) },
-              { val: option1, diff: Math.min(Math.abs(option1 - expectedBalance), Math.abs(option1 - expectedBalanceNeg), Math.abs(option1 - expectedBalancePos)) }
-            ];
-            diffs.sort((a, b) => a.diff - b.diff);
-            parsedFloat = diffs[0].val;
-          } else {
-            // Fallback seguro: se não tiver saldo anterior, maioria dos casos sem ponto são centavos exatos
-            parsedFloat = parsedFloat / 100;
-          }
-        }
-
-        // 3. Converte para centavos de forma matemática segura
-        const cents = Math.round(parsedFloat * 100);
-        // Retorna em Reais para salvar na coluna do banco
-        bankBalance = cents / 100;
+    const dtAsOfMatch = text.match(/<LEDGERBAL>[\s\S]*?<DTASOF>([^\r\n<]+)/i);
+    if (dtAsOfMatch) {
+      const rawDt = dtAsOfMatch[1].trim().replace(/\[.*\]/, '').trim();
+      if (rawDt.length >= 8) {
+        ledgerBalanceDate = `${rawDt.substring(0, 4)}-${rawDt.substring(4, 6)}-${rawDt.substring(6, 8)}`;
       }
     }
+
+    if (!isNaN(parsedFloat)) {
+      // Itaú missing dot heuristic:
+      if (!cleanStr.includes('.') && !cleanStr.includes(',')) {
+        const option100 = parsedFloat / 100;
+        const option10 = parsedFloat / 10;
+        const option1 = parsedFloat;
+
+        if (closingDayBalance !== undefined) {
+          const diffs = [
+            { val: option100, diff: Math.abs(option100 - closingDayBalance) },
+            { val: option10, diff: Math.abs(option10 - closingDayBalance) },
+            { val: option1, diff: Math.abs(option1 - closingDayBalance) }
+          ];
+          diffs.sort((a, b) => a.diff - b.diff);
+          parsedFloat = diffs[0].val;
+        } else if (previousBalance !== undefined) {
+          const sumTx = transactions.reduce((acc, t) => acc + (t.type === 'in' ? Math.abs(t.amount) : -Math.abs(t.amount)), 0);
+          const expectedBalance = previousBalance + sumTx;
+          const diffs = [
+            { val: option100, diff: Math.abs(option100 - expectedBalance) },
+            { val: option10, diff: Math.abs(option10 - expectedBalance) },
+            { val: option1, diff: Math.abs(option1 - expectedBalance) }
+          ];
+          diffs.sort((a, b) => a.diff - b.diff);
+          parsedFloat = diffs[0].val;
+        } else {
+          parsedFloat = parsedFloat / 100;
+        }
+      }
+      ledgerBalance = Math.round(parsedFloat * 100) / 100;
+    }
+  }
+
+  // Hierarquia Canônica de Atribuição de Saldo Bancário (Spec 444)
+  let bankBalance: number | undefined;
+  let balanceSource: BalanceSource | undefined;
+  let calculatedClosingBalance: number | undefined;
+
+  // Prioridade 1: Saldo do Dia (SALDO TOTAL DISPONÍVEL DIA / SDO FINAL)
+  if (closingDayBalance !== undefined) {
+    bankBalance = closingDayBalance;
+    balanceSource = 'saldo_total_disponivel_dia';
+  } 
+  // Prioridade 2: Âncora no Saldo Anterior + Movimentações do Dia
+  else if (previousBalance !== undefined) {
+    const effectiveTarget = options?.targetDate || (transactions.length > 0 ? transactions[0].date.substring(0, 10) : undefined);
+    const relevantTxs = effectiveTarget
+      ? transactions.filter(t => t.date.substring(0, 10) <= effectiveTarget)
+      : transactions;
+    const deltaDia = relevantTxs.reduce((acc, t) => acc + (t.type === 'in' ? Math.abs(t.amount) : -Math.abs(t.amount)), 0);
+    calculatedClosingBalance = Math.round((previousBalance + deltaDia) * 100) / 100;
+    bankBalance = calculatedClosingBalance;
+    balanceSource = 'saldo_anterior_plus_tx';
+  }
+  // Prioridade 3: LEDGERBAL com DTASOF <= targetDate
+  else if (ledgerBalance !== undefined && ledgerBalanceDate && options?.targetDate && ledgerBalanceDate <= options.targetDate) {
+    bankBalance = ledgerBalance;
+    balanceSource = 'ledgerbal_exact';
+  }
+  // Prioridade 4: Fallback Legado
+  else if (ledgerBalance !== undefined) {
+    bankBalance = ledgerBalance;
+    balanceSource = 'ledgerbal_fallback';
   }
 
   let accountLimit: number | undefined;
@@ -330,5 +405,19 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     });
   }
 
-  return { alias, transactions, bankBalance, previousBalance, accountLimit, fileName: file.name, closingDayBalance };
+  return { 
+    alias, 
+    transactions, 
+    bankBalance, 
+    previousBalance, 
+    previousBalanceDate,
+    accountLimit, 
+    fileName: file.name, 
+    closingDayBalance,
+    closingDayDate,
+    ledgerBalance,
+    ledgerBalanceDate,
+    calculatedClosingBalance,
+    balanceSource 
+  };
 }

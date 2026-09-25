@@ -38,7 +38,7 @@ export function useCentralImport() {
     },
   });
 
-  const processFiles = useCallback(async (files: File[], options?: { sessionId?: string }): Promise<CentralImportResults> => {
+  const processFiles = useCallback(async (files: File[], options?: { sessionId?: string; targetDate?: string }): Promise<CentralImportResults> => {
     setIsProcessing(true);
     let newResults: CentralImportResults = {
       osFiles: [],

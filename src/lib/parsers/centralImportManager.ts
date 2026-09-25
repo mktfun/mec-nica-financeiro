@@ -102,7 +102,7 @@ export async function processMaquininha(file: File, options?: { sessionId?: stri
 
 export async function parseCentralImports(
   files: File | File[],
-  options?: { sessionId?: string }
+  options?: { sessionId?: string; targetDate?: string }
 ): Promise<CentralImportResults> {
   const fileList = Array.isArray(files) ? files : [files];
 
@@ -140,7 +140,7 @@ export async function parseCentralImports(
   // 1. Processa OFX / RET de forma assíncrona com deduplicação
   for (const file of ofxFiles) {
     try {
-      const result = await parseOFXFile(file, { sessionId: options?.sessionId });
+      const result = await parseOFXFile(file, { sessionId: options?.sessionId, targetDate: options?.targetDate });
       const normalized: NormalizedOfxResult = {
         ...result,
         success: true,

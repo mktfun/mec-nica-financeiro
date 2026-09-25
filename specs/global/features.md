@@ -126,3 +126,18 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Remoção de injeção forçada de sinais `-` ou `+`. Exibição de `0,00` em verde quando dentro da tolerância (`<= 0.05`).
 - `CentralImportWizard.tsx`:
   - Reordenamento do pipeline de importação: pareamento bancário e de recebíveis executam antes da consolidação do snapshot diário.
+
+---
+
+## 14. Âncora no Saldo do Dia (`SALDO TOTAL DISPONÍVEL DIA`) do OFX (Spec 444)
+- `ofxParser.ts`:
+  - Decodificação dual resiliente de buffer (UTF-8 com fallback para Windows-1252 SGML).
+  - Normalização sem acentos (`normalizeMemoText`) protegendo contra caracteres corrompidos.
+  - Scanner de encerramento (`isClosingDayBalanceMemo`) avaliado prioritariamente antes do filtro JUNK, capturando `SALDO TOTAL DISPONÍVEL DIA`, `DISPONÍVEL DIA`, `SALDO DO DIA` e `SDO FINAL`.
+  - Atribuição do saldo do dia oficial como `bankBalance` canônico com precedência absoluta sobre `<LEDGERBAL>` (`balanceSource: 'saldo_total_disponivel_dia'`).
+  - Isolamento de `<LEDGERBAL>`: o saldo bruto de D+0 é retido exclusivamente em `ledgerBalance` e descartado do saldo contábil da data de conciliação.
+  - Fallback fiduciário para derivação a partir de `SALDO ANTERIOR` + movimentações quando a linha de saldo do dia não estiver presente.
+- `centralImportManager.ts` & `useCentralImport.ts`:
+  - Propagação de `targetDate` para filtragem temporal de movimentações e validação de `<DTASOF>`.
+- `CentralImportWizard.tsx`:
+  - Exibição de badge semântico Zinc-950 `✓ Saldo do Dia` na coluna de saldo bancário (Step 1).

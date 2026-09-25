@@ -886,7 +886,7 @@ export function CentralImportWizard({
     });
 
     setPendingFiles(acceptedFiles);
-    const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId });
+    const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId, targetDate });
     
     if (parsedResults) {
       // Dispara notificações de alerta para arquivos duplicados e descartes automáticos
@@ -3165,9 +3165,26 @@ export function CentralImportWizard({
                                     -{totalOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                   </td>
                                   <td className="p-3 text-right font-bold text-sky-400 tabular-nums">
-                                    {ofx.bankBalance !== undefined ? (
-                                      ofx.bankBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                                    ) : '-'}
+                                    <div className="flex flex-col items-end gap-0.5">
+                                      <span>
+                                        {ofx.bankBalance !== undefined ? (
+                                          ofx.bankBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                                        ) : '-'}
+                                      </span>
+                                      {ofx.balanceSource === 'saldo_total_disponivel_dia' ? (
+                                        <span className="text-[9px] font-sans font-medium px-1.5 py-0.2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                                          ✓ Saldo do Dia
+                                        </span>
+                                      ) : ofx.balanceSource === 'saldo_anterior_plus_tx' ? (
+                                        <span className="text-[9px] font-sans font-medium px-1.5 py-0.2 text-sky-400 bg-sky-500/10 border border-sky-500/20 rounded">
+                                          Âncora Anterior + Mov.
+                                        </span>
+                                      ) : ofx.ledgerBalance !== undefined && ofx.ledgerBalance !== ofx.bankBalance ? (
+                                        <span className="text-[9px] font-sans text-zinc-500" title={`Arquivo (D+0): R$ ${ofx.ledgerBalance.toFixed(2)}`}>
+                                          D+0 ignorado
+                                        </span>
+                                      ) : null}
+                                    </div>
                                   </td>
                                 </tr>
                               );
@@ -4153,7 +4170,7 @@ export function CentralImportWizard({
         onSuccess={handleCloudDataSuccess}
         runLocalFiles={async () => {
           if (pendingFiles.length > 0) {
-            await processFiles(pendingFiles);
+            await processFiles(pendingFiles, { targetDate });
           }
         }}
       />

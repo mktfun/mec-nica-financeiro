@@ -1,3 +1,15 @@
+## [2026-09-25] — [Feature ID: 444-canonical-ofx-closing-balance-saldo-do-dia]
+
+**Contexto:** Correção da contaminação do saldo bancário atual por arquivos OFX extraídos em D+0 (manhã do dia seguinte) para conciliação contábil de D-1 (ontem).
+**Regra aprendida:**
+1. **Âncora no Saldo do Dia (`SALDO TOTAL DISPONÍVEL DIA`):** O extrato bancário oficial (Itaú) emite o saldo exato de fechamento de cada dia em uma linha `<STMTTRN>` com memo `SALDO TOTAL DISPONÍVEL DIA` e data `<DTPOSTED>` correspondente à data contábil da conciliação. Essa linha tem precedência absoluta sobre `<LEDGERBAL>`, que reflete o saldo vivo no instante da extração (D+0).
+2. **Decodificação Resiliente & Normalização sem Acentos:** O buffer do OFX deve ser decodificado tentando UTF-8 estrito primeiro com fallback para Windows-1252. O memo deve ser normalizado com `.normalize("NFD")` para que `DISPONÍVEL` dê match com e sem acento e não caia prematuramente na lista de lixo `JUNK = ['SALDO TOTAL', ...]`.
+3. **Descarte de `<LEDGERBAL>` de D+0:** O `<LEDGERBAL>` só pode ser adotado se `<DTASOF>` for menor ou igual à data de conciliação. Quando for posterior, seu valor deve ser preservado apenas no campo de auditoria `ledgerBalance`.
+**Risco identificado:** A lista de descarte `JUNK = ['SALDO TOTAL', ...]` avaliada antes do scanner de fechamento descartava o saldo oficial do dia por conter a substring ASCII `SALDO TOTAL`.
+**Não fazer:** Nunca ler cegamente `<LEDGERBAL><BALAMT>` sem comparar `<DTASOF>` com a data contábil da conciliação (`targetDate`).
+
+---
+
 ## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
 
 **Contexto:** Preservação integral e transporte de metadados ricos do extrato bancário OFX durante as fases de preview e justificativas no Wizard de Importações (`Step2NonRevenueJustifications.tsx`).
