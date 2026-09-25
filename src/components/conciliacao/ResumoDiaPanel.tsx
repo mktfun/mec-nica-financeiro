@@ -364,8 +364,11 @@ export function ResumoDiaPanel({
   const subtotalContasCalculado = Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100;
 
   const diferencaFinalCalculada = Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100;
+  const canonicalDiferencaFinal = !isEditing && summary?.diferenca_final !== undefined && summary?.diferenca_final !== null
+    ? Number(summary.diferenca_final)
+    : diferencaFinalCalculada;
 
-  const diferencaAbs = Math.abs(diferencaFinalCalculada);
+  const diferencaAbs = Math.abs(canonicalDiferencaFinal);
   const isDiferencaOk = diferencaAbs <= 50;
 
   const { data: aiSettings } = useAiSettings();
@@ -381,7 +384,7 @@ export function ResumoDiaPanel({
       contasPagas: contasManualValor,
       jurosRede: jurosRedeValor,
       devolucoesRede: devolucoesRedeValor,
-      diferencaFinal: diferencaFinalCalculada,
+      diferencaFinal: canonicalDiferencaFinal,
       dataBase: selectedDate
     }, aiSettings?.api_key).then(res => {
       if (active && res) {
@@ -389,7 +392,7 @@ export function ResumoDiaPanel({
       }
     }).catch(() => {});
     return () => { active = false; };
-  }, [selectedDate, saldoBancosValor, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, diferencaFinalCalculada, aiSettings?.api_key]);
+  }, [selectedDate, saldoBancosValor, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, canonicalDiferencaFinal, aiSettings?.api_key]);
 
   // Guarda de Integridade: Detecta se há movimento macro consolidado mas as filiais estão zeradas
   const storesList = summary?.stores || [];
@@ -608,7 +611,7 @@ export function ResumoDiaPanel({
           has_contas_override: hasManualOverride,
           subtotal_contas: subtotalContasCalculado,
           juros_rede: jurosRedeValor,
-          diferenca_final: diferencaFinalCalculada,
+          diferenca_final: canonicalDiferencaFinal,
           // REGRA: total_saldo_banco = total_saldo_banco_positivo (Pilar 1 com cofre+rede)
           // saldo_bancos_ofx = OFX líquido puro (bank_total das 10 contas)
           // saldo_bancos_positivo = soma das contas com saldo >= 0
@@ -1402,7 +1405,7 @@ export function ResumoDiaPanel({
                 <span className={`text-4xl sm:text-5xl font-display font-extrabold font-mono tracking-tight tabular-nums ${
                   isDiferencaOk ? 'text-emerald-400 drop-shadow-[0_0_12px_rgba(52,211,153,0.3)]' : 'text-rose-400 drop-shadow-[0_0_12px_rgba(244,63,94,0.3)]'
                 }`}>
-                  <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
+                  <AnimatedNumber value={canonicalDiferencaFinal} format="currency" />
                 </span>
              </div>
 

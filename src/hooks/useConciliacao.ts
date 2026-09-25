@@ -16,7 +16,17 @@ export const isClientPix = (t: any) => {
     txt.includes('BOLETO') ||
     txt.includes('SALARIOS') ||
     txt.includes('TRIB MUNICIPAL') ||
-    txt.includes('FORNECEDOR')
+    txt.includes('FORNECEDOR') ||
+    txt.includes('INTERCOMPANY') ||
+    txt.includes('MERCADOPAGO') ||
+    txt.includes('MERCADO PAGO') ||
+    txt.includes('BERETTA') ||
+    txt.includes('DHJV') ||
+    txt.includes('MECANICA') ||
+    txt.includes('AUTO CENTER') ||
+    txt.includes('PNEUS') ||
+    txt.includes('MATRIZ') ||
+    txt.includes('FILIAL')
   ) {
     return false;
   }

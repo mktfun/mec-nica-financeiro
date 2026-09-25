@@ -1,3 +1,21 @@
+## [2026-09-25] — [Feature ID: 438-canonical-rematch-intercompany-guard]
+
+**Contexto:** Saneamento forense e estrutural de fechamento por filial no backend e frontend. Eliminação de falsos positivos de débitos/créditos órfãos (casos Jorge Beretta R$ 850 e Kennedy R$ 2.003), bloqueio estrito de transferências intercompany em conciliação de OSs e recebíveis, e sincronização do frontend com os campos canônicos da RPC.
+
+**Regra aprendida:**
+1. **Regra de Apuração Canônica de Saídas:**
+   - Quando `ofx_saidas_total` é igual a `contas_loja_total`, a diferença (`dif_saidas`) é estritamente `0.00`.
+   - Despesas que constam no extrato OFX e são associadas a contas da filial não podem sofrer dupla subtração por constarem em categorias de despesa.
+2. **Prevenção de Dupla Contagem em Entradas Justificadas:**
+   - Se uma transação bancária já foi vinculada a uma OS (`matched_os_number` preenchido), ela não pode ser somada novamente em `entradas_justificadas_avulsas`. O valor de justificação reduz o residual uma única vez.
+3. **Casamento Estrito de PIX x OS (Zero Fallback Cego):**
+   - Casamento automático de PIX exige compulsoriamente `pix_transfer_value > 0`. É proibido usar `total_value` ou `paid_value` como fallback quando a OS não possui parcela de PIX.
+   - Vínculos intercompany (`BERETTA`, `DHJV`, `MECANICA`, `AUTO CENTER`, `PNEUS`, `MERCADOPAGO`, `INTERCOMPANY`, `MATRIZ`, `FILIAL`) são categoricamente bloqueados e catalogados com `matched_os_number = NULL`.
+
+**Risco identificado / Anti-pattern:** Subtrair do extrato OFX as contas da filial E também as transações OFX com categoria manual de despesa, gerando débito fantasma negativo idêntico ao próprio valor da despesa.
+
+---
+
 ## [2026-09-24] — [Feature ID: 438-e-439-blindagem-match-pix-os-e-intercompany]
 
 **Contexto:** Eliminação definitiva de falsos positivos no matching PIX x OS em todas as 4 camadas da aplicação: na tela (`StoreExtratoBancarioView.tsx`), no hook de conciliação (`useConciliacao.ts`), no motor em memória (`autoMatchingEngine.ts`) e no banco de dados PostgreSQL (`auto_match_daily_transactions` e `auto_match_receivables`).

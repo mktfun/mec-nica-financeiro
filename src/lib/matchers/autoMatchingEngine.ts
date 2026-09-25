@@ -176,25 +176,18 @@ export function isStrictPixOsMatch(
 
   // 1. Filtro Negativo Eliminatório
   const upper = fullOfxText.toUpperCase();
-  if (/REDE|REDECARD|CIELO|GETNET|STONE|PAGSEGURO|BIN|ADQ|MAST|VISA|ELO|REND\s*PAGO|APLIC|RESG|CDB|LCI|LCA|JUROS|POUP|AUT\s*APR|TRANSF\s*ENTRE\s*LOJAS|INTERCOMPANY/i.test(upper)) {
+  if (/REDE|REDECARD|CIELO|GETNET|STONE|PAGSEGURO|BIN|ADQ|MAST|VISA|ELO|REND\s*PAGO|APLIC|RESG|CDB|LCI|LCA|JUROS|POUP|AUT\s*APR|TRANSF\s*ENTRE\s*LOJAS|INTERCOMPANY|MERCADOPAGO|MERCADO\s*PAGO|BERETTA|DHJV|MECANICA|AUTO\s*CENTER|PNEUS|MATRIZ|FILIAL/i.test(upper)) {
     return false;
   }
 
-  // 2. A OS DEVE ter registrado recebimento em PIX / Transferência
+  // 2. A OS DEVE ter registrado recebimento em PIX / Transferência > 0
   const osPix = Number(os.parsed_pix_transfer ?? os.pix_transfer_value ?? 0);
-  const pm = String(os.payment_method || os.formOfPayment || '').toLowerCase();
-  const isPixTagged = pm.includes('pix') || pm.includes('transf') || pm.includes('ted') || pm.includes('doc') || pm.includes('conta');
-
-  if (osPix <= 0 && !isPixTagged) {
+  if (osPix <= 0) {
     return false;
   }
 
-  // 3. Valor deve bater estritamente com a parcela de PIX (ou paid_value se a OS for 100% PIX)
-  const osPaid = Number(os.paid_value ?? os.paidValue ?? 0);
-  const osTotal = Number(os.total_value ?? os.totalValue ?? 0);
-  const targetOsVal = osPix > 0 ? osPix : (osPaid > 0 ? osPaid : osTotal);
-
-  const valueMatches = Math.abs(targetOsVal - txAmount) <= tolerance;
+  // 3. Valor deve bater estritamente com a parcela de PIX (sem fallback para total_value ou paid_value)
+  const valueMatches = Math.abs(osPix - txAmount) <= tolerance;
 
   if (!valueMatches) {
     return false;

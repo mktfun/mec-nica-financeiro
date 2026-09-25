@@ -1,3 +1,22 @@
+## [2026-09-25] — [Feature ID: 438-canonical-rematch-intercompany-guard]
+
+**Contexto:** Migration `20260925000002_canonical_rematch_intercompany_guard.sql` e `20260925000003_drop_overloaded_auto_match_receivables.sql`. Saneamento dos créditos intercompany MP e HD Centro em 24/09, eliminação de sobrecargas de tipos no PostgreSQL para evitar ambiguidade PostgREST, e calibração das fórmulas de fechamento em `get_daily_reconciliation_summary`.
+
+**Regra aprendida:**
+1. **Unicidade de Assinatura de RPC para PostgREST:**
+   - Sobrecargas de funções PL/pgSQL com argumentos de nomes idênticos e tipos intercambiáveis (`p_date text` vs `p_date date`) disparam erro `Could not choose the best candidate function` nas chamadas `supabase.rpc()`.
+   - Todas as RPCs chamadas pelo frontend devem possuir assinatura canônica única (preferencialmente `text` para datas em formato ISO YYYY-MM-DD).
+2. **Cálculo Canônico de Diferenças na RPC:**
+   - A fórmula de `dif_saidas` deve descontar apenas despesas avulsas não cobertas pelo plano de contas da loja, evitando que transações de saída com categoria manual sejam subtraídas duas vezes.
+   - Quando `ofx_saidas_total == contas_loja_total`, a diferença é `0.00`.
+3. **Saneamento e Guarda Intercompany:**
+   - `auto_match_daily_transactions` pré-classifica na Fase 0 transferências entre contas de lojas e matriz com `matched_os_number = NULL`.
+   - `auto_match_receivables` bloqueia baixas em parcelas de transferências internas.
+
+**Risco identificado / Anti-pattern:** Manter sobrecargas de RPC com assinaturas `(text, text)` e `(date, text)` no mesmo schema.
+
+---
+
 ## [2026-09-24] — [Feature ID: 439-blindagem-rpc-auto-match-saneamento-e-reconciliacao]
 
 **Contexto:** Migration `20260924160000_strict_auto_match_daily_transactions.sql` blindando as RPCs `auto_match_daily_transactions` e `auto_match_receivables` contra falsos positivos PIX x OS e contaminação por transferências entre lojas (intercompany). Saneamento forense de vínculos espúrios de 24/09/2026.

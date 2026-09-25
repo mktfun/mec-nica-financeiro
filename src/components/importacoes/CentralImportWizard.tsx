@@ -2149,62 +2149,6 @@ export function CentralImportWizard({
       const subtotalContasCalculado = Math.round((finalContasManual + jurosRedeTotal) * 100) / 100;
       const diferencaCalculada = Math.round((valorDispCalculado - subtotalContasCalculado) * 100) / 100;
 
-      try {
-        const payload = {
-          date: targetDate,
-          caixa_atual: caixaAtualCalculado,
-          faturamento: finalFaturamento,
-          dinheiro_mp: manualDinheiroMp,
-          total_recebiveis: totalRecebiveis,
-          total_patio: veiculosPatioValor,
-          saldo_bancario: saldoBancosLiquido,
-          a_receber_manual: manualAReceber,
-          faturamento_outros_valor: totalRevenueAdjustments,
-          faturamento_outros_desc: totalRevenueAdjustments > 0 ? 'Receitas Extras e Ajustes DRE' : null,
-          contas_a_pagar: finalContasManual,
-          provisao: 0,
-          saldo_negativo_itau: saldoNegativoItau,
-          juros_rede: jurosRedeTotal,
-          is_closed: true,
-          closed_at: new Date().toISOString(),
-          notes: isNoOsMode ? 'Fechamento Assistido via Mapa de Metas (Sem Arquivo de OS)' : 'Valores calculados via Importacao Centralizada',
-          metadata: {
-            caixa_atual: caixaAtualCalculado,
-            caixa_anterior: caixaAnt,
-            fluxo_caixa: fluxoCalculado,
-            faturamento_anterior: fatAnt,
-            faturamento_mes_anterior: manualFaturamentoMesAnterior,
-            faturamento_oi_base: fatOiBase,
-            faturamento_ajustes: totalRevenueAdjustments,
-            odometro_hoje: odometroHoje > 0 ? odometroHoje : (fatAnt + fatOiBase),
-            faturamento_periodo: fatTotalComAjustes,
-            source_mode: isNoOsMode ? 'mapa_metas' : 'odometro_os',
-            has_os_files: !isNoOsMode,
-            valor_disp_contas: valorDispCalculado,
-            subtotal_contas: subtotalContasCalculado,
-            diferenca_final: diferencaCalculada,
-            total_saldo_banco: totalSaldoBancoPositivoConsolidado,
-            total_saldo_banco_positivo: totalSaldoBancoPositivoConsolidado,
-            saldo_bancos_ofx: saldoBancosLiquido,
-            saldo_bancos_positivo: saldoBancosPositivo,
-            saldo_negativo_itau: saldoNegativoItau,
-            dinheiro_lojas: dinheiroLojaCofreTotal,
-            dinheiro_em_lojas: dinheiroLojaCofreTotal,
-            cartoes_a_compensar: cartoesACompensarTotal,
-            devolucoes_rede: devolucoesRedeTotal,
-            dinheiro_mp: manualDinheiroMp,
-            a_receber_manual: manualAReceber,
-            total_patio: veiculosPatioValor,
-            status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
-            is_closed: true,
-          }
-        };
-        await saveSnapshot.mutateAsync(payload);
-        addLog("Historico de conciliacao atualizado automaticamente!", "success");
-      } catch (snapErr) {
-        console.warn("Erro ao salvar daily_snapshot:", snapErr);
-        addLog("Aviso: Falha ao gravar fechamento do dia.", "warning");
-      }
 
       addLog("🤖 Pareando Vendas Rede, PIX e Contas a Pagar com OSs em aberto por loja...", "info");
       try {
@@ -2374,6 +2318,65 @@ export function CentralImportWizard({
       } catch (autoErr: any) {
         console.warn("Aviso na auditoria pericial:", autoErr);
         updateStage(4, 'warning', 'Auditoria pericial concluída com observações.');
+      }
+
+      // 5.5. Salvar Fechamento Diário Consolidado (Daily Snapshot) pós-rematch e reconciliação
+      updateStage(3, 'running', 'Gravando snapshot diário consolidado pós-pareamento...');
+      try {
+        const payload = {
+          date: targetDate,
+          caixa_atual: caixaAtualCalculado,
+          faturamento: finalFaturamento,
+          dinheiro_mp: manualDinheiroMp,
+          total_recebiveis: totalRecebiveis,
+          total_patio: veiculosPatioValor,
+          saldo_bancario: saldoBancosLiquido,
+          a_receber_manual: manualAReceber,
+          faturamento_outros_valor: totalRevenueAdjustments,
+          faturamento_outros_desc: totalRevenueAdjustments > 0 ? 'Receitas Extras e Ajustes DRE' : null,
+          contas_a_pagar: finalContasManual,
+          provisao: 0,
+          saldo_negativo_itau: saldoNegativoItau,
+          juros_rede: jurosRedeTotal,
+          is_closed: true,
+          closed_at: new Date().toISOString(),
+          notes: isNoOsMode ? 'Fechamento Assistido via Mapa de Metas (Sem Arquivo de OS)' : 'Valores calculados via Importacao Centralizada',
+          metadata: {
+            caixa_atual: caixaAtualCalculado,
+            caixa_anterior: caixaAnt,
+            fluxo_caixa: fluxoCalculado,
+            faturamento_anterior: fatAnt,
+            faturamento_mes_anterior: manualFaturamentoMesAnterior,
+            faturamento_oi_base: fatOiBase,
+            faturamento_ajustes: totalRevenueAdjustments,
+            odometro_hoje: odometroHoje > 0 ? odometroHoje : (fatAnt + fatOiBase),
+            faturamento_periodo: fatTotalComAjustes,
+            source_mode: isNoOsMode ? 'mapa_metas' : 'odometro_os',
+            has_os_files: !isNoOsMode,
+            valor_disp_contas: valorDispCalculado,
+            subtotal_contas: subtotalContasCalculado,
+            diferenca_final: diferencaCalculada,
+            total_saldo_banco: totalSaldoBancoPositivoConsolidado,
+            total_saldo_banco_positivo: totalSaldoBancoPositivoConsolidado,
+            saldo_bancos_ofx: saldoBancosLiquido,
+            saldo_bancos_positivo: saldoBancosPositivo,
+            saldo_negativo_itau: saldoNegativoItau,
+            dinheiro_lojas: dinheiroLojaCofreTotal,
+            dinheiro_em_lojas: dinheiroLojaCofreTotal,
+            cartoes_a_compensar: cartoesACompensarTotal,
+            devolucoes_rede: devolucoesRedeTotal,
+            dinheiro_mp: manualDinheiroMp,
+            a_receber_manual: manualAReceber,
+            total_patio: veiculosPatioValor,
+            status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
+            is_closed: true,
+          }
+        };
+        await saveSnapshot.mutateAsync(payload);
+        addLog("Historico de conciliacao atualizado automaticamente!", "success");
+      } catch (snapErr) {
+        console.warn("Erro ao salvar daily_snapshot:", snapErr);
+        addLog("Aviso: Falha ao gravar fechamento do dia.", "warning");
       }
 
       // 6. Fechamento Consolidado Canônico via Backend RPC fechar_dia

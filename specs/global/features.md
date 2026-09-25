@@ -112,3 +112,17 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 - `useBackendConciliacao.ts`: Preservação de `caixa_atual` gravado no snapshot sem sobrescrita involuntária pelo cálculo dinâmico bruto em dias fechados.
 - `get_daily_reconciliation_summary` (Migration `20260925000001_allow_caixa_manual_override_in_rpc.sql`):
   - Suporte a `is_caixa_atual_override` e priorização de `metadata.caixa_anterior` no Ramal 2 (dia aberto/dinâmico).
+
+---
+
+## 13. Saneamento Canônico de Fechamento por Filial & Guarda Intercompany (Spec 438)
+- `get_daily_reconciliation_summary` (Migration `20260925000002_canonical_rematch_intercompany_guard.sql`):
+  - Apuração canônica de saídas: quando `ofx_saidas_total == contas_loja_total`, a diferença é rigorosamente `0.00`. Eliminação de dupla subtração por despesas manuais.
+  - Eliminação de dupla contagem em entradas justificadas: transações com `matched_os_number` não são re-somadas em justificativas avulsas.
+- `auto_match_receivables` (Migration `20260925000003_drop_overloaded_auto_match_receivables.sql`):
+  - Remoção de sobrecargas de tipos no PostgreSQL, consolidando assinatura canônica única `(p_date text, p_store_id text)`.
+- `StoreCardModulo1.tsx` e `ConciliacaoLojasView.tsx`:
+  - Consumo direto dos campos canônicos `dif_entradas`, `dif_saidas` e `diferenca` sem derivação local de `orfas*`.
+  - Remoção de injeção forçada de sinais `-` ou `+`. Exibição de `0,00` em verde quando dentro da tolerância (`<= 0.05`).
+- `CentralImportWizard.tsx`:
+  - Reordenamento do pipeline de importação: pareamento bancário e de recebíveis executam antes da consolidação do snapshot diário.

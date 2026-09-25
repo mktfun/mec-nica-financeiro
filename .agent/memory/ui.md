@@ -1,3 +1,20 @@
+## [2026-09-25] — [Feature ID: 438-canonical-rematch-intercompany-guard]
+
+**Contexto:** Saneamento de exibição de diferenças nos cards de filiais (`StoreCardModulo1.tsx`, `ConciliacaoLojasView.tsx` e `ResumoDiaPanel.tsx`). Eliminação de injeção forçada de sinais `-` ou `+`, de cálculos locais de `orfas` no React e de divergência visual entre frontend e backend.
+
+**Regra aprendida:**
+1. **Zero String Concatenation de Sinais:**
+   - Proibido usar `{diferencaSaidasValor > 0.05 ? '-' : ''}` ou qualquer injeção artificial de strings de sinal. A formatação de moeda via `AnimatedNumber` ou `Intl.NumberFormat` é soberana.
+   - Quando a diferença é zero ou menor que a tolerância (`<= 0.05`), o componente deve passar estritamente `0` ao formatador, exibindo `R$ 0,00` em verde esmeralda (`text-emerald-400`) e label de aprovação (`100% Conciliado`).
+2. **Eliminação de Derivações Locais de Diferença:**
+   - Em `ConciliacaoLojasView.tsx`, foram removidas fórmulas como `ofx - conciliado` e `orfasEntradas - orfasSaidas`. O frontend consome diretamente `rawLog.dif_entradas`, `rawLog.dif_saidas` e `rawLog.diferenca` calculadas canonicamente pelo PostgreSQL.
+3. **Reatividade e Preservação de Nulos/Ausentes:**
+   - Se a filial não possui dados ou está ausente no resumo, exibe `N/D` (`text-zinc-500`) em vez de forçar `R$ 0,00` ou `-R$ 0,00`.
+
+**Risco identificado / Anti-pattern:** Forçar sinal negativo `-` na UI em campos de diferença de saídas, fazendo com que uma filial com contas e banco idênticos mostrasse `-R$ 850,00` em vez de `R$ 0,00`.
+
+---
+
 ## [2026-09-24] — [Feature ID: 440-modal-kpi-card-unificado]
 
 **Contexto:** Unificação do design dos cards de KPI de topo nos modais analíticos de conciliação (`PatioOsDetailModal`, `SaldoBancosDetailModal` e `CashVaultCompositionModal`), eliminando variações arbitrárias de layout, tamanhos de fonte desproporcionais e duplicações manuais de CSS.

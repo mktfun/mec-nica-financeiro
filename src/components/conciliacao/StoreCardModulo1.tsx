@@ -190,11 +190,8 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
                     data.isMissingData ? 'text-zinc-500' : isDifEntradasOk ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
-                    {data.isMissingData ? 'N/D' : (
-                      <>
-                        {diferencaEntradasValor > 0.05 ? '+' : ''}
-                        <AnimatedNumber value={diferencaEntradasValor} format="currency" />
-                      </>
+                    {data.isMissingData || data.diferencaEntradas === null || data.diferencaEntradas === undefined ? 'N/D' : (
+                      <AnimatedNumber value={isDifEntradasOk ? 0 : diferencaEntradasValor} format="currency" />
                     )}
                   </p>
                 </div>
@@ -247,11 +244,8 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
                     data.isMissingData ? 'text-zinc-500' : isDifSaidasOk ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
-                    {data.isMissingData ? 'N/D' : (
-                      <>
-                        {diferencaSaidasValor > 0.05 ? '-' : ''}
-                        <AnimatedNumber value={diferencaSaidasValor} format="currency" />
-                      </>
+                    {data.isMissingData || data.diferencaSaidas === null || data.diferencaSaidas === undefined ? 'N/D' : (
+                      <AnimatedNumber value={isDifSaidasOk ? 0 : diferencaSaidasValor} format="currency" />
                     )}
                   </p>
                 </div>
