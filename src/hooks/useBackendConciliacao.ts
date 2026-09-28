@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { safeParseDailyReconciliationSummary } from '@/types/reconciliationContract';
+export * from '@/types/reconciliationContract';
 
 export interface ConciliationDailyLog {
   store_id: string;
@@ -102,7 +104,7 @@ export interface StoreReconciliationSummary {
   patio_os?: number;
   previsto_ofx: number;
   diferenca: number;
-  status: 'approved' | 'divergence';
+  status: 'approved' | 'divergence' | 'sem_movimento' | 'conciliado' | 'pending';
   // Split Dual de Diagnóstico
   ofx_entradas_total?: number;
   entradas_conciliadas?: number;
@@ -117,6 +119,11 @@ export interface StoreReconciliationSummary {
   contas_loja?: number;
   dif_saidas?: number;
   diferenca_saidas?: number;
+  // Flags de integridade e presença real de dados
+  has_ofx_movement?: boolean;
+  has_rede_movement?: boolean;
+  has_bills_movement?: boolean;
+  is_empty_store?: boolean;
 }
 
 export interface StoreCardData {
@@ -143,7 +150,7 @@ export interface StoreCardData {
   pixTotal?: number | null;
   statusCompensacao: 'entrou' | 'parcial' | 'nao_entrou' | 'a_compensar' | 'sem_movimento' | string;
   naoEntrouValor: number | null;
-  status: 'approved' | 'divergence' | 'conciliado' | 'pending';
+  status: 'approved' | 'divergence' | 'conciliado' | 'pending' | 'sem_movimento';
   isMissingData?: boolean;
 }
 
@@ -221,6 +228,11 @@ export interface DailyReconciliationSummary {
   is_closed?: boolean;
   is_marco_zero?: boolean;
   closed_at?: string | null;
+  version?: string;
+  revision?: number;
+  source?: 'dynamic' | 'snapshot' | 'mixed';
+  integrity_status?: 'verified' | 'incomplete_day' | 'corrupted_snapshot';
+  is_empty_day?: boolean;
   // Campos Bicanais (Spec 359)
   caixa_tesouraria?: number;
   status_tesouraria?: 'equilibrado' | 'descoberto' | string;
@@ -412,7 +424,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
           patio_os: Number(s.patio_os ?? s.na_loja_os ?? 0),
           previsto_ofx: Number(s.previsto_ofx ?? s.entradas_conciliadas ?? s.entradas_previsto ?? 0),
           diferenca: Number(s.diferenca ?? s.diferenca_total ?? 0),
-          status: (s.status || (Math.abs(Number(s.diferenca || 0)) <= 0.05 ? 'approved' : 'divergence')) as 'approved' | 'divergence',
+          status: (s.status || (Math.abs(Number(s.diferenca || 0)) <= 0.05 ? 'approved' : 'divergence')) as StoreReconciliationSummary['status'],
           ofx_entradas_total: Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0),
           entradas_conciliadas: Number(s.entradas_conciliadas ?? s.entradas_previsto ?? 0),
           entradas_realizadas: Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0),
@@ -428,6 +440,14 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
           contas_locais: Number(s.contas_locais ?? 0),
           dif_saidas: Number(s.dif_saidas ?? s.diferenca_saidas ?? 0),
           diferenca_saidas: Number(s.diferenca_saidas ?? s.dif_saidas ?? 0),
+          has_ofx_movement: (Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0) > 0) || (Number(s.ofx_saidas_total ?? s.saidas_ofx ?? 0) > 0),
+          has_rede_movement: (Number(s.rede_bruto ?? 0) > 0) || (Number(s.rede_liquido ?? 0) > 0),
+          has_bills_movement: Number(s.contas_loja_total ?? s.contas_loja ?? 0) > 0,
+          is_empty_store: (Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0) === 0) &&
+                          (Number(s.ofx_saidas_total ?? s.saidas_ofx ?? 0) === 0) &&
+                          (Number(s.rede_bruto ?? 0) === 0) &&
+                          (Number(s.rede_liquido ?? 0) === 0) &&
+                          (Number(s.contas_loja_total ?? s.contas_loja ?? 0) === 0),
         };
       });
 
@@ -438,11 +458,16 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
             ? Number(snapMeta.dinheiro_lojas) 
             : Number(raw.dinheiro_lojas || raw.dinheiro_em_lojas || 0));
 
-      const finalCartoesACompensar = posQuerySuccess
+      // Spec 443: Cálculo de Cartões a Compensar SEM corte arbitrário de 40.000
+      // Prioridade: 1) live query de pos_transactions com pendências; 2) RPC dynamic/raw; 3) snapshot congelado
+      const rawCartoesBackend = Number(raw.cartoes_a_compensar || 0);
+      const snapCartoes = snapMeta.cartoes_a_compensar !== undefined ? Number(snapMeta.cartoes_a_compensar) : undefined;
+      
+      const finalCartoesACompensar = (posQuerySuccess && totalPosUnsettled > 0)
         ? Number(totalPosUnsettled.toFixed(2))
-        : (snapMeta.cartoes_a_compensar !== undefined 
-            ? Number(snapMeta.cartoes_a_compensar) 
-            : (Number(raw.cartoes_a_compensar || 0) < 40000 ? Number(raw.cartoes_a_compensar || 0) : 0));
+        : (rawCartoesBackend > 0
+            ? rawCartoesBackend
+            : (snapCartoes !== undefined ? snapCartoes : rawCartoesBackend));
 
       // Isolamento de Saldo Bancário Puro (OFX)
       // O saldo positivo puro das 10 contas de extrato OFX vem de saldo_bancos_ofx_positivo ou saldo_bancos_positivo
@@ -556,7 +581,15 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         subtotal_contas: finalSubtotalContas,
         diferenca_final: finalDiferenca,
         status_geral: (raw.status_geral === 'approved' || Math.abs(finalDiferenca) <= 50) ? 'approved' : 'divergence',
-      } as DailyReconciliationSummary;
+        version: '1.0',
+        revision: Number(snapMeta.revision || 1),
+        source: (snapshotData?.is_closed && !forceDynamic ? 'snapshot' : 'dynamic') as 'snapshot' | 'dynamic',
+        integrity_status: storesList.every(st => st.is_empty_store) && baseBancoTotal === 0 ? 'incomplete_day' : 'verified',
+        is_empty_day: storesList.length > 0 && storesList.every(st => st.is_empty_store),
+      };
+
+      const validated = safeParseDailyReconciliationSummary(candidateSummary);
+      return (validated || candidateSummary) as DailyReconciliationSummary;
     },
     enabled: !!date,
     staleTime: 1000 * 30, // 30s cache

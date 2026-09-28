@@ -201,3 +201,23 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Priorização de `bank_name` / `raw_memo`.
   - Preservação de rótulos bancários úteis ("SISPAG Fornecedores", "SISPAG Salários", "Boleto Pago <código>") evitando stripping que resultava em dígitos desconexos soltos.
   - Exibição de badge para referência bancária (`#CHECKNUM`) e enriquecimento da ficha técnica de detalhes.
+
+---
+
+## 19. Restaurar Fechamento por Filial, Rede a Compensar e Vínculo Rede × OS (Spec 443)
+- `reconciliationContract.ts`: Contrato Zod formal com validação tipada de filiais e fechamento macro (`StoreReconciliationSchema`, `DailyReconciliationSchema`, `SafeDailyReconciliationSummary`).
+- `useBackendConciliacao.ts`:
+  - Eliminação do limiar arbitrário de corte de R$ 40k em `cartoes_a_compensar`.
+  - Suporte a status `sem_movimento` e flags de integridade (`is_empty_store`, `has_ofx_movement`, `has_rede_movement`, `has_bills_movement`).
+- `get_daily_reconciliation_summary` & `close_daily_snapshot` (Migrations `20260928000004_restore_daily_summary_and_rede_os_match.sql` e `20260928000005_fix_close_daily_snapshot_coalesce.sql`):
+  - Autocura de snapshots diários fechados prematuramente que continham cartões zerados quando existiam vendas pendentes de liquidação.
+  - Identificação precisa de filiais vazias com `status: sem_movimento` e bloqueio de fechamento de dias vazios sem movimentação prévia.
+  - Blindagem com `COALESCE` para todas as colunas `NOT NULL` de `daily_snapshots`.
+  - Rastreamento de `revision` a cada homologação de fechamento.
+- `match_stage2_rede_os`:
+  - Janela do ciclo de vida da OS estendida para captura de ordens ativas e pagas (`opened_at <= target_date` e `closed_at >= target_date - 7 days`).
+  - Vínculo informativo de OSs quitadas (ex.: OS #4427 de R$ 1.811,46) sem alteração de `paid_value` da OS e sem alteração indevida de `settlement_status` para `'entrou'`.
+- `StoreCardModulo1.tsx`:
+  - Substituição do falso selo "100% Conciliado" em filiais sem movimentação por `SEM MOVIMENTO` (com barra cinza e badges `Sem Mov. Entradas` e `Sem Mov. Saídas`).
+  - Ajuste de rótulo para `REDE LÍQUIDO` com tooltip explicativo.
+- `CentralImportWizard.tsx`: Feedback e logs transparentes com contagens reais, revisões de snapshot e eliminação de toasts incondicionais de sucesso.

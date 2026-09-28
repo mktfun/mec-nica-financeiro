@@ -11,9 +11,16 @@ interface StoreCardModulo1Props {
 }
 
 export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }) => {
-  const isDiferencaOk = Math.abs(data.diferenca || 0) <= 0.05 && (data.status === 'approved' || data.status === 'conciliado');
+  const isSemMovimento = data.status === 'sem_movimento' || (
+    (data.statusCompensacao === 'sem_movimento' || !data.statusCompensacao) &&
+    (data.maquininha || 0) === 0 &&
+    (data.pix || 0) === 0 &&
+    (data.entradasRealizadas || 0) === 0 &&
+    (data.saidasOfx || 0) === 0 &&
+    (data.contasLoja || 0) === 0
+  );
+  const isDiferencaOk = !isSemMovimento && Math.abs(data.diferenca || 0) <= 0.05 && (data.status === 'approved' || data.status === 'conciliado');
   const hasACompensar = (data.statusCompensacao === 'parcial' || data.statusCompensacao === 'nao_entrou' || data.statusCompensacao === 'a_compensar') && (data.naoEntrouValor || 0) > 0;
-  const isSemMovimento = data.statusCompensacao === 'sem_movimento' && (data.maquininha || 0) === 0 && (data.pix || 0) === 0;
 
   const isDifEntradasOk = Math.abs(data.diferencaEntradas || 0) <= 0.05;
   const isDifSaidasOk = Math.abs(data.diferencaSaidas || 0) <= 0.05;
@@ -22,12 +29,12 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
   let barColorClass = 'bg-[var(--color-accent-teal)]';
   if (data.isMissingData) {
     barColorClass = 'bg-red-600';
-  } else if (hasACompensar) {
-    barColorClass = 'bg-amber-500';
-  } else if (!isDiferencaOk && !isSemMovimento) {
-    barColorClass = 'bg-[var(--color-accent-danger)]';
   } else if (isSemMovimento) {
     barColorClass = 'bg-zinc-600';
+  } else if (hasACompensar) {
+    barColorClass = 'bg-amber-500';
+  } else if (!isDiferencaOk) {
+    barColorClass = 'bg-[var(--color-accent-danger)]';
   }
 
   // Consumo estrito das propriedades pré-calculadas da RPC (zero cálculo no JSX)
@@ -72,9 +79,13 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-900/40 text-red-400 border border-red-500/30">
                     ⚠️ DADOS AUSENTES
                   </span>
+                ) : isSemMovimento ? (
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700">
+                    SEM MOVIMENTO
+                  </span>
                 ) : (
                   <>
-                    {!isDiferencaOk && !hasACompensar && !isSemMovimento && (
+                    {!isDiferencaOk && !hasACompensar && (
                       <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
                         DIVERGÊNCIA
                       </span>
@@ -97,10 +108,10 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   </span>
                 </div>
 
-                {/* 2. REDE TOTAL (com badge de compensação ao lado) */}
+                {/* 2. REDE LÍQUIDO (com badge de compensação ao lado) */}
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">
-                    REDE TOTAL
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider" title="Vendas líquidas na adquirente Rede">
+                    REDE LÍQUIDO
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap justify-end">
                     <span className={`font-bold text-sm font-mono tabular-nums ${data.isMissingData ? 'text-zinc-500' : 'text-white'}`}>
@@ -185,7 +196,9 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <div className="text-right">
                   <span className="text-[9px] text-zinc-400 block font-medium">Dif. a Justificar</span>
                   <span className="text-[8px] text-zinc-500 block">
-                    {isDifEntradasOk ? '100% Conciliado' : 'Crédito Órfão'}
+                    {isSemMovimento || (entradasRealizadasValor === 0 && entradasPrevistoValor === 0)
+                      ? 'Sem Mov. Entradas'
+                      : isDifEntradasOk ? '100% Conciliado' : 'Crédito Órfão'}
                   </span>
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
                     data.isMissingData ? 'text-zinc-500' : isDifEntradasOk ? 'text-emerald-400' : 'text-rose-400'
@@ -239,7 +252,9 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <div className="text-right">
                   <span className="text-[9px] text-zinc-400 block font-medium">Dif. a Justificar</span>
                   <span className="text-[8px] text-zinc-500 block">
-                    {isDifSaidasOk ? '100% Conciliado' : 'Débito Órfão'}
+                    {isSemMovimento || (saidasOfxValor === 0 && contasLojaValor === 0)
+                      ? 'Sem Mov. Saídas'
+                      : isDifSaidasOk ? '100% Conciliado' : 'Débito Órfão'}
                   </span>
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
                     data.isMissingData ? 'text-zinc-500' : isDifSaidasOk ? 'text-emerald-400' : 'text-rose-400'

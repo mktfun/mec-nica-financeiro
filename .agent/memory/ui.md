@@ -868,3 +868,15 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 3. **Badges de Referência:** Números de transação e documentos (`#CHECKNUM`) são exibidos em badges mono discretos de auditoria, e nunca como título principal da transação.
 4. **Ficha Fiduciária do Modal:** `TransactionDetailModal.tsx` exibe o campo "Referência Bancária (Doc / Checknum)" e o histórico bruto do extrato com fallback completo `raw_memo || bank_name || subtitle || title || memo`.
 
+## [2026-09-28] — [Feature ID: 443-restaurar-fechamento-rede-compensar-vinculo-os] Distinção Visual entre Ausência de Movimento e 100% Conciliado
+
+**Contexto:** Em `StoreCardModulo1.tsx`, filiais sem qualquer movimentação no dia (OFX zerado, sem vendas de cartão e sem contas a pagar) exibiam selo falso de "100% Conciliado" porque a diferença matemática 0 - 0 = 0 atendia ao critério de tolerância $\le 0,05$. Além disso, o rótulo do Pilar 2 gerava dúvida entre valor bruto e líquido.
+**Regra aprendida:**
+1. **Diferenciação Estrita de Zero Contábil vs Ausência de Movimento:**
+   - Se uma filial não possui movimentações em nenhum dos canais operacionais ou bancários (`is_empty_store = true` ou todos os fluxos zerados), o badge do header do card deve exibir `SEM MOVIMENTO` com fundo neutro `bg-zinc-800 text-zinc-400 border border-zinc-700` e barra lateral cinza `bg-zinc-600`.
+   - Nas seções de detalhamento diagnóstico de Entradas e Saídas, exibir `Sem Mov. Entradas` e `Sem Mov. Saídas` em vez do texto `100% Conciliado`.
+2. **Rótulo Fiduciário do Pilar de Adquirente:**
+   - O rótulo foi ajustado de `REDE TOTAL` para `REDE LÍQUIDO`, acompanhado de tooltip explicativo: "Vendas líquidas na adquirente Rede". O valor exibido corresponde ao montante líquido que ingressará no banco, mantendo o sub-chip `A COMPENSAR (+R$ ...)` em destaque quando pendente de liquidação.
+**Não fazer:** Exibir selos de celebração ou conformidade de conciliação ("100% Conciliado") em dias ou filiais onde não houve transações reais a conciliar.
+
+

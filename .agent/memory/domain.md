@@ -1374,6 +1374,17 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 2. **Preservação de Tags OFX:** Persistir `raw_memo`, `raw_name`, `bank_reference` (`<CHECKNUM>`) e `original_fitid` na tabela `ofx_transactions`.
 3. **Proteção contra Stripping Excessivo de Títulos:** Se após a remoção de prefixos bancários (`BOLETO PAGO`, `SISPAG FORNECEDORES`, etc.) o texto restante for vazio ou puramente numérico, o título original deve ser preservado para não poluir a interface com dígitos soltos.
 **Não fazer:** Sobrescrever `counterpart_name` com `ITAU - {conta}` quando o arquivo OFX não trouxer nome de contraparte.
+## [2026-09-28] — [Feature ID: 443-restaurar-fechamento-rede-compensar-vinculo-os] Fechamento por Filial, Rede a Compensar e Separação Estrita de Domínios
 
-
-
+**Contexto:** Após alterações no matcher da adquirente Rede, o valor total de "Rede a Compensar" sumia da conciliação (cortado por limiar arbitrário de R$ 40k), filiais sem movimentação apareciam falsamente como "100% Conciliado", e ordens de serviço finalizadas com parcelas de cartão compatíveis (ex.: OS #4427 de R$ 1.811,46 na loja Kennedy) ficavam sem vínculo automático.
+**Regra aprendida:**
+1. **Separação Rígida de Domínios (Origem OS vs Liquidação OFX):**
+   - **Domínio Venda/OS (Origem):** A vinculação Rede x OS é estritamente informativa de proveniência de pagamento do cliente. Vincular uma OS já paga NUNCA deve alterar `paid_value` da OS (evitando duplicar quitação) e NUNCA deve alterar `pos_transactions.settlement_status` para `'entrou'`. A transação deve permanecer `'a_compensar'`.
+   - **Domínio Bancário (Liquidação):** Apenas créditos de adquirente comprovados no extrato bancário (OFX) têm autoridade para liquidar transações POS e reduzir o saldo de recebíveis a compensar.
+2. **Eliminação de Limiares Arbitrários:** Fórmulas de agregação NUNCA devem conter limites numéricos mágicos (ex.: `val < 40000 ? val : 0`). O SSOT do saldo de cartões a compensar é a soma real de transações em aberto (`GREATEST(0, net_amount - settled_amount)`).
+3. **Janela do Ciclo de Vida da OS para Pareamento:** Para OSs faturadas em dias adjacentes à venda de cartão, o matcher deve pesquisar ordens com ciclo de vida ativo na data alvo (`opened_at <= target_date` e `closed_at >= target_date - 7 days`).
+4. **Fechamento e Detalhamento de Filiais Fiel:**
+   - Lojas sem movimentação de banco, adquirente ou contas recebem status explícito `sem_movimento` e `is_empty_store: true`.
+   - A interface deve distinguir com clareza matemática uma loja sem movimento de uma loja com divergência zerada (selos `SEM MOVIMENTO`, `Sem Mov. Entradas` e `Sem Mov. Saídas` em vez do falso selo `100% Conciliado`).
+5. **Autocura de Snapshots Desatualizados (`get_daily_reconciliation_summary`):** Quando um snapshot diário foi fechado prematuramente antes da ingestão dos lotes de cartão ou extratos, a RPC deve recuperar o total a compensar das transações ativas persistidas em vez de perpetuar zero congelado.
+**Não fazer:** Considerar uma venda de cartão liquidada no banco simplesmente porque ela foi casada com uma Ordem de Serviço, ou ocultar totais legítimos através de limites estáticos de corte.

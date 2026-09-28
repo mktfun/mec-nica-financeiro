@@ -1333,4 +1333,18 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 1. **Schema Estendido de `ofx_transactions`:** Adicionadas as colunas `raw_memo (text)`, `raw_name (text)`, `bank_reference (text)` e `original_fitid (text)`.
 2. **Saneamento Não Destrutivo de Alias:** Executado `UPDATE ofx_transactions SET counterpart_name = NULL WHERE counterpart_name ILIKE 'ITAU%';` para restaurar a leitura prioritária de `bank_name` ("SISPAG FORNECEDORES") sem perda de integridade contábil.
 
+## [2026-09-28] — [Feature ID: 443-restaurar-fechamento-rede-compensar-vinculo-os] Autocura de Snapshots, Matcher Atemporal e Blindagem COALESCE
+
+**Contexto:** Migrations `20260928000004_restore_daily_summary_and_rede_os_match.sql` e `20260928000005_fix_close_daily_snapshot_coalesce.sql`.
+**Regra aprendida:**
+1. **Autocura em `get_daily_reconciliation_summary`:**
+   - Para dias fechados com snapshot imutável, se `cartoes_a_compensar` estiver zerado ou ausente mas existirem vendas não liquidadas em `pos_transactions` para a data, a RPC computa dinamicamente a soma de recebíveis em aberto (`GREATEST(0, net_amount - settled_amount)`) e auto-cura o montante a compensar e o saldo consolidado.
+   - Filiais vazias recebem `'sem_movimento'::text AS status` e `is_empty_store = true`.
+2. **Matcher Atemporal para OSs Faturadas (`match_stage2_rede_os`):**
+   - Para OSs já finalizadas/pagas (ex.: OS #4427 faturada e paga dias após a venda no cartão), o matcher permite vínculo informativo único (`matched_os_number = os_number`), gravando log em `conciliation_matches`, SEM incrementar novamente o `paid_value` da OS e SEM alterar `pos_transactions.settlement_status` para `'entrou'`.
+3. **Blindagem COALESCE em `close_daily_snapshot`:**
+   - A tabela `daily_snapshots` possui constraints `NOT NULL` em colunas numéricas (`contas_a_pagar`, `faturamento`, etc.). O comando `INSERT` dentro da RPC deve envolver todos os campos extraídos de `v_summary` em `COALESCE((v_summary->>'campo')::numeric, 0)` para evitar exceções `23502 (not-null constraint violation)`.
+   - Rastreamento de revisão (`revision = existing_rev + 1`) gravado no `metadata` a cada selagem do snapshot.
+**Não fazer:** Confiar em campos JSONB de summary sem COALESCE para INSERTs em colunas NOT NULL.
+
 

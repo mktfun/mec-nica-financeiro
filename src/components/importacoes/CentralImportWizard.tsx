@@ -2229,7 +2229,11 @@ export function CentralImportWizard({
           const posCount = (matchData as any)?.matched_pos_count || 0;
           const pixCount = (matchData as any)?.matched_pix_count || 0;
           const saidasCount = (matchData as any)?.saidas_result?.matched_saidas_count || 0;
-          addLog(`🤖 Pareamento Inteligente Concluído: ${posCount} Venda(s) REDE e ${pixCount} PIX casados com OSs em pátio! (${saidasCount} despesas conciliadas)`, "success");
+          if (posCount > 0 || pixCount > 0 || saidasCount > 0) {
+            addLog(`🤖 Pareamento Concluído: ${posCount} Venda(s) REDE e ${pixCount} PIX casados com OSs (${saidasCount} despesas conciliadas).`, "success");
+          } else {
+            addLog(`ℹ️ Pareamento: Nenhuma nova OS/Transação pendente casada nesta rodada.`, "info");
+          }
         }
       } catch (rpcErr: any) {
         console.warn("Erro ao chamar auto_match_daily_transactions:", rpcErr);
@@ -2542,7 +2546,12 @@ export function CentralImportWizard({
         }
       });
 
-      if (error) console.warn('Aviso no close_daily_snapshot RPC, aplicando persistência direta:', error);
+      if (error) {
+        console.error('Erro no close_daily_snapshot RPC:', error);
+        addLog(`❌ Fechamento bloqueado: ${error.message}`, "error");
+        toast.error(`Fechamento bloqueado: ${error.message}`);
+        return;
+      }
 
       // Blindagem Soberana: Garante que os inputs manuais digitados pelo usuário nunca sejam descartados pela RPC
       const { data: latestSnap } = await supabase
@@ -2573,7 +2582,11 @@ export function CentralImportWizard({
         queryClient.invalidateQueries({ queryKey: ['dashboard-v2'] }),
       ]);
 
-      toast.success('🎉 Fechamento homologado e snapshot selado com sucesso!');
+      const resObj = data as any;
+      const revText = resObj?.revision ? ` (Rev. ${resObj.revision})` : '';
+      const storesCountText = resObj?.stores_count !== undefined ? ` para ${resObj.stores_count} lojas` : '';
+      addLog(`🎉 Snapshot selado com sucesso${revText}${storesCountText}!`, "success");
+      toast.success(`🎉 Fechamento homologado${revText} e snapshot selado com sucesso!`);
       navigate({ to: '/conciliacao' });
     } catch (err: any) {
       console.error(err);
