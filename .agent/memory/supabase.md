@@ -1,3 +1,19 @@
+## [2026-09-28] — [Feature ID: 443-fix-rede-a-compensar-target-date-e-snapshot-stores]
+
+**Contexto:** Sincronização entre `pos_transactions` e a RPC `get_daily_reconciliation_summary`, garantindo que filtros `WHERE COALESCE(target_date, occurred_at::date) = v_target_date::date` encontrem fidedignamente os lotes de adquirentes ingeridos na Central de Importações.
+
+**Regra aprendida:**
+1. **Contrato de Data em `pos_transactions`:**
+   - A tabela `pos_transactions` utiliza `target_date` como chave de particionamento contábil e `occurred_at` como carimbo físico do evento.
+   - Toda agregação de adquirente em `get_daily_reconciliation_summary` depende de `target_date = p_target_date` para computar `rede_liquido`, `nao_entrou_valor` e `cartoes_a_compensar`.
+   - Se o importador gravar a data da venda do arquivo em `target_date` em vez da data da conciliação, as vendas ficam dissociadas do fechamento contábil.
+2. **Auto-healing e Resiliência em `close_daily_snapshot`:**
+   - A RPC `close_daily_snapshot` executa `get_daily_reconciliation_summary(p_target_date, true)` para selar o snapshot. Quando o frontend invocar mutações de snapshot, deve sempre enriquecer o metadata com `stores` para não depender de fallback vazio.
+
+**Risco identificado / Anti-pattern:** Desvincular `target_date` de transações filhas do lote diário, deixando o backend cego em relação a cartões pendentes de liquidação.
+
+---
+
 ## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
 
 **Contexto:** Migration `20260927000001_ofx_balance_candidates_and_rules.sql`. Criação das tabelas `ofx_balance_candidates`, `ofx_balance_rules`, `ofx_balance_selections` e `ofx_balance_selection_events`, e RPCs `preview_ofx_balance_selection`, `apply_ofx_balance_selection`, `get_ofx_balance_rules`, `get_ofx_account_history`.

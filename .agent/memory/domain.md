@@ -1,3 +1,21 @@
+## [2026-09-28] — [Feature ID: 443-fix-rede-a-compensar-target-date-e-snapshot-stores]
+
+**Contexto:** Correção crítica da ancoragem temporal das vendas da Rede (`pos_transactions`) na ingestão do CentralImportWizard, cálculo resiliente de `cartoesACompensarTotal` (suporte a camelCase e snake_case) e persistência de `stores` no metadata do snapshot diário consolidado.
+
+**Regra aprendida:**
+1. **Soberania do `targetDate` do Lote Contábil sobre a Data da Venda:**
+   - As vendas de cartões da adquirente Rede contêm a data da venda física (ex: `25/09/2026` em relatórios de fim de semana/período).
+   - O campo `target_date` em `pos_transactions` DEVE ser SEMPRE ancorado no `targetDate` do lote contábil da conciliação (`2026-09-28`), preservando a data física original em `occurred_at`.
+   - Se `target_date` for preenchido com a data da venda do arquivo, as vendas ficam alocadas em dia retroativo e somem da apuração contábil, da RPC de resumo e do "A Compensar" das filiais, provocando falsa divergência massiva (R$ 40k+).
+2. **Resiliência de Nomenclatura em Objetos de Transação de Adquirentes:**
+   - Parsers de Excel/CSV geram objetos tipados em camelCase (`netAmount`, `grossAmount`, `feeAmount`). O somatório de `cartoesACompensarTotal` deve compulsoriamente aplicar coalescência defensiva (`t.netAmount ?? t.net_amount ?? 0`), impedindo que propriedades em snake_case gerem `undefined` e zerem o somatório global.
+3. **Persistência de `stores` no Snapshot Consolidado:**
+   - Todo fechamento de snapshot deve invocar previamente `get_daily_reconciliation_summary(targetDate, true)` e gravar o array `stores` no `metadata.stores`, impedindo que o Ramal 1 retorne lojas vazias no histórico.
+
+**Risco identificado / Anti-pattern:** Usar a data contida no relatório da adquirente (`item.date`) como `target_date` do banco, descolando as vendas da adquirente dos extratos bancários (OFX) e contas da mesma conciliação.
+
+---
+
 ## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
 
 **Contexto:** Definição canônica do saldo bancário de cada conta/filial a partir do extrato bancário oficial (OFX), separando movimentos de saldos, permitindo seleção por candidato e cálculo seguro por RPC sem suposições cegas.

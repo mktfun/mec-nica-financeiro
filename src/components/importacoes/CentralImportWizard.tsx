@@ -1486,7 +1486,7 @@ export function CentralImportWizard({
             ? `nsu_${item.nsu}_${item.authorization || ''}`
             : (item.authorization ? `auth_${item.authorization}` : (item.tid ? `tid_${item.tid}` : `${item.method || 'rede'}_${item.grossAmount || 0}_${idx}`));
           
-          const effectivePosDate = item.date ? String(item.date).split('T')[0] : targetDate;
+          const rawItemDate = item.date ? String(item.date).split('T')[0] : targetDate;
           const itemBrand = (item as any).brand || extractCardBrand(`${item.method || ''} ${item.title || ''}`);
           const displayTitle = item.title || (item.nsu ? `Rede ${itemBrand !== 'Outros' ? itemBrand + ' ' : ''}NSU ${item.nsu}` : 'Importação Rede');
           const finalPaymentMethod = item.method 
@@ -1503,14 +1503,14 @@ export function CentralImportWizard({
             gross_amount: item.grossAmount || item.netAmount || 0,
             fee_amount: item.interest || 0,
             type: 'in',
-            occurred_at: item.date || `${effectivePosDate}T12:00:00Z`,
-            target_date: effectivePosDate,
+            occurred_at: item.date || `${rawItemDate}T12:00:00Z`,
+            target_date: targetDate,
             icon_type: 'card',
             source: 'rede',
             payment_method: finalPaymentMethod,
             manual_category: itemBrand !== 'Outros' ? itemBrand : null,
             brand: itemBrand !== 'Outros' ? itemBrand : null,
-            dedup_hash: generateDeterministicHash(effectivePosDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos'),
+            dedup_hash: generateDeterministicHash(targetDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos'),
             settlement_status: 'a_compensar'
           });
         });
@@ -2115,10 +2115,14 @@ export function CentralImportWizard({
       results.redeResults.forEach(r => {
         if (r.success && r.transactions) {
           r.transactions.forEach((t: any) => {
-            if (t.transaction_type === 'devolucao') {
-              devolucoesRedeTotal += Math.abs(t.gross_amount || t.net_amount || 0);
+            const isDevolucao = t.transaction_type === 'devolucao' || String(t.method || '').toLowerCase().includes('devol');
+            const grossVal = Math.abs(Number(t.grossAmount ?? t.gross_amount ?? t.netAmount ?? t.net_amount ?? 0));
+            const netVal = Math.abs(Number(t.netAmount ?? t.net_amount ?? t.grossAmount ?? t.gross_amount ?? 0));
+            const feeVal = Math.abs(Number(t.feeAmount ?? t.fee ?? t.interest ?? 0));
+            if (isDevolucao) {
+              devolucoesRedeTotal += (grossVal || netVal);
             } else {
-              cartoesACompensarTotal += (t.net_amount || (t.gross_amount - (t.fee || 0)) || 0);
+              cartoesACompensarTotal += (netVal || (grossVal - feeVal) || 0);
             }
           });
         }
@@ -2396,6 +2400,28 @@ export function CentralImportWizard({
       // 5.5. Salvar Fechamento Diário Consolidado (Daily Snapshot) pós-rematch e reconciliação
       updateStage(3, 'running', 'Gravando snapshot diário consolidado pós-pareamento...');
       try {
+        let storesToPersist: any[] = [];
+        let rpcCartoesFallback = 0;
+        try {
+          const { data: summaryRes } = await supabase.rpc('get_daily_reconciliation_summary', {
+            p_date: targetDate,
+            p_force_dynamic: true
+          });
+          if (summaryRes) {
+            const sumObj = summaryRes as any;
+            if (sumObj.stores && Array.isArray(sumObj.stores)) {
+              storesToPersist = sumObj.stores;
+            }
+            if (sumObj.cartoes_a_compensar) {
+              rpcCartoesFallback = Number(sumObj.cartoes_a_compensar || 0);
+            }
+          }
+        } catch (e) {
+          console.warn("Aviso ao buscar stores canônicas para o snapshot:", e);
+        }
+
+        const effectiveCartoesACompensar = cartoesACompensarTotal > 0 ? cartoesACompensarTotal : rpcCartoesFallback;
+
         const payload = {
           date: targetDate,
           caixa_atual: caixaAtualCalculado,
@@ -2436,12 +2462,13 @@ export function CentralImportWizard({
             saldo_negativo_itau: saldoNegativoItau,
             dinheiro_lojas: dinheiroLojaCofreTotal,
             dinheiro_em_lojas: dinheiroLojaCofreTotal,
-            cartoes_a_compensar: cartoesACompensarTotal,
+            cartoes_a_compensar: effectiveCartoesACompensar,
             devolucoes_rede: devolucoesRedeTotal,
             dinheiro_mp: manualDinheiroMp,
             a_receber_manual: manualAReceber,
             total_patio: veiculosPatioValor,
             status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
+            stores: storesToPersist.length > 0 ? storesToPersist : undefined,
             is_closed: true,
           }
         };

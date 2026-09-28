@@ -220,4 +220,8 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 - `StoreCardModulo1.tsx`:
   - Substituição do falso selo "100% Conciliado" em filiais sem movimentação por `SEM MOVIMENTO` (com barra cinza e badges `Sem Mov. Entradas` e `Sem Mov. Saídas`).
   - Ajuste de rótulo para `REDE LÍQUIDO` com tooltip explicativo.
-- `CentralImportWizard.tsx`: Feedback e logs transparentes com contagens reais, revisões de snapshot e eliminação de toasts incondicionais de sucesso.
+- `CentralImportWizard.tsx`:
+  - Feedback e logs transparentes com contagens reais, revisões de snapshot e eliminação de toasts incondicionais de sucesso.
+  - Ancoragem estrita de `pos_transactions.target_date` no `targetDate` do lote contábil da conciliação (em vez de `item.date` da adquirente), mantendo `occurred_at` com o carimbo temporal da venda física.
+  - Cálculo resiliente de `cartoesACompensarTotal` e `devolucoesRedeTotal` com suporte unificado a camelCase (`netAmount`, `grossAmount`, `feeAmount`) e snake_case.
+  - Enriquecimento prévio do snapshot com busca canônica de `stores` via `get_daily_reconciliation_summary(targetDate, true)` antes da mutação de `saveSnapshot`.
