@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1790279200.0980914,
-    "ast_hash": "23964efc0b298d1f755e08a826d3e0f0",
+    "mtime": 1790564630.03307,
+    "ast_hash": "1bb1ed12c65428a5638f1eca14f65bec",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
@@ -370,8 +370,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1790347783.299951,
-    "ast_hash": "d03452fcd98a0d7fc8ef4724775c56d7",
+    "mtime": 1790564354.9936872,
+    "ast_hash": "1f33edf6bcb17f59470408b930289594",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -920,8 +920,8 @@
     "semantic_hash": "2df515cd74cef34b347a866e95af20c0"
   },
   "src/lib/parsers/centralImportManager.ts": {
-    "mtime": 1790347673.59473,
-    "ast_hash": "d63a612eec679393990cd8a62a1ba2ef",
+    "mtime": 1790563926.80688,
+    "ast_hash": "28711d6ec42f2acb5bab8e8250969481",
     "semantic_hash": ""
   },
   "src/lib/parsers/contasAPagarParser.ts": {
@@ -960,8 +960,8 @@
     "semantic_hash": "c1ea70a3fb7a73ae5bc7190ba9162796"
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1790347439.6139956,
-    "ast_hash": "b86cde081fb6ce1929faa26e972db01a",
+    "mtime": 1790564783.487103,
+    "ast_hash": "1e7f6058b8593f2b8c55e35aae73459d",
     "semantic_hash": ""
   },
   "src/lib/parsers/recebiveisParser.ts": {
@@ -3240,8 +3240,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1790345041.2474384,
-    "ast_hash": "e9b7eb8445be4a52b2f03b96b50e6bf1",
+    "mtime": 1790594919.7488756,
+    "ast_hash": "8002cbe24653488005f2359ac11b7ab5",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4270,8 +4270,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/itauPdfParser.ts": {
-    "mtime": 1789481131.0579653,
-    "ast_hash": "5c341b8c265b75290ea36cc368070486",
+    "mtime": 1790563912.1950662,
+    "ast_hash": "33ab0f1b7c472b705ece525c668fa02c",
     "semantic_hash": ""
   },
   "src/components/conciliacao/CashVaultCompositionModal.tsx": {
@@ -4989,19 +4989,44 @@
     "ast_hash": "5ea0723bd0cd92d3c2b7c3c617aa407e",
     "semantic_hash": ""
   },
-  "specs/444-canonical-ofx-balance-anchor-saldo-anterior/design.md": {
-    "mtime": 1790347148.4266183,
-    "ast_hash": "f0251664101344ed017f8356f14bcba3",
+  "src/components/conciliacao/OfxAccountBalanceModal.tsx": {
+    "mtime": 1790564979.330258,
+    "ast_hash": "39ec2b505adcc6700450994f2baf1d47",
     "semantic_hash": ""
   },
-  "specs/444-canonical-ofx-balance-anchor-saldo-anterior/proposal.md": {
-    "mtime": 1790347134.8272681,
-    "ast_hash": "b570e49ab69c1db026226f6be0f53a95",
+  "src/hooks/useOfxBalanceMappings.ts": {
+    "mtime": 1790564964.4822047,
+    "ast_hash": "8ac6aecdc73286fa796d5a8b7de0cf95",
     "semantic_hash": ""
   },
-  "specs/444-canonical-ofx-balance-anchor-saldo-anterior/spec-plan.md": {
-    "mtime": 1790348027.8710406,
-    "ast_hash": "f2c6f4432c2824bbe37be2dc485a34bc",
+  "supabase/migrations/20260927000001_ofx_balance_candidates_and_rules.sql": {
+    "mtime": 1790564149.8320637,
+    "ast_hash": "9aff50c194a9c7ca53d71070c71c7603",
+    "semantic_hash": ""
+  },
+  "tests/e2e/tier2_boundary/ofx_balance_selection.test.mjs": {
+    "mtime": 1790564733.3981998,
+    "ast_hash": "d62aec7db553ae988ed68888cbc6fae4",
+    "semantic_hash": ""
+  },
+  "tests/ofxBalanceCandidates.test.mjs": {
+    "mtime": 1790563855.3347428,
+    "ast_hash": "6aba8aea7ab46c1c96790ac0a44415e4",
+    "semantic_hash": ""
+  },
+  "specs/439-mapeamento-saldo-ofx-por-conta-e-data/design.md": {
+    "mtime": 1790563204.4417706,
+    "ast_hash": "7569c94640bd8efbd455b56c52a67c22",
+    "semantic_hash": ""
+  },
+  "specs/439-mapeamento-saldo-ofx-por-conta-e-data/proposal.md": {
+    "mtime": 1790563196.286632,
+    "ast_hash": "5c69fffebee1d3b8bd5e6768127e860c",
+    "semantic_hash": ""
+  },
+  "specs/439-mapeamento-saldo-ofx-por-conta-e-data/spec-plan.md": {
+    "mtime": 1790565049.8999183,
+    "ast_hash": "84966d3de68f9e535282c874ede47052",
     "semantic_hash": ""
   }
 }

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
+import { useOfxBalanceMappings, BalanceSelectionPayload } from '@/hooks/useOfxBalanceMappings';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { CentralImportResults, parseCentralImports } from '@/lib/parsers/centralImportManager';
 import { traceLog, generateSessionId } from '@/lib/logger';
@@ -125,6 +126,18 @@ export function CentralImportWizard({
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
   const [isDinheiroMpUserEdited, setIsDinheiroMpUserEdited] = useState<boolean>(false);
   const [manualAReceber, setManualAReceber] = useState<number>(0);
+
+  // Candidatos e Regras de Saldo OFX (Spec 439)
+  const ofxAccountKeys = useMemo(() => {
+    return results.ofxResults.map(o => o.accountKey || o.alias).filter(Boolean);
+  }, [results.ofxResults]);
+
+  const { rules: activeBalanceRules, applySelection: applyOfxBalanceSelection } = useOfxBalanceMappings({
+    accountKeys: ofxAccountKeys,
+    date: targetDate,
+  });
+
+  const [selectedBalances, setSelectedBalances] = useState<Record<string, { candidateIndex: number; rememberRule: boolean }>>({});
 
   // Encadeamento do Fechamento Anterior
   const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
@@ -1509,10 +1522,16 @@ export function CentralImportWizard({
         if (store_id === 'GLOBAL') store_id = null;
         const dictKey = store_id || 'global_account';
         
+        // Pega o saldo selecionado pelo usuário ou o candidato da data (Spec 439)
+        const acctKey = ofx.accountKey || ofx.alias;
+        const sel = selectedBalances[acctKey];
+        const chosenCandidate = (ofx.balanceCandidates && sel !== undefined && ofx.balanceCandidates[sel.candidateIndex])
+          ? ofx.balanceCandidates[sel.candidateIndex]
+          : (ofx.balanceCandidates?.find(c => c.postedDate === targetDate && c.balanceRole === 'CLOSING') || ofx.balanceCandidates?.[0]);
+        const chosenAmount = chosenCandidate ? chosenCandidate.amount : (ofx.bankBalance || 0);
+
         // Acumula somando saldos para filiais com mais de uma conta
-        if (ofx.bankBalance !== undefined) {
-          storeBankBalances[dictKey] = (storeBankBalances[dictKey] || 0) + ofx.bankBalance;
-        }
+        storeBankBalances[dictKey] = (storeBankBalances[dictKey] || 0) + chosenAmount;
         if (ofx.previousBalance !== undefined) {
           storePreviousBalances[dictKey] = (storePreviousBalances[dictKey] || 0) + ofx.previousBalance;
         }
@@ -1968,6 +1987,52 @@ export function CentralImportWizard({
       if (reconciliationsToUpsert.length > 0) {
         addLog("Gravando valores de patio e saldos bancarios (reconciliations)...", "info");
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
+      }
+
+      // Persiste a seleção oficial de saldo de cada conta via RPC transacional (Spec 439)
+      const balanceSelectionPayload: BalanceSelectionPayload[] = results.ofxResults.map(ofx => {
+        const acctKey = ofx.accountKey || ofx.alias;
+        const sId = resolveStoreForOfx(ofx) || mapping[ofx.alias];
+        const sel = selectedBalances[acctKey];
+        const chosenCandidate = (ofx.balanceCandidates && sel !== undefined && ofx.balanceCandidates[sel.candidateIndex])
+          ? ofx.balanceCandidates[sel.candidateIndex]
+          : (ofx.balanceCandidates?.find(c => c.postedDate === targetDate && c.balanceRole === 'CLOSING') || ofx.balanceCandidates?.[0]);
+
+        return {
+          account_key: acctKey,
+          store_id: sId && sId !== 'GLOBAL' ? sId : undefined,
+          candidate_data: chosenCandidate ? {
+            source_kind: chosenCandidate.sourceKind,
+            balance_role: chosenCandidate.balanceRole,
+            memo_raw: chosenCandidate.memoRaw,
+            memo_normalized: chosenCandidate.memoNormalized,
+            posted_date: chosenCandidate.postedDate,
+            amount: chosenCandidate.amount,
+            amount_cents: chosenCandidate.amountCents
+          } : undefined,
+          source_kind: chosenCandidate?.sourceKind || 'STMTTRN_MEMO',
+          balance_role: chosenCandidate?.balanceRole || 'CLOSING',
+          memo_raw: chosenCandidate?.memoRaw,
+          memo_normalized: chosenCandidate?.memoNormalized,
+          posted_date: chosenCandidate?.postedDate || targetDate,
+          amount: chosenCandidate ? chosenCandidate.amount : (ofx.bankBalance || 0),
+          remember_rule: sel?.rememberRule ?? false,
+          selection_mode: sel ? 'manual' : 'rule'
+        };
+      });
+
+      if (balanceSelectionPayload.length > 0 && !isSandbox) {
+        addLog("Persistindo seleções oficiais de saldo e regras OFX (apply_ofx_balance_selection)...", "info");
+        try {
+          await applyOfxBalanceSelection({
+            selections: balanceSelectionPayload,
+            targetDate,
+            userId: undefined,
+            reason: 'Importação Centralizada'
+          });
+        } catch (selErr) {
+          console.warn('Erro ao aplicar seleções de saldo OFX:', selErr);
+        }
       }
 
       // Calcula o Pátio Global e por Filial a partir do somatório físico de todas as OSs ativas em aberto em patio_os
@@ -3138,11 +3203,42 @@ export function CentralImportWizard({
                               const totalIn = ofx.transactions.filter(t => t.type === 'in').reduce((s, t) => s + t.amount, 0);
                               const totalOut = ofx.transactions.filter(t => t.type === 'out').reduce((s, t) => s + Math.abs(t.amount), 0);
 
+                              const acctKey = ofx.accountKey || ofx.alias;
+                              const candidates = ofx.balanceCandidates || [];
+                              const activeRule = activeBalanceRules.find(r => r.account_key === acctKey);
+
+                              const curSel = selectedBalances[acctKey];
+                              let selectedIdx = 0;
+                              if (curSel !== undefined) {
+                                selectedIdx = curSel.candidateIndex;
+                              } else if (activeRule && candidates.length > 0) {
+                                const foundIdx = candidates.findIndex(c => 
+                                  c.sourceKind === activeRule.source_kind && 
+                                  (!activeRule.memo_normalized || c.memoNormalized === activeRule.memo_normalized)
+                                );
+                                if (foundIdx !== -1) selectedIdx = foundIdx;
+                                else {
+                                  const dateIdx = candidates.findIndex(c => c.postedDate === targetDate && c.balanceRole === 'CLOSING');
+                                  if (dateIdx !== -1) selectedIdx = dateIdx;
+                                }
+                              } else if (candidates.length > 0) {
+                                const dateIdx = candidates.findIndex(c => c.postedDate === targetDate && c.balanceRole === 'CLOSING');
+                                if (dateIdx !== -1) selectedIdx = dateIdx;
+                              }
+
+                              const chosenCand = candidates[selectedIdx];
+                              const chosenAmount = chosenCand ? chosenCand.amount : (ofx.bankBalance || 0);
+                              const isRemembered = curSel?.rememberRule ?? (activeRule !== undefined);
+
+                              const closingCands = candidates.filter(c => c.balanceRole === 'CLOSING' || c.balanceRole === 'LEDGER');
+                              const hasDivergence = closingCands.length > 1 && closingCands.some(c => Math.abs(c.amount - closingCands[0].amount) > 0.05);
+                              const diffVal = hasDivergence ? Math.abs(closingCands[0].amount - closingCands[1].amount) : 0;
+
                               return (
                                 <tr key={idx} className="hover:bg-zinc-800/30">
                                   <td className="p-3 font-sans">
                                     <div className="font-semibold text-zinc-100">{ofx.fileName || 'Extrato'}</div>
-                                    <div className="text-[10px] text-zinc-500">{ofx.alias}</div>
+                                    <div className="text-[10px] text-zinc-500 font-mono">{acctKey}</div>
                                   </td>
                                   <td className="p-3 font-sans">
                                     {storeObj ? (
@@ -3165,26 +3261,83 @@ export function CentralImportWizard({
                                     -{totalOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                   </td>
                                   <td className="p-3 text-right font-bold text-sky-400 tabular-nums">
-                                    <div className="flex flex-col items-end gap-0.5">
-                                      <span>
-                                        {ofx.bankBalance !== undefined ? (
-                                          ofx.bankBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                                        ) : '-'}
-                                      </span>
-                                      {ofx.balanceSource === 'saldo_total_disponivel_dia' ? (
-                                        <span className="text-[9px] font-sans font-medium px-1.5 py-0.2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded">
-                                          ✓ Saldo do Dia
+                                    {candidates.length > 1 ? (
+                                      <div className="flex flex-col items-end gap-1.5 py-1">
+                                        <select
+                                          value={selectedIdx}
+                                          onChange={(e) => {
+                                            const newIdx = Number(e.target.value);
+                                            setSelectedBalances(prev => ({
+                                              ...prev,
+                                              [acctKey]: {
+                                                candidateIndex: newIdx,
+                                                rememberRule: prev[acctKey]?.rememberRule ?? (activeRule !== undefined)
+                                              }
+                                            }));
+                                          }}
+                                          className="bg-zinc-900 border border-zinc-700 hover:border-zinc-600 text-sky-400 font-mono text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 max-w-[320px] transition-colors"
+                                        >
+                                          {candidates.map((c, cIdx) => (
+                                            <option key={cIdx} value={cIdx}>
+                                              {c.sourceKind === 'STMTTRN_MEMO' ? (c.memoNormalized || 'MEMO') : c.sourceKind} • {c.postedDate.split('-').reverse().join('/')} • {c.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}{c.postedDate === targetDate ? ' (Data da Conciliação)' : ' (Outra data: ' + c.postedDate.split('-').reverse().join('/') + ')'}
+                                            </option>
+                                          ))}
+                                        </select>
+                                        <div className="flex items-center gap-2">
+                                          <label className="flex items-center gap-1.5 text-[10px] text-zinc-400 cursor-pointer font-sans hover:text-zinc-300">
+                                            <input
+                                              type="checkbox"
+                                              checked={isRemembered}
+                                              onChange={(e) => {
+                                                setSelectedBalances(prev => ({
+                                                  ...prev,
+                                                  [acctKey]: {
+                                                    candidateIndex: selectedIdx,
+                                                    rememberRule: e.target.checked
+                                                  }
+                                                }));
+                                              }}
+                                              className="rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-0 w-3 h-3 cursor-pointer"
+                                            />
+                                            Lembrar esta fonte para esta conta
+                                          </label>
+                                          {activeRule && (
+                                            <span className="text-[9px] text-emerald-400 font-sans px-1.5 py-0.2 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                                              ✓ Regra Ativa
+                                            </span>
+                                          )}
+                                        </div>
+                                        {chosenCand && chosenCand.postedDate !== targetDate && (
+                                          <span className="text-[9px] font-sans text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                                            <AlertTriangle size={10} /> Saldo de {chosenCand.postedDate.split('-').reverse().join('/')} (diferente de {targetDate.split('-').reverse().join('/')})
+                                          </span>
+                                        )}
+                                        {hasDivergence && (
+                                          <span className="text-[9px] font-sans text-zinc-400">
+                                            Divergência entre fontes: R$ {diffVal.toFixed(2)}
+                                          </span>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <div className="flex flex-col items-end gap-0.5">
+                                        <span>
+                                          {chosenAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                         </span>
-                                      ) : ofx.balanceSource === 'saldo_anterior_plus_tx' ? (
-                                        <span className="text-[9px] font-sans font-medium px-1.5 py-0.2 text-sky-400 bg-sky-500/10 border border-sky-500/20 rounded">
-                                          Âncora Anterior + Mov.
-                                        </span>
-                                      ) : ofx.ledgerBalance !== undefined && ofx.ledgerBalance !== ofx.bankBalance ? (
-                                        <span className="text-[9px] font-sans text-zinc-500" title={`Arquivo (D+0): R$ ${ofx.ledgerBalance.toFixed(2)}`}>
-                                          D+0 ignorado
-                                        </span>
-                                      ) : null}
-                                    </div>
+                                        {ofx.balanceSource === 'saldo_total_disponivel_dia' ? (
+                                          <span className="text-[9px] font-sans font-medium px-1.5 py-0.2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                                            ✓ Saldo do Dia
+                                          </span>
+                                        ) : ofx.balanceSource === 'saldo_anterior_plus_tx' ? (
+                                          <span className="text-[9px] font-sans font-medium px-1.5 py-0.2 text-sky-400 bg-sky-500/10 border border-sky-500/20 rounded">
+                                            Âncora Anterior + Mov.
+                                          </span>
+                                        ) : (
+                                          <span className="text-[9px] font-sans text-zinc-500">
+                                            Única fonte
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
                                   </td>
                                 </tr>
                               );
@@ -3205,7 +3358,16 @@ export function CentralImportWizard({
                                 -{results.ofxResults.reduce((s, o) => s + o.transactions.filter(t => t.type === 'out').reduce((st, t) => st + Math.abs(t.amount), 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                               </td>
                               <td className="p-3 text-right text-sm text-sky-400 font-bold tabular-nums">
-                                {results.ofxResults.reduce((s, o) => s + (o.bankBalance || 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                {results.ofxResults.reduce((s, o) => {
+                                  const acctKey = o.accountKey || o.alias;
+                                  const sel = selectedBalances[acctKey];
+                                  const cands = o.balanceCandidates || [];
+                                  const cand = (cands.length > 0 && sel !== undefined && cands[sel.candidateIndex])
+                                    ? cands[sel.candidateIndex]
+                                    : (cands.find(c => c.postedDate === targetDate && c.balanceRole === 'CLOSING') || cands[0]);
+                                  const amt = cand ? cand.amount : (o.bankBalance || 0);
+                                  return s + amt;
+                                }, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                               </td>
                             </tr>
                           </tfoot>

@@ -1,3 +1,16 @@
+## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
+
+**Contexto:** Criação do modal `OfxAccountBalanceModal.tsx` e enriquecimento da tabela de auditoria do `CentralImportWizard.tsx` (Etapa 1) e `SaldoBancosDetailModal.tsx`.
+
+**Regra aprendida:**
+1. **Badges de Divergência Temporal:** Quando a data do candidato de saldo diferir da data contábil de conciliação (`postedDate !== targetDate`), a interface deve exibir badge de aviso (`variant="warning"`) e texto explicativo, alertando o operador sobre D+1 ou D+2 sem bloquear a seleção explícita.
+2. **Prévia de Impacto Inline:** Antes de aplicar qualquer troca de regra ou candidato, a UI exibe card com saldo atual, novo saldo e variação líquida colorida (`text-emerald-400` para acréscimo e `text-red-400` para decréscimo).
+3. **Interatividade em Células de Tabela:** Em vez de botões pesados na tabela de saldos, usar gatilho no próprio número do saldo com hover styling e ícone semântico discreto (`SlidersHorizontal`), abrindo o modal analítico de configuração.
+
+**Risco identificado / Anti-pattern:** Usar classes arbitrárias ou cores hardcoded hexadecimais em vez dos tokens semânticos (`bg-card`, `border-border`, `text-primary`, `bg-background`).
+
+---
+
 ## [2026-09-25] — [Feature ID: 438-canonical-rematch-intercompany-guard]
 
 **Contexto:** Saneamento de exibição de diferenças nos cards de filiais (`StoreCardModulo1.tsx`, `ConciliacaoLojasView.tsx` e `ResumoDiaPanel.tsx`). Eliminação de injeção forçada de sinais `-` ou `+`, de cálculos locais de `orfas` no React e de divergência visual entre frontend e backend.

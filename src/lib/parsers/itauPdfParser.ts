@@ -1,4 +1,4 @@
-import { OfxParseResult, OfxTransaction } from './ofxParser';
+import { OfxParseResult, OfxTransaction, OfxBalanceCandidate } from './ofxParser';
 import { generateDeterministicHash } from './hashUtils';
 import { extractNumber } from './numberUtils';
 
@@ -167,6 +167,7 @@ export async function parseItauBankStatementPDF(
   const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
   let previousBalance: number | undefined;
   const transactions: OfxTransaction[] = [];
+  const balanceCandidates: OfxBalanceCandidate[] = [];
   const hashOccurrences = new Map<string, number>();
 
   const maxPage = Math.max(...allItems.map(it => it.page));
@@ -218,6 +219,17 @@ export async function parseItauBankStatementPDF(
       // SALDO ANTERIOR
       if (title.toUpperCase().includes('SALDO ANTERIOR')) {
         previousBalance = extractNumber(saldoStr || valorStr);
+        balanceCandidates.push({
+          accountKey: combinedAccountKey || alias,
+          sourceKind: 'STMTTRN_MEMO',
+          balanceRole: 'OPENING',
+          memoRaw: title,
+          memoNormalized: title.toUpperCase(),
+          postedDate: formatDateToIso(anchor.str),
+          amount: previousBalance,
+          amountCents: Math.round(previousBalance * 100),
+          isOpening: true,
+        });
         continue;
       }
 
@@ -230,6 +242,17 @@ export async function parseItauBankStatementPDF(
         if (bankBalance === undefined && lastSaldo !== 0) {
           bankBalance = lastSaldo;
         }
+        balanceCandidates.push({
+          accountKey: combinedAccountKey || alias,
+          sourceKind: 'STMTTRN_MEMO',
+          balanceRole: 'CLOSING',
+          memoRaw: title,
+          memoNormalized: title.toUpperCase(),
+          postedDate: formatDateToIso(anchor.str),
+          amount: lastSaldo,
+          amountCents: Math.round(lastSaldo * 100),
+          isClosing: true,
+        });
         continue;
       }
 
@@ -270,7 +293,9 @@ export async function parseItauBankStatementPDF(
 
   return {
     alias,
+    accountKey: combinedAccountKey || alias,
     transactions,
+    balanceCandidates,
     bankBalance,
     previousBalance,
     accountLimit,

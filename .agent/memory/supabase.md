@@ -1,3 +1,20 @@
+## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
+
+**Contexto:** Migration `20260927000001_ofx_balance_candidates_and_rules.sql`. Criação das tabelas `ofx_balance_candidates`, `ofx_balance_rules`, `ofx_balance_selections` e `ofx_balance_selection_events`, e RPCs `preview_ofx_balance_selection`, `apply_ofx_balance_selection`, `get_ofx_balance_rules`, `get_ofx_account_history`.
+
+**Regra aprendida:**
+1. **Transacionalidade e Agregação Segura de Saldo em Banco:**
+   - A RPC `apply_ofx_balance_selection` consolida todas as contas associadas à filial em `reconciliations.bank_total` sem permitir soma duplicada ou valores arbitrários fornecidos pelo cliente.
+   - O recálculo canônico de resumo e snapshots é acionado imediatamente dentro da transação via `get_daily_reconciliation_summary(p_target_date::text, true)`.
+2. **Trilha de Auditoria Append-Only:**
+   - Toda alteração pontual ou retrospectiva de saldo gera um registro em `ofx_balance_selection_events` com `previous_amount`, `new_amount`, `store_bank_total_before`, `store_bank_total_after`, `actor_id` e `reason`.
+3. **Versão de Regra e Concorrência Otimista:**
+   - A tabela `ofx_balance_rules` é versionada (`version INT`) com índice único condicional em `account_key WHERE (is_active = true)` para garantir apenas uma regra ativa por conta.
+
+**Risco identificado / Anti-pattern:** Permitir que o frontend envie `bank_total` diretamente para `reconciliations` em vez de calcular no PostgreSQL a partir de candidatos validados.
+
+---
+
 ## [2026-09-25] — [Feature ID: 438-canonical-rematch-intercompany-guard]
 
 **Contexto:** Migration `20260925000002_canonical_rematch_intercompany_guard.sql` e `20260925000003_drop_overloaded_auto_match_receivables.sql`. Saneamento dos créditos intercompany MP e HD Centro em 24/09, eliminação de sobrecargas de tipos no PostgreSQL para evitar ambiguidade PostgREST, e calibração das fórmulas de fechamento em `get_daily_reconciliation_summary`.

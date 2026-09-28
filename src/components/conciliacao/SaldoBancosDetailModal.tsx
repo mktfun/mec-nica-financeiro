@@ -12,7 +12,8 @@ import {
   Search,
   CheckCircle2,
   ArrowDownToLine,
-  Check
+  Check,
+  SlidersHorizontal
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
@@ -20,6 +21,7 @@ import { StoreReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { toast } from 'sonner';
 import { BaixaDinheiroModal } from './BaixaDinheiroModal';
 import { CashVaultCompositionModal } from './CashVaultCompositionModal';
+import { OfxAccountBalanceModal } from './OfxAccountBalanceModal';
 
 interface SaldoBancosDetailModalProps {
   isOpen: boolean;
@@ -40,6 +42,7 @@ export function SaldoBancosDetailModal({
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [baixaModalStore, setBaixaModalStore] = useState<{ storeId: string; storeName: string; amount: number } | null>(null);
+  const [ofxModalStore, setOfxModalStore] = useState<{ storeId: string; storeName: string; amount: number } | null>(null);
   const [isCashVaultModalOpen, setIsCashVaultModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -243,14 +246,20 @@ export function SaldoBancosDetailModal({
                     <Building2 className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
                     <span className="whitespace-nowrap">{row.storeName}</span>
                   </td>
-                  <td className={`py-3.5 px-5 text-right font-mono tabular-nums whitespace-nowrap ${row.saldoOfxPuro < 0 ? 'text-red-400 font-semibold' : 'text-[var(--text-secondary)]'}`}>
-                    {row.saldoOfxPuro < 0 ? (
-                      <span className="inline-flex items-center gap-1 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/30">
-                        {formatCurrency(row.saldoOfxPuro)}
-                      </span>
-                    ) : (
-                      formatCurrency(row.saldoOfxPuro)
-                    )}
+                  <td className="py-3.5 px-5 text-right font-mono tabular-nums whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => setOfxModalStore({ storeId: row.storeId, storeName: row.storeName, amount: row.saldoOfxPuro })}
+                      className={`group/ofx inline-flex items-center gap-1.5 px-2 py-0.5 rounded transition-all cursor-pointer ${
+                        row.saldoOfxPuro < 0
+                          ? 'bg-red-500/10 border border-red-500/30 text-red-400 font-semibold hover:bg-red-500/20'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] border border-transparent hover:border-[var(--border-subtle)]'
+                      }`}
+                      title="Clique para inspecionar candidatos de saldo, alterar regra ou ajustar valor OFX"
+                    >
+                      <span>{formatCurrency(row.saldoOfxPuro)}</span>
+                      <SlidersHorizontal className="w-3 h-3 text-[var(--text-tertiary)] group-hover/ofx:text-[var(--color-primary)] transition-colors shrink-0" />
+                    </button>
                   </td>
                   <td className="py-3.5 px-5 text-center whitespace-nowrap">
                     {row.dinheiroLoja > 0 ? (
@@ -369,6 +378,26 @@ export function SaldoBancosDetailModal({
           queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
         }}
       />
+
+      {/* Modal de Mapeamento, Regras e Auditoria de Saldo OFX por Conta/Loja */}
+      {ofxModalStore && (
+        <OfxAccountBalanceModal
+          isOpen={!!ofxModalStore}
+          onClose={() => setOfxModalStore(null)}
+          storeId={ofxModalStore.storeId}
+          storeName={ofxModalStore.storeName}
+          targetDate={targetDate}
+          currentBankTotal={ofxModalStore.amount}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
+            queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['reconciliations'] });
+            queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+            queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+          }}
+        />
+      )}
     </Modal>
   );
 }

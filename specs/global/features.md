@@ -141,3 +141,25 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Propagação de `targetDate` para filtragem temporal de movimentações e validação de `<DTASOF>`.
 - `CentralImportWizard.tsx`:
   - Exibição de badge semântico Zinc-950 `✓ Saldo do Dia` na coluna de saldo bancário (Step 1).
+
+---
+
+## 15. Seleção e Mapeamento Editável de Saldo OFX por Conta e Data (Spec 439)
+- `ofxParser.ts` & `itauPdfParser.ts`:
+  - Extração de candidatos datados de saldo de extrato (`STMTTRN_MEMO`, `<LEDGERBAL>`, `<AVAILBAL>`, `<PRVBAL>`) em `balanceCandidates` com `accountKey` canônica.
+  - Classificação mutuamente exclusiva entre saldos de abertura e fechamento; nenhuma linha de saldo contamina o array `transactions` operacional.
+  - Suporte a saldo zero (`R$ 0,00`) e saldo devedor/cheque especial negativo sem descarte prematuro.
+- `centralImportManager.ts`:
+  - Deduplicação idempotente de candidatos de saldo entre múltiplos arquivos enviados para a mesma conta.
+- Tabelas & RPCs Supabase (Migration `20260927000001_ofx_balance_candidates_and_rules.sql`):
+  - `ofx_balance_candidates`: Armazena todos os candidatos de saldo extraídos dos extratos.
+  - `ofx_balance_rules`: Regras ativas e versionadas por conta (`account_key`), associando-a à fonte preferencial (`source_kind`, `memo_normalized`).
+  - `ofx_balance_selections`: Seleção efetiva única por conta e data de conciliação (`reconciliation_date`).
+  - `ofx_balance_selection_events`: Trilha append-only de auditoria com saldos antes/depois, usuário e motivo do ajuste.
+  - RPCs atômicas: `preview_ofx_balance_selection`, `apply_ofx_balance_selection`, `get_ofx_balance_rules`, `get_ofx_account_history`.
+- `useOfxBalanceMappings.ts`:
+  - Hook unificado para consulta de regras, seleções gravadas, cálculo de prévia de impacto e mutação transacional com invalidação de cache.
+- `CentralImportWizard.tsx`:
+  - Seletor de candidatos de saldo por conta na Etapa 1 com badges de data correspondente/divergente e opção "Lembrar regra".
+- `OfxAccountBalanceModal.tsx` & `SaldoBancosDetailModal.tsx`:
+  - Modal analítico para inspeção de contas por filial, troca de regras, ajuste retrospectivo de saldo com prévia de impacto e histórico de auditoria completo. Célula de saldo bancário interativa.

@@ -145,7 +145,7 @@ export async function parseCentralImports(
         ...result,
         success: true,
         storeAlias: result.alias,
-        accountKey: result.alias,
+        accountKey: result.accountKey || result.alias,
       };
 
       // Deduplicação inteligente de OFX por conta / alias
@@ -162,8 +162,22 @@ export async function parseCentralImports(
           storeAlias: normalized.alias,
           reason: `Extrato bancário da mesma conta (${normalized.alias}) já importado pelo arquivo "${existing.fileName}". Mantida apenas uma instância.`
         });
+        // Preserva e mescla candidatos de saldo de ambos os arquivos da mesma conta
+        const merged = [...(existing.balanceCandidates || []), ...(normalized.balanceCandidates || [])];
+        const unique: typeof merged = [];
+        const seen = new Set<string>();
+        for (const c of merged) {
+          const k = `${c.sourceKind}|${c.postedDate}|${c.amountCents}|${c.memoNormalized || ''}`;
+          if (!seen.has(k)) {
+            seen.add(k);
+            unique.push(c);
+          }
+        }
         if ((normalized.transactions?.length || 0) > (existing.transactions?.length || 0)) {
+          normalized.balanceCandidates = unique;
           results.ofxResults[existingOfxIdx] = normalized;
+        } else {
+          existing.balanceCandidates = unique;
         }
         continue;
       }
@@ -177,6 +191,7 @@ export async function parseCentralImports(
         alias: file.name,
         fileName: file.name,
         transactions: [],
+        balanceCandidates: [],
         success: false,
         storeAlias: file.name,
         accountKey: file.name,
@@ -197,7 +212,7 @@ export async function parseCentralImports(
           ...result,
           success: true,
           storeAlias: result.alias,
-          accountKey: result.alias,
+          accountKey: result.accountKey || result.alias,
         };
 
         // Deduplicação inteligente com outros extratos (OFX ou PDF da mesma conta)
@@ -214,8 +229,21 @@ export async function parseCentralImports(
             storeAlias: normalized.alias,
             reason: `Extrato bancário da mesma conta (${normalized.alias}) já importado pelo arquivo "${existing.fileName}". Mantida apenas uma instância.`
           });
+          const merged = [...(existing.balanceCandidates || []), ...(normalized.balanceCandidates || [])];
+          const unique: typeof merged = [];
+          const seen = new Set<string>();
+          for (const c of merged) {
+            const k = `${c.sourceKind}|${c.postedDate}|${c.amountCents}|${c.memoNormalized || ''}`;
+            if (!seen.has(k)) {
+              seen.add(k);
+              unique.push(c);
+            }
+          }
           if ((normalized.transactions?.length || 0) > (existing.transactions?.length || 0)) {
+            normalized.balanceCandidates = unique;
             results.ofxResults[existingOfxIdx] = normalized;
+          } else {
+            existing.balanceCandidates = unique;
           }
           continue;
         }

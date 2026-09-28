@@ -1,3 +1,21 @@
+## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
+
+**Contexto:** Definição canônica do saldo bancário de cada conta/filial a partir do extrato bancário oficial (OFX), separando movimentos de saldos, permitindo seleção por candidato e cálculo seguro por RPC sem suposições cegas.
+
+**Regra aprendida:**
+1. **Soberania do Saldo do Dia sobre LEDGERBAL de D+0:**
+   - Extratos extraídos no dia seguinte frequentemente carregam `<LEDGERBAL>` com data e saldo já alterados por transações de D+0.
+   - O saldo de fechamento contábil oficial de D-1 é representado pela linha de MEMO `SALDO TOTAL DISPONÍVEL DIA` (ou `<LEDGERBAL>` apenas quando sua data `<DTASOF>` coincidir exatamente com a data de conciliação).
+2. **Consolidação Multi-Conta por Filial:**
+   - Filiais que operam mais de uma conta corrente somam o saldo canônico de cada conta associada (`store_file_mappings`).
+   - A soma ocorre estritamente dentro da RPC `apply_ofx_balance_selection`, que recalcula `reconciliations.bank_total` e aciona `get_daily_reconciliation_summary(p_target_date, true)`.
+3. **Persistência de Regras por Conta (`ofx_balance_rules`):**
+   - O operador financeiro pode configurar "Lembrar esta fonte como regra para próximas importações". O sistema grava a preferência da conta por `source_kind` e `memo_normalized` e a aplica automaticamente nas próximas conciliações.
+
+**Risco identificado / Anti-pattern:** Permitir que o operador financeiro tenha que redigitar ou calcular manualmente a soma de contas no final do dia, correndo risco de erro de digitação.
+
+---
+
 ## [2026-09-25] — [Feature ID: 438-canonical-rematch-intercompany-guard]
 
 **Contexto:** Saneamento forense e estrutural de fechamento por filial no backend e frontend. Eliminação de falsos positivos de débitos/créditos órfãos (casos Jorge Beretta R$ 850 e Kennedy R$ 2.003), bloqueio estrito de transferências intercompany em conciliação de OSs e recebíveis, e sincronização do frontend com os campos canônicos da RPC.

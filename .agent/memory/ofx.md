@@ -1,3 +1,16 @@
+## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
+
+**Contexto:** Seleção e mapeamento editável do saldo de cada OFX por conta e data, eliminando contaminação de saldo entre dias e permitindo que o operador defina e lembre a regra de saldo de cada conta.
+**Regra aprendida:**
+1. **Candidatos de Saldo Datados e Segregação Absoluta:** O parser extrai todos os saldos possíveis (`STMTTRN_MEMO`, `<LEDGERBAL>`, `<AVAILBAL>`, `<PRVBAL>`) em `balanceCandidates`. Nenhuma linha de saldo contamina o array `transactions` operacional.
+2. **Exclusividade Mútua Estrita:** Saldo de abertura (`SALDO ANTERIOR`, `<PRVBAL>`) e fechamento (`SALDO TOTAL DISPONÍVEL DIA`, `SALDO DO DIA`) não compartilham predicados; rótulos de abertura são categoricamente rejeitados como fechamento e vice-versa.
+3. **Resiliência a Saldo Zero e Cheque Especial:** Contas com saldo `0.00` ou negativo são candidatos válidos. O loop de `STMTTRN` nunca deve descartar `amount === 0` se a linha corresponder a um memo de saldo.
+4. **Resolução de Regra por Conta e Não por Valor:** A regra memorizada associa `account_key` a uma fonte (`source_kind` + `memo_normalized`), permitindo reconciliar a conta em dias subsequentes mesmo quando o saldo financeiro varia.
+**Risco identificado:** Descarte acidental de linhas de saldo com valor `0.00` antes da checagem de memos de abertura/fechamento.
+**Não fazer:** Nunca gravar `ofx.bankBalance` diretamente no banco sem passar pela RPC transacional `apply_ofx_balance_selection`.
+
+---
+
 ## [2026-09-25] — [Feature ID: 444-canonical-ofx-closing-balance-saldo-do-dia]
 
 **Contexto:** Correção da contaminação do saldo bancário atual por arquivos OFX extraídos em D+0 (manhã do dia seguinte) para conciliação contábil de D-1 (ontem).
