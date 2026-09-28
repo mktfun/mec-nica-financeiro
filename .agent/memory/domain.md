@@ -1347,4 +1347,33 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 **Risco identificado:** O hook `useBackendConciliacao.ts` sobrescrever `caixa_atual` com o cálculo dinâmico bruto para dias normais (não Marco Zero) fechados.
 **Não fazer:** Nunca bloquear a edição de Caixa Atual/Anterior ou obrigar intervenção manual via script SQL para correções contábeis de fechamento.
 
+## [2026-09-28] — [Feature ID: 440-rede-os-isolamento-data-matcher-canonico] Isolamento Temporal de Vendas Rede e Matcher Canônico Bruto
+
+**Contexto:** Vendas de cartão de 22/09 e 23/09 vazavam para a conciliação de 24/09 (ex.: lote Rede com vendas de R$ 2.286,00 da OS #40394), gerando falsas divergências e discrepâncias entre valor bruto e líquido nas maquininhas.
+**Regra aprendida:**
+1. **Isolamento Estrito por Data Real da Venda:** O importador (`CentralImportWizard.tsx`) deve atribuir `target_date = effectivePosDate` (data em que a venda ocorreu), impedindo que transações com liquidação agrupada em D+1 ou D+2 contaminem o faturamento e as maquininhas de datas posteriores.
+2. **Matcher Canônico por Valor Bruto (`gross_amount`):** A conciliação Rede x OS compara o valor bruto da transação com a parcela de cartão da OS (`credit_value`, `debit_value`, `credit_debit_value`) com tolerância de até R$ 0,05, pois a OS registra o preço cobrado do cliente, enquanto a taxa MDR é custo financeiro da loja.
+3. **Preservação do Status de Liquidação:** O vínculo de uma OS a uma venda de cartão JAMAIS deve forçar `settlement_status = 'entrou'`. A transação deve permanecer `'a_compensar'` até a efetiva entrada no extrato bancário (OFX).
+4. **Resolução de Colisões:** Em caso de ambiguidade (mais de uma OS com o mesmo valor bruto na mesma filial), o auto-match deve suspender a amarração automática para decisão do operador.
+**Não fazer:** Comparar valor líquido com o total da OS ou forçar data do lote de fechamento sobre vendas passadas.
+
+## [2026-09-28] — [Feature ID: 441-baixa-rede-os-recalculo-patio] Baixa Atômica de Rede na OS e Recálculo de Pátio
+
+**Contexto:** Ao vincular manualmente uma venda de cartão a uma OS (ex.: OS #1120 na filial `st-03`), o `paid_value` da OS era atualizado, mas os agregados do pátio (`reconciliations.na_loja_os` e `daily_snapshots.total_patio`) continuavam lendo snapshots antigos, gerando divergência entre o saldo individual da OS (R$ 2.789,52) e o Pilar 4 do pátio.
+**Regra aprendida:**
+1. **Recálculo Canônico Centralizado (`recompute_patio_for_date_and_store`):** Toda baixa ou desvinculação de cartão/PIX em OS deve disparar a função atômica no PostgreSQL que recalcula a soma de saldos abertos (`total_value - paid_value`) para veículos físicos em oficina e atualiza atomicamente `reconciliations.na_loja_os` e `daily_snapshots.total_patio`.
+2. **Invalidação Reativa Completa no Frontend:** Ao executar `link_manual_rede_to_os` ou `unlink_manual_os_match`, o hook `useManualMatch` invalida compulsoriamente todas as chaves do React Query dependentes: `['store-ordens-servico']`, `['patio-os-detail-modal']`, `['daily-reconciliation-summary']`, `['daily_snapshots']`, `['reconciliations']`.
+3. **Tratamento de Saldo Zero como Valor Válido:** Fórmulas no frontend e backend devem tratar `0` como número contábil válido e nunca aplicar fallback `||` para valores anteriores ou ausentes.
+**Não fazer:** Atualizar `patio_os.paid_value` sem recalcular os agregados de pátio na mesma transação.
+
+## [2026-09-28] — [Feature ID: 442-preservar-memo-ofx-boletos-sispag] Preservação de MEMO de Boletos e SISPAG do OFX
+
+**Contexto:** Débitos de SISPAG e boletos bancários no extrato eram exibidos como números de conta/agência ("ITAU - 8813994293" ou apenas "8813994293") no lugar do favorecido ou da descrição bancária útil ("SISPAG FORNECEDORES").
+**Regra aprendida:**
+1. **Proibição de Alias Bancário como Contraparte:** A coluna `counterpart_name` destina-se exclusivamente ao terceiro/favorecido da transação. NUNCA utilize o apelido da conta bancária (`ofx.alias`) como fallback.
+2. **Preservação de Tags OFX:** Persistir `raw_memo`, `raw_name`, `bank_reference` (`<CHECKNUM>`) e `original_fitid` na tabela `ofx_transactions`.
+3. **Proteção contra Stripping Excessivo de Títulos:** Se após a remoção de prefixos bancários (`BOLETO PAGO`, `SISPAG FORNECEDORES`, etc.) o texto restante for vazio ou puramente numérico, o título original deve ser preservado para não poluir a interface com dígitos soltos.
+**Não fazer:** Sobrescrever `counterpart_name` com `ITAU - {conta}` quando o arquivo OFX não trouxer nome de contraparte.
+
+
 

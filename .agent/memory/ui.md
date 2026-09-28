@@ -850,5 +850,21 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 2. **Exceções Expressas de Negócio:**
    - `valor_disp_contas` e `contas_manual` são valores patrimoniais/orçamentários nominais e devem permanecer em branco normal (`text-white font-mono`), sem alertas visuais alarmistas indevidos.
    - Saldo bancário de filial em `StoreCardModulo1` é branco se positivo (`text-white font-mono`) e vermelho (`text-rose-400 font-mono`) apenas se estiver negativo (cheque especial devedor).
-**Risco identificado:** Adoção indiscriminada de gradientes saturados ou cores de alerta (`text-amber-*`, `text-cyan-*`, `text-teal-*`) para métricas puramente estáticas gera sobrecarga cognitiva e cega o operador contábil para as verdadeiras divergências.
 **Não fazer:** Nunca colorir montantes brutos de extrato (ex.: OFX Entradas ou OFX Saídas) de verde ou vermelho; a cor semântica pertence única e exclusivamente à coluna de apuração da divergência ("Dif. a Justificar").
+
+## [2026-09-28] — [Feature ID: 440-rede-os-isolamento-data-matcher-canonico] Rótulos Discriminados Bruto/MDR/Líquido no Modal de Match
+
+**Contexto:** No modal de conciliação manual (`ManualMatchOsModal.tsx`) e na aba de cartões (`StoreCartaoMaquininhaView.tsx`), operadores precisavam visualizar a decomposição do valor bruto, taxa MDR da adquirente e valor líquido depositado.
+**Regra aprendida:**
+1. **Clareza Fiduciária de Cartão:** Exibir de forma discriminada: `Bruto: R$ X,XX`, `Taxa MDR: -R$ X,XX` e `Líquido: R$ X,XX`, com tipografia mono tabular `font-mono text-zinc-100` e tokens semânticos Zinc-950 de `DESIGN.md`.
+2. **Filtro Estrito por Data Alvo:** Em `StoreCartaoMaquininhaView.tsx`, a consulta de transações da maquininha deve filtrar rigorosamente por `target_date.eq.${date}`, evitando que o seletor exiba transações de dias passados.
+
+## [2026-09-28] — [Feature ID: 442-preservar-memo-ofx-boletos-sispag] Revolut Item: Limpeza de Alias e Preservação de Rótulos Úteis
+
+**Contexto:** Em `StoreExtratoBancarioView.tsx` e `TransactionDetailModal.tsx`, linhas de boletos ou débitos SISPAG exibiam aliases de conta (`ITAU - 8813994293`) ou números desconexos após regex excessivamente agressiva de remoção de prefixos.
+**Regra aprendida:**
+1. **Descarte de Aliases de Conta:** O helper `isAccountOrGenericAlias` detecta padrões como `ITAU - {conta}` ou sequências puramente numéricas e descarta-os na resolução do nome principal (`primaryName`), recorrendo imediatamente a `bank_name` / `raw_memo`.
+2. **Preservação de Rótulos Úteis:** Ao limpar prefixos como `BOLETO PAGO`, `PIX ENVIADO`, `SISPAG FORNECEDORES`, se o remanescente for vazio ou exclusivamente numérico/pontuação, o rótulo da transação é preservado (ex.: "SISPAG Fornecedores" ou "Boleto Pago 0039...").
+3. **Badges de Referência:** Números de transação e documentos (`#CHECKNUM`) são exibidos em badges mono discretos de auditoria, e nunca como título principal da transação.
+4. **Ficha Fiduciária do Modal:** `TransactionDetailModal.tsx` exibe o campo "Referência Bancária (Doc / Checknum)" e o histórico bruto do extrato com fallback completo `raw_memo || bank_name || subtitle || title || memo`.
+

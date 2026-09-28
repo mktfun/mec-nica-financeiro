@@ -150,36 +150,11 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
 
       if (error) throw error;
 
-      // Recalcula somatório de patio_os e sincroniza daily_snapshots e reconciliations
-      const { data: allPatio } = await supabase
-        .from('patio_os')
-        .select('*')
-        .lte('opened_at', `${date}T23:59:59`);
-
-      if (allPatio) {
-        const activeList = allPatio.filter((os: any) => {
-          const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
-          const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
-          return !isClosed && saldo > 0;
-        });
-
-        const newTotal = activeList.reduce((acc: number, os: any) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
-
-        await supabase
-          .from('daily_snapshots')
-          .update({ total_patio: newTotal })
-          .eq('date', date);
-
-        const storeTotal = activeList
-          .filter((os: any) => os.store_id === storeId)
-          .reduce((acc: number, os: any) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
-
-        await supabase
-          .from('reconciliations')
-          .update({ na_loja_os: storeTotal })
-          .eq('date', date)
-          .eq('store_id', storeId);
-      }
+      // Recalcula somatório canônico de patio_os e sincroniza daily_snapshots e reconciliations no banco
+      await supabase.rpc('recompute_patio_for_date_and_store', {
+        p_date: date,
+        p_store_id: storeId
+      });
     },
     onSuccess: async () => {
       toast.success('Ordem de Serviço atualizada com sucesso!');

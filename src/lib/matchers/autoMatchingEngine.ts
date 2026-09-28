@@ -270,14 +270,14 @@ export function executeAutoMatchingEngine(
         const storeOss = osByStore.get(storeId) || [];
         const storeReceivables = receivablesByStore.get(storeId) || [];
 
-        // Tier 1: Match direto em parsed_credit / parsed_debit (Bruto ou Líquido)
+        // Tier 1: Match direto em parsed_credit / parsed_debit (Exclusivamente Bruto)
         let matchedOs = storeOss.find(os => {
           if (matchedOsNumbers.has(String(os.os_number))) return false;
           const credit = Number(os.parsed_credit || 0);
           const debit = Number(os.parsed_debit || 0);
           const osCardVal = credit + debit;
           if (osCardVal <= 0) return false;
-          return Math.abs(osCardVal - gross) <= TOLERANCE || Math.abs(osCardVal - net) <= TOLERANCE;
+          return Math.abs(osCardVal - gross) <= TOLERANCE;
         });
 
         // Tier 2: Match via receivablesArray de Cartão da Loja
@@ -287,7 +287,7 @@ export function executeAutoMatchingEngine(
             const recVal = Number(rec.value || 0);
             const isCardRec = /CART|CRED|DEB|OUTR|POS/i.test(rec.type || '') || /CART|CRED|DEB/i.test(rec.description || '');
             if (!isCardRec) return false;
-            return Math.abs(recVal - gross) <= TOLERANCE || Math.abs(recVal - net) <= TOLERANCE;
+            return Math.abs(recVal - gross) <= TOLERANCE;
           });
 
           if (matchedReceivable && matchedReceivable.os_number) {
@@ -306,7 +306,7 @@ export function executeAutoMatchingEngine(
             if (osVal <= 0) return false;
 
             if (isCardTagged) {
-              return Math.abs(osVal - gross) <= TOLERANCE || Math.abs(osVal - net) <= TOLERANCE;
+              return Math.abs(osVal - gross) <= TOLERANCE;
             }
             return false;
           });

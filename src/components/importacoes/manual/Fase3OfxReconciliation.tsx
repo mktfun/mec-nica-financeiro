@@ -213,14 +213,18 @@ export function Fase3OfxReconciliation({
             id: crypto.randomUUID(),
             store_id: resolvedStoreId,
             target_date: targetDate,
-            bank_name: bankName,
+            bank_name: t.title || t.raw_memo || bankName,
             amount: Math.abs(t.amount || 0),
             type: normalizedType,
-            counterpart_name: t.counterpart_name || t.title || t.memo || t.payee || 'Lançamento OFX',
+            counterpart_name: t.counterpart_name || null,
             cnpj_cpf: t.cnpj_cpf || null,
             fitid: effectiveFitid,
             occurred_at: occurredAt,
-            contabilizar_no_subtotal: true
+            contabilizar_no_subtotal: true,
+            raw_memo: t.raw_memo || t.title || null,
+            raw_name: t.raw_name || null,
+            bank_reference: t.bank_reference || null,
+            original_fitid: t.original_fitid || null
           };
 
           const mapKey = `${resolvedStoreId || 'null'}_${effectiveFitid}`;

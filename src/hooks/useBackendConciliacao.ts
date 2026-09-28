@@ -487,9 +487,11 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         snapMeta.a_receber ?? 
         0
       );
-      const livePatio = Number(raw.na_loja_os || 0);
-      const snapPatio = Number(snapshotData?.total_patio ?? snapMeta.total_patio ?? snapMeta.na_loja_os ?? 0);
-      const finalNaLojaOs = livePatio > 0 ? livePatio : snapPatio;
+      const livePatio = raw.na_loja_os !== undefined && raw.na_loja_os !== null ? Number(raw.na_loja_os) : null;
+      const snapPatio = snapshotData?.total_patio !== undefined && snapshotData?.total_patio !== null
+        ? Number(snapshotData.total_patio)
+        : (snapMeta.total_patio !== undefined ? Number(snapMeta.total_patio) : Number(snapMeta.na_loja_os ?? 0));
+      const finalNaLojaOs = snapshotData?.is_closed ? snapPatio : (livePatio !== null ? livePatio : snapPatio);
 
       const calculatedCaixaAtual = Number((finalTotalSaldoBancoPositivo + finalDinheiroMp + finalAReceber + finalNaLojaOs - baseBancoNegativo).toFixed(2));
       const hasCaixaAtualOverride = Boolean(

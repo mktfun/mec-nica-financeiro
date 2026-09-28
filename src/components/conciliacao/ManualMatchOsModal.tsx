@@ -13,6 +13,9 @@ export interface ManualMatchTransaction {
   title?: string;
   counterpart_name?: string;
   amount: number;
+  gross_amount?: number;
+  fee_amount?: number;
+  net_amount?: number;
   occurred_at?: string;
   store_id?: string;
   source?: 'ofx' | 'rede' | 'maquininha';
@@ -59,6 +62,9 @@ export function ManualMatchOsModal({
   const isRede = transaction?.source === 'rede' || transaction?.source === 'maquininha';
   const matchType = isRede ? 'rede' : 'pix';
   const txAmount = transaction ? Math.abs(transaction.amount) : 0;
+  const grossAmount = transaction?.gross_amount ?? txAmount;
+  const feeAmount = transaction?.fee_amount ?? 0;
+  const netAmount = transaction?.net_amount ?? (grossAmount - feeAmount);
 
   // Lojas para seleção
   const { data: hookStores = [] } = useStores();
@@ -166,7 +172,14 @@ export function ManualMatchOsModal({
       const src = isRede ? 'rede' : 'ofx';
       const res = await linkTransactionToOs(transaction.id, os.os_number, createStoreId || storeId, src, txAmount);
       if (res.success) {
-        toast.success(`Transação vinculada com sucesso à OS #${os.os_number}!`);
+        const effect = res.data?.accounting_effect;
+        if (effect === 'baixa_aplicada') {
+          toast.success(`Baixa de R$ ${Number(txAmount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} aplicada à OS #${os.os_number}! Pátio recalculado.`);
+        } else if (effect === 'vinculo_informativo_sem_baixa') {
+          toast.info(`OS #${os.os_number} vinculada para conciliação (pagamento já constava na OS).`);
+        } else {
+          toast.success(`Transação vinculada com sucesso à OS #${os.os_number}!`);
+        }
         if (onSuccess) onSuccess();
         onClose();
       } else {
@@ -249,9 +262,9 @@ export function ManualMatchOsModal({
     >
       <div className='space-y-5'>
         {/* Card Resumo do Lançamento */}
-        <div className='p-4 bg-zinc-950/80 border border-zinc-800 rounded-xl space-y-2'>
+        <div className='p-4 bg-card border border-border/50 rounded-xl space-y-2'>
           <div className='flex items-center justify-between'>
-            <span className='text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1.5'>
+            <span className='text-[10px] uppercase font-bold text-muted-foreground tracking-wider flex items-center gap-1.5'>
               {isRede ? (
                 <>
                   <CreditCard size={13} className='text-amber-400' />
@@ -270,16 +283,16 @@ export function ManualMatchOsModal({
           </div>
           <div className='flex items-center justify-between gap-4'>
             <div>
-              <p className='font-semibold text-sm text-zinc-100'>
+              <p className='font-semibold text-sm text-foreground'>
                 {transaction.title || (isRede ? 'Venda de Cartão na Maquininha' : 'Depósito Bancário / PIX')}
               </p>
               {transaction.counterpart_name && (
-                <p className='text-xs text-zinc-400 font-mono'>
+                <p className='text-xs text-muted-foreground font-mono'>
                   Contraparte: {transaction.counterpart_name}
                 </p>
               )}
               {isRede && (transaction.nsu || transaction.authorization || transaction.payment_method) && (
-                <p className='text-[11px] text-zinc-500 font-mono mt-0.5'>
+                <p className='text-[11px] text-muted-foreground font-mono mt-0.5'>
                   {transaction.payment_method && <span className='mr-2'>Modalidade: {transaction.payment_method}</span>}
                   {transaction.nsu && <span className='mr-2'>NSU: {transaction.nsu}</span>}
                   {transaction.authorization && <span>Aut: {transaction.authorization}</span>}
@@ -287,23 +300,52 @@ export function ManualMatchOsModal({
               )}
             </div>
             <div className='text-right shrink-0'>
-              <span className='text-xs text-zinc-400 block uppercase'>Valor {isRede ? 'Líquido' : 'Depositado'}</span>
-              <span className='text-xl font-bold font-mono text-emerald-400'>
-                R$ {txAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </span>
+              {isRede ? (
+                <div className='space-y-0.5'>
+                  <div className='flex items-center justify-end gap-1.5'>
+                    <span className='text-[10px] text-muted-foreground uppercase font-semibold'>Valor Bruto (OS):</span>
+                    <span className='text-base font-bold font-mono text-emerald-400'>
+                      R$ {grossAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  {feeAmount > 0 && (
+                    <div className='flex items-center justify-end gap-1.5'>
+                      <span className='text-[10px] text-muted-foreground uppercase'>Taxa MDR:</span>
+                      <span className='text-xs font-mono text-amber-400/80'>
+                        - R$ {feeAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  )}
+                  {netAmount > 0 && (
+                    <div className='flex items-center justify-end gap-1.5'>
+                      <span className='text-[10px] text-muted-foreground uppercase'>Líquido (Banco):</span>
+                      <span className='text-xs font-mono text-sky-400'>
+                        R$ {netAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <span className='text-xs text-muted-foreground block uppercase'>Valor Depositado</span>
+                  <span className='text-xl font-bold font-mono text-emerald-400'>
+                    R$ {txAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
 
         {/* Abas de Navegação: Buscar Existente vs Criar Nova */}
-        <div className='flex items-center gap-2 p-1 bg-zinc-950 border border-zinc-800 rounded-xl'>
+        <div className='flex items-center gap-2 p-1 bg-background border border-border rounded-xl'>
           <button
             type='button'
             onClick={() => setActiveTab('search')}
             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'search'
-                ? 'bg-zinc-800 text-white shadow-sm shadow-black/40'
-                : 'text-zinc-400 hover:text-zinc-200'
+                ? 'bg-secondary text-secondary-foreground shadow-sm shadow-black/40'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Search size={14} />
@@ -314,8 +356,8 @@ export function ManualMatchOsModal({
             onClick={() => setActiveTab('create')}
             className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'create'
-                ? 'bg-emerald-500 text-zinc-950 shadow-sm shadow-emerald-950/40'
-                : 'text-zinc-400 hover:text-zinc-200'
+                ? 'bg-emerald-500 text-primary-foreground shadow-sm shadow-emerald-950/40'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <PlusCircle size={14} />

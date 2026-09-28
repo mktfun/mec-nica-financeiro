@@ -163,3 +163,41 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Seletor de candidatos de saldo por conta na Etapa 1 com badges de data correspondente/divergente e opção "Lembrar regra".
 - `OfxAccountBalanceModal.tsx` & `SaldoBancosDetailModal.tsx`:
   - Modal analítico para inspeção de contas por filial, troca de regras, ajuste retrospectivo de saldo com prévia de impacto e histórico de auditoria completo. Célula de saldo bancário interativa.
+
+---
+
+## 16. Isolamento Temporal de Vendas Rede e Matcher Canônico Bruto (Spec 440)
+- `CentralImportWizard.tsx`: Atribuição estrita de `target_date = effectivePosDate` (data real da venda), impedindo contaminação temporal de vendas passadas em fechamentos posteriores.
+- `auto_match_daily_transactions` & `match_stage2_rede_os` (Migration `20260928000001_canonical_rede_os_matcher_and_date_isolation.sql`):
+  - Comparação do valor bruto (`pos.gross_amount`) com a parcela de cartão da OS (`os.credit_value`, `os.debit_value`, `os.credit_debit_value`) com tolerância de até R$ 0,05.
+  - Vínculo da OS sem alteração de `settlement_status` (preservando `'a_compensar'`).
+  - Atualização atômica de `paid_value` da OS pelo montante bruto.
+  - Suspensão do vínculo automático em caso de colisão entre múltiplas OSs de mesmo valor.
+- `StoreCartaoMaquininhaView.tsx` & `ManualMatchOsModal.tsx`:
+  - Filtro estrito por `target_date.eq.${date}`.
+  - Exibição discriminada de Bruto, Taxa MDR e Líquido com tokens semânticos Zinc-950 de `DESIGN.md`.
+
+---
+
+## 17. Baixa Atômica de Rede na OS e Recálculo de Pátio (Spec 441)
+- `recompute_patio_for_date_and_store` (Migration `20260928000002_recompute_patio_and_atomic_rede_os_settlement.sql`):
+  - Função canônica no PostgreSQL para recálculo atômico de saldos em aberto no pátio, atualizando `reconciliations.na_loja_os`, `metadata.stores[store_id].na_loja_os` e `daily_snapshots.total_patio`.
+- `link_manual_rede_to_os` & `unlink_manual_os_match`:
+  - RPCs atômicas que realizam o vínculo/desvinculação, atualizam `paid_value` e invocam o recálculo canônico com payload de retorno discriminado.
+- `useManualMatch.ts`: Invalidação reativa unificada de todas as chaves dependentes do pátio (`['store-ordens-servico']`, `['patio-os-detail-modal']`, `['daily-reconciliation-summary']`, `['daily_snapshots']`, `['reconciliations']`).
+- `StoreOrdensServicoView.tsx` & `PatioOsDetailModal.tsx`: Tratamento padronizado de saldo zero como valor numérico contábil válido.
+
+---
+
+## 18. Preservação de MEMO de Boletos e SISPAG e Limpeza de Alias (Spec 442)
+- `ofx_transactions` (Migration `20260928000003_add_ofx_raw_fields_and_preserve_memo.sql`):
+  - Adicionadas colunas `raw_memo`, `raw_name`, `bank_reference` e `original_fitid`.
+- `ofxParser.ts`: Extração de `<NAME>`, `<CHECKNUM>` / `<REFNUM>` e `<FITID>` original sem alterar o hash determinístico de deduplicação `fitid`.
+- `CentralImportWizard.tsx`, `useTransactions.ts`, `Fase3OfxReconciliation.tsx`:
+  - Proibição de uso de `ofx.alias` / `ITAU - {conta}` como fallback para `counterpart_name`.
+  - Persistência unificada das tags brutas do extrato.
+- `StoreExtratoBancarioView.tsx` & `TransactionDetailModal.tsx`:
+  - Descarte inteligente de aliases de conta bancária e dígitos numéricos soltos em `counterpart_name` e `subtitle`.
+  - Priorização de `bank_name` / `raw_memo`.
+  - Preservação de rótulos bancários úteis ("SISPAG Fornecedores", "SISPAG Salários", "Boleto Pago <código>") evitando stripping que resultava em dígitos desconexos soltos.
+  - Exibição de badge para referência bancária (`#CHECKNUM`) e enriquecimento da ficha técnica de detalhes.

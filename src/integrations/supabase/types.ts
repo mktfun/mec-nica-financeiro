@@ -1304,6 +1304,7 @@ export type Database = {
         Row: {
           amount: number
           bank_name: string
+          bank_reference: string | null
           cnpj_cpf: string | null
           contabilizar_no_subtotal: boolean
           counterpart_name: string | null
@@ -1317,6 +1318,9 @@ export type Database = {
           matched_bill_id: string | null
           matched_os_number: string | null
           occurred_at: string
+          original_fitid: string | null
+          raw_memo: string | null
+          raw_name: string | null
           store_id: string | null
           target_date: string | null
           type: string | null
@@ -1325,6 +1329,7 @@ export type Database = {
         Insert: {
           amount: number
           bank_name: string
+          bank_reference?: string | null
           cnpj_cpf?: string | null
           contabilizar_no_subtotal?: boolean
           counterpart_name?: string | null
@@ -1338,6 +1343,9 @@ export type Database = {
           matched_bill_id?: string | null
           matched_os_number?: string | null
           occurred_at: string
+          original_fitid?: string | null
+          raw_memo?: string | null
+          raw_name?: string | null
           store_id?: string | null
           target_date?: string | null
           type?: string | null
@@ -1346,6 +1354,7 @@ export type Database = {
         Update: {
           amount?: number
           bank_name?: string
+          bank_reference?: string | null
           cnpj_cpf?: string | null
           contabilizar_no_subtotal?: boolean
           counterpart_name?: string | null
@@ -1359,6 +1368,9 @@ export type Database = {
           matched_bill_id?: string | null
           matched_os_number?: string | null
           occurred_at?: string
+          original_fitid?: string | null
+          raw_memo?: string | null
+          raw_name?: string | null
           store_id?: string | null
           target_date?: string | null
           type?: string | null

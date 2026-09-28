@@ -1308,3 +1308,29 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 3. **Consistência em Cascade:** Ao calcular `v_fluxo_caixa = v_caixa_atual - v_caixa_anterior`, os campos dependentes (`v_valor_disp_contas` e `v_diferenca_final`) adaptam-se imediatamente no Postgres, garantindo paridade 1:1 com o frontend.
 **Risco identificado / Anti-pattern:** Recalcular `caixa_atual` a partir do zero no Ramal 2 desconsiderando flags de override gravadas pelo operador.
 
+## [2026-09-28] — [Feature ID: 440-rede-os-isolamento-data-matcher-canonico] Matcher Canônico Bruto Rede × OS e Não-Modificação de Status
+
+**Contexto:** Migration `20260928000001_canonical_rede_os_matcher_and_date_isolation.sql` atualizando a RPC `auto_match_daily_transactions` e a função `match_stage2_rede_os`.
+**Regra aprendida:**
+1. **Comparação de Valor Bruto no Backend:** O casamento entre vendas de cartão e ordens de serviço deve comparar `pos.gross_amount` com `os.credit_value`, `os.debit_value` ou `os.credit_debit_value` com tolerância de até R$ 0,05.
+2. **Preservação de `settlement_status`:** A amarração da OS (`matched_os_number`) em `pos_transactions` NÃO deve forçar `settlement_status = 'entrou'`. O status `'a_compensar'` deve ser estritamente preservado até a liquidação bancária.
+3. **Atualização Atômica de `paid_value`:** Ao vincular a OS, `paid_value` é incrementado com base no valor bruto (`gross_amount`), e o status da OS atualizado para `'finalizada'` se `paid_value >= total_value - 0.05`.
+
+## [2026-09-28] — [Feature ID: 441-baixa-rede-os-recalculo-patio] Função Canônica de Recálculo do Pátio e RPCs de Vínculo
+
+**Contexto:** Migration `20260928000002_recompute_patio_and_atomic_rede_os_settlement.sql` criando a rotina canônica `recompute_patio_for_date_and_store` e atualizando `link_manual_rede_to_os` e `unlink_manual_os_match`.
+**Regra aprendida:**
+1. **Função Canônica `recompute_patio_for_date_and_store`:** Centraliza a fórmula de pátio:
+   $$\text{total\_patio} = \sum (\text{total\_value} - \text{paid\_value}) \quad \text{onde } \text{status} \ne \text{'finalizada'}$$
+   Atualiza atomicamente `reconciliations.na_loja_os` para a loja e data, sincroniza `metadata.stores[store_id].na_loja_os` em `daily_snapshots`, e recalcula o Pilar 4 consolidado `daily_snapshots.total_patio`.
+2. **Atomicidade em `link_manual_rede_to_os`:** A RPC executa o vínculo da transação, amortiza a OS, dispara `recompute_patio_for_date_and_store` e devolve um payload JSONB com o estado contábil antes e depois da operação.
+3. **Reversibilidade em `unlink_manual_os_match`:** Ao desvincular, reverte `paid_value` da OS pelo montante exato da transação POS e recalcula os agregados de pátio na mesma transação.
+
+## [2026-09-28] — [Feature ID: 442-preservar-memo-ofx-boletos-sispag] Colunas Brutas do OFX em `ofx_transactions`
+
+**Contexto:** Migration `20260928000003_add_ofx_raw_fields_and_preserve_memo.sql` adicionando colunas para enriquecimento forense dos extratos bancários.
+**Regra aprendida:**
+1. **Schema Estendido de `ofx_transactions`:** Adicionadas as colunas `raw_memo (text)`, `raw_name (text)`, `bank_reference (text)` e `original_fitid (text)`.
+2. **Saneamento Não Destrutivo de Alias:** Executado `UPDATE ofx_transactions SET counterpart_name = NULL WHERE counterpart_name ILIKE 'ITAU%';` para restaurar a leitura prioritária de `bank_name` ("SISPAG FORNECEDORES") sem perda de integridade contábil.
+
+

@@ -269,18 +269,19 @@ export function Fase2RedeVsOsReview({
 
       if (updErr) throw updErr;
 
-      // Abate valor na OS
+      // Abate valor na OS pelo BRUTO pago pelo cliente
       const { data: posItem } = await supabase
         .from('pos_transactions')
-        .select('net_amount, store_id')
+        .select('gross_amount, net_amount, store_id')
         .eq('id', collisionId)
         .single();
 
       if (posItem) {
+        const addVal = Number(posItem.gross_amount || posItem.net_amount || 0);
         await supabase
           .from('patio_os')
           .update({
-            paid_value: chosenCandidate.paidValue + Number(posItem.net_amount),
+            paid_value: chosenCandidate.paidValue + addVal,
             match_status: 'MATCHED'
           })
           .eq('id', chosenCandidate.id);

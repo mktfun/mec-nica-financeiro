@@ -52,7 +52,7 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
         .from('pos_transactions')
         .select('*')
         .eq('store_id', storeId)
-        .or(`target_date.eq.${date},occurred_at.gte.${date}T00:00:00,occurred_at.lte.${date}T23:59:59`)
+        .eq('target_date', date)
         .order('occurred_at', { ascending: false });
 
       if (error) {
@@ -138,6 +138,9 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
       title: `${row.bandeira} - ${row.payment_method}`,
       counterpart_name: row.bandeira,
       amount: row.rede_bruto,
+      gross_amount: row.rede_bruto,
+      fee_amount: row.taxa_brl,
+      net_amount: row.rede_liquido,
       occurred_at: row.occurred_at || date,
       store_id: storeId,
       source: 'rede',

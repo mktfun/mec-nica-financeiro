@@ -7,6 +7,10 @@ export interface OfxTransaction {
   fitid?: string;
   cnpj_cpf?: string;
   counterpart_name?: string;
+  raw_memo?: string;
+  raw_name?: string;
+  bank_reference?: string;
+  original_fitid?: string;
 }
 
 export type OfxBalanceRole = 'OPENING' | 'CLOSING' | 'LEDGER' | 'AVAILABLE';
@@ -333,6 +337,15 @@ export function parseOFXContent(text: string, fileName: string = 'extrato.ofx', 
       deterministicFitid = `${deterministicFitid}_${count}`;
     }
     
+    // Extract NAME
+    const nameTagMatch = trnBlock.match(/<NAME>([^\r\n<]+)/i);
+    const rawName = nameTagMatch ? nameTagMatch[1].trim() : undefined;
+
+    // Extract CHECKNUM / REFNUM
+    const checknumMatch = trnBlock.match(/<CHECKNUM>([^\r\n<]+)/i);
+    const refnumMatch = trnBlock.match(/<REFNUM>([^\r\n<]+)/i);
+    const bankReference = checknumMatch ? checknumMatch[1].trim() : (refnumMatch ? refnumMatch[1].trim() : undefined);
+
     transactions.push({
       storeName: alias,
       amount: amount,
@@ -342,6 +355,10 @@ export function parseOFXContent(text: string, fileName: string = 'extrato.ofx', 
       fitid: deterministicFitid,
       cnpj_cpf: doc,
       counterpart_name: name,
+      raw_memo: rawMemo,
+      raw_name: rawName,
+      bank_reference: bankReference,
+      original_fitid: originalFitid,
     });
   }
   

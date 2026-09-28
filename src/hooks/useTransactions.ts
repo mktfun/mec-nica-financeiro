@@ -644,13 +644,17 @@ export function useBulkInsertTransactions() {
              const normalizedType: 'in' | 'out' = (rawType === 'in' || rawType === 'income' || rawType === 'credit' || rawType === 'c' || (typeof t.amount === 'number' && t.amount > 0 && rawType !== 'out' && rawType !== 'expense' && rawType !== 'debit' && rawType !== 'd')) ? 'in' : 'out';
              return {
                store_id: t.store_id,
-               bank_name: t.title || 'Itaú',
+               bank_name: t.title || t.raw_memo || 'Itaú',
                type: normalizedType,
                amount: Math.abs(t.amount || 0),
                occurred_at: t.occurred_at || t.date || new Date().toISOString(),
                fitid: t.fitid || t.id,
-               counterpart_name: t.counterpart_name || t.subtitle || null,
+               counterpart_name: t.counterpart_name || null,
                cnpj_cpf: t.cnpj_cpf || null,
+               raw_memo: t.raw_memo || t.title || null,
+               raw_name: t.raw_name || null,
+               bank_reference: t.bank_reference || null,
+               original_fitid: t.original_fitid || null,
                matched_os_number: t.os_number || t.matched_os_number || null,
                import_batch_id: t.import_batch_id || null,
                target_date: t.target_date || explicitTargetDate || (t.date ? String(t.date).split('T')[0] : (t.occurred_at ? String(t.occurred_at).split('T')[0] : null))

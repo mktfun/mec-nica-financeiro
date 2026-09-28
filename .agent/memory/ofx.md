@@ -154,3 +154,17 @@
 1. **Atribuição de Competência em Segundas-Feiras:** Em fechamentos de segunda-feira (ex: 21/09), transações bancárias ocorridas na sexta-feira anterior (ex: 18/09) e ao longo do fim de semana devem receber target_date = targetDate (competência do fechamento), com occurred_at preservando o timestamp real. A janela contábil canônica é diffDays <= 4.
 2. **Filtro de Créditos Rede x OFX:** ReconciliadorRedeOFX e CentralImportWizard devem validar se os créditos bancários estão dentro da janela contábil de fechamento (diffDays <= 4), impedindo o descarte espúrio de depósitos de cartão ocorridos na sexta-feira.
 3. **Blindagem do Caixa Anterior:** Ao importar uma segunda-feira, a busca pelo snapshot anterior (prevSnap) deve filtrar por is_closed = true, ignorando sábados e domingos sem conciliação e puxando o caixa fechado de sexta-feira.
+
+## [2026-09-28] — [Feature ID: 442-preservar-memo-ofx-boletos-sispag] Preservação de MEMO de Boletos e SISPAG e Limpeza de Alias
+
+**Contexto:** Boletos e débitos de SISPAG (ex: R$ 5.000,00 e R$ 1.275,48 na filial `st-08` em 24/09) apareciam no extrato com números de agência/conta (`ITAU - 8813994293` ou apenas `8813994293`) no lugar do favorecido ou da descrição bancária útil (`SISPAG FORNECEDORES`).
+**Regra aprendida:**
+1. **Preservação dos Campos Brutos do OFX:**
+   - O parser OFX (`ofxParser.ts`) deve capturar `<NAME>` (`raw_name`), `<CHECKNUM>` / `<REFNUM>` (`bank_reference`) e `<FITID>` original (`original_fitid`), mantendo o hash determinístico original de deduplicação `fitid`.
+2. **Proibição de Alias Bancário como Contraparte:**
+   - Os importadores (`CentralImportWizard.tsx`, `useTransactions.ts`, `Fase3OfxReconciliation.tsx`) JAMAIS devem utilizar `ofx.alias` ou `subtitle` com alias como fallback para `counterpart_name`. Se não houver favorecido identificado, `counterpart_name` deve ser `null`.
+3. **Resolução Inteligente no Frontend (`getCleanTransactionDisplay`):**
+   - Se `counterpart_name` ou `subtitle` coincidir com alias de conta bancária (`ITAU - 8813994293`) ou dígitos numéricos soltos, a UI descarta-os e exibe `bank_name` / `raw_memo` como título primário.
+   - Ao limpar prefixos bancários (`BOLETO PAGO`, `PIX ENVIADO`, `SISPAG FORNECEDORES`), se o que restar for vazio ou apenas dígitos, o rótulo da transação é preservado (ex.: "SISPAG Fornecedores" ou "Boleto Pago 0039..."), nunca deixando dígitos soltos sem contexto.
+   - Referências bancárias (`#CHECKNUM`) são expostas em badges secundárias e na ficha de detalhes (`TransactionDetailModal.tsx`).
+**Não fazer:** Gravar o alias da conta bancária (`ITAU - 8813994293`) em `counterpart_name` durante a ingestão do OFX.

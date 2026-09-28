@@ -447,36 +447,95 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     }
   };
 
+  // Helper para verificar se um texto é apenas alias de conta bancária ou sequência numérica
+  const isAccountOrGenericAlias = (val?: string | null): boolean => {
+    if (!val) return true;
+    const clean = val.trim();
+    if (!clean || clean === '-' || clean === '—') return true;
+    if (/^ITAU(\s*[-_]\s*|\s+)\d+$/i.test(clean)) return true;
+    if (/^ITAU$/i.test(clean)) return true;
+    if (/^[\d\s\-_./]+$/.test(clean)) return true;
+    return false;
+  };
+
   // Helper para limpar redundâncias e unificar apresentação da transação (Revolut Item)
   const getCleanTransactionDisplay = (tx: any) => {
     const isIn = tx.type === 'in';
     
-    // Nome limpo da contraparte sem repetição de prefixos brutos
-    let primaryName = (tx.counterpart_name || tx.recipient_name || tx.title || tx.subtitle || '').trim();
+    // 1. Identificar candidatos a nome útil
+    const rawCounterpart = (tx.counterpart_name || '').trim();
+    const rawRecipient = (tx.recipient_name || '').trim();
+    const rawTitle = (tx.title || '').trim();
+    const rawSubtitle = (tx.subtitle || '').trim();
+    const rawBankName = (tx.bank_name || '').trim();
+    const rawMemo = (tx.raw_memo || '').trim();
+    const rawName = (tx.raw_name || '').trim();
+    const matchedBillRecipient = (tx.expenseMatch?.matchedBill?.recipient_name || '').trim();
 
-    // Caso traço '-' ou vazio: busca no fitid ou nas contas vinculadas
+    // 2. Filtrar aliases genéricos de conta (ex: ITAU - 8813994293 ou números puros)
+    let candidate = '';
+    if (!isAccountOrGenericAlias(rawCounterpart)) {
+      candidate = rawCounterpart;
+    } else if (!isAccountOrGenericAlias(rawRecipient)) {
+      candidate = rawRecipient;
+    } else if (matchedBillRecipient) {
+      candidate = matchedBillRecipient;
+    } else if (!isAccountOrGenericAlias(rawName)) {
+      candidate = rawName;
+    } else if (!isAccountOrGenericAlias(rawMemo)) {
+      candidate = rawMemo;
+    } else if (!isAccountOrGenericAlias(rawBankName)) {
+      candidate = rawBankName;
+    } else if (!isAccountOrGenericAlias(rawTitle)) {
+      candidate = rawTitle;
+    } else if (!isAccountOrGenericAlias(rawSubtitle)) {
+      candidate = rawSubtitle;
+    }
+
+    let primaryName = candidate.trim();
+
+    // 3. Fallbacks para termos bancários canônicos se vazio ou traço
     if (!primaryName || primaryName === '-' || primaryName === '—') {
-      const raw = `${tx.fitid || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''}`.toLowerCase();
-      if (raw.includes('juroslimitedaconta')) {
+      const fullSearch = `${tx.fitid || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''} ${tx.raw_memo || ''} ${tx.title || ''}`.toLowerCase();
+      if (fullSearch.includes('juroslimitedaconta')) {
         primaryName = 'Juros Limite da Conta Itaú';
-      } else if (raw.includes('iof')) {
+      } else if (fullSearch.includes('iof')) {
         primaryName = 'IOF Bancário Itaú';
-      } else if (raw.includes('tarifa') || raw.includes('tar_') || raw.includes('taxa')) {
+      } else if (fullSearch.includes('tarifa') || fullSearch.includes('tar_') || fullSearch.includes('taxa')) {
         primaryName = 'Tarifa de Conta Itaú';
-      } else if (raw.includes('sispag')) {
-        primaryName = 'Pagamento Fornecedores (Sispag)';
-      } else if (tx.expenseMatch?.matchedBill?.recipient_name) {
-        primaryName = tx.expenseMatch.matchedBill.recipient_name;
+      } else if (fullSearch.includes('sispag')) {
+        primaryName = fullSearch.includes('salario') ? 'SISPAG Salários' : 'SISPAG Fornecedores';
+      } else if (matchedBillRecipient) {
+        primaryName = matchedBillRecipient;
       } else {
         primaryName = isIn ? 'Crédito em Conta' : 'Débito em Conta';
       }
     }
 
-    // Remove prefixos bancários comuns
-    primaryName = primaryName
-      .replace(/^(BOLETO PAGO|PIX ENVIADO|PIX RECEBIDO|RECEBIMENTOS?|PAGAMENTOS?|ITAU|SISPAG SALARIOS|SISPAG FORNECEDORES)\s+/i, '')
-      .replace(/\b(CART001008|7386166586)\b/g, '')
-      .trim();
+    // 4. Limpeza inteligente de prefixos bancários
+    // Se o prefixo for removido mas o que sobrar for apenas números ou vazio, preserva o rótulo útil!
+    const prefixMatch = primaryName.match(/^(BOLETO PAGO|PIX ENVIADO|PIX RECEBIDO|RECEBIMENTOS?|PAGAMENTOS?|ITAU|SISPAG SALARIOS|SISPAG FORNECEDORES)\s+/i);
+    if (prefixMatch) {
+      const prefix = prefixMatch[1].toUpperCase();
+      const remainder = primaryName.slice(prefixMatch[0].length).trim();
+      const isOnlyDigitsOrPunct = /^[\d\s\-_./]+$/.test(remainder);
+
+      if (!remainder || isOnlyDigitsOrPunct) {
+        if (prefix.includes('SISPAG')) {
+          primaryName = prefix.startsWith('SISPAG SALARIOS') ? 'SISPAG Salários' : 'SISPAG Fornecedores';
+        } else if (prefix.startsWith('BOLETO')) {
+          primaryName = remainder ? `Boleto Pago ${remainder}` : 'Boleto Pago';
+        } else if (prefix.startsWith('PIX')) {
+          primaryName = remainder ? `PIX ${remainder}` : (isIn ? 'PIX Recebido' : 'PIX Enviado');
+        }
+      } else {
+        // Remanescente contém nome real de empresa/favorecido (ex: AUTO PECAS CENTRAL)
+        primaryName = remainder;
+      }
+    }
+
+    // Remove códigos residuais conhecidos se restarem
+    primaryName = primaryName.replace(/\b(CART001008|7386166586)\b/g, '').trim();
 
     // Remove CNPJ/CPF do final do nome se estiver grudado
     primaryName = primaryName.replace(/\s+\d{2,3}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, '').trim();
@@ -509,13 +568,16 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     let natureLabel = isIn ? 'Crédito Bancário' : 'Débito Bancário';
     let iconType: 'card' | 'bill' | 'pix_in' | 'pix_out' | 'cash' | 'tax' | 'bank' = isIn ? 'pix_in' : 'bill';
 
-    const fullText = `${tx.title || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''} ${tx.manual_category || ''}`.toUpperCase();
+    const fullText = `${tx.title || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''} ${tx.raw_memo || ''} ${tx.manual_category || ''}`.toUpperCase();
 
     if (tx.isRede || /REDE|REDECARD|CIELO|CARTAO|CARTOES/.test(fullText)) {
       natureLabel = 'Crédito de Vendas Rede';
       iconType = 'card';
     } else if (tx.isMatchedExpense || /BOLETO|FEMATH|LELO|PRPK|AUTO PECAS|GESCONT|ESCAP/.test(fullText)) {
       natureLabel = 'Boleto / Pagamento Fornecedor';
+      iconType = 'bill';
+    } else if (/SISPAG/.test(fullText)) {
+      natureLabel = /SALARIO/.test(fullText) ? 'Folha de Pagamento (Sispag)' : 'Pagamento Fornecedores (Sispag)';
       iconType = 'bill';
     } else if (/PIX ENVIADO/.test(fullText) || (tx.type === 'out' && /PIX/.test(fullText))) {
       natureLabel = 'Transferência PIX Enviada';
@@ -531,7 +593,18 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       iconType = 'tax';
     }
 
-    const doc = tx.cnpj_cpf ? `CNPJ: ${tx.cnpj_cpf}` : (tx.fitid ? `FITID: ${tx.fitid}` : null);
+    // Documento e referência bancária
+    let doc: string | null = null;
+    const refNum = tx.bank_reference || null;
+    if (tx.cnpj_cpf && refNum) {
+      doc = `CNPJ: ${tx.cnpj_cpf} • Ref: #${refNum}`;
+    } else if (tx.cnpj_cpf) {
+      doc = `CNPJ: ${tx.cnpj_cpf}`;
+    } else if (refNum) {
+      doc = `Ref: #${refNum}`;
+    } else if (tx.fitid) {
+      doc = `FITID: ${tx.fitid}`;
+    }
 
     return { primaryName, natureLabel, doc, iconType };
   };

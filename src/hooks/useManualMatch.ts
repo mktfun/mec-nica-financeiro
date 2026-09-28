@@ -215,6 +215,7 @@ export function useManualMatch() {
     setLoading(true);
     setError(null);
     try {
+      let rpcResult: any = null;
       if (source === 'rede') {
         const { data, error: rpcErr } = await supabase.rpc('link_manual_rede_to_os', {
           p_pos_id: transactionId,
@@ -223,6 +224,7 @@ export function useManualMatch() {
           p_amount: amount || null
         });
         if (rpcErr) throw rpcErr;
+        rpcResult = data;
       } else {
         const { data, error: rpcErr } = await supabase.rpc('link_manual_pix_to_os', {
           p_ofx_id: transactionId,
@@ -231,23 +233,34 @@ export function useManualMatch() {
           p_amount: amount || null
         });
         if (rpcErr) throw rpcErr;
+        rpcResult = data;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
-      await queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
-      await queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
-      await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
-      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
-      await queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['pos_transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] });
-      await queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+        queryClient.invalidateQueries({ queryKey: ['available_store_os'] }),
+        queryClient.invalidateQueries({ queryKey: ['availableStoreOs'] }),
+        queryClient.invalidateQueries({ queryKey: ['justified_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
+        queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-dashboard'] }),
+        queryClient.invalidateQueries({ queryKey: ['store-ordens-servico'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio-os-detail-modal'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio-os'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio_os'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio_os_for_store'] }),
+        queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['pos_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] }),
+        queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] })
+      ]);
 
-      return { success: true };
+      return { success: true, data: rpcResult };
     } catch (err: any) {
       console.error('Erro ao vincular transação à OS:', err);
       setError(err.message || 'Erro ao vincular transação');
@@ -265,28 +278,38 @@ export function useManualMatch() {
     setLoading(true);
     setError(null);
     try {
-      const { error: rpcErr } = await supabase.rpc('unlink_manual_os_match', {
+      const { data, error: rpcErr } = await supabase.rpc('unlink_manual_os_match', {
         p_transaction_type: source,
         p_transaction_id: transactionId,
         p_os_number: osNumber || null
       });
       if (rpcErr) throw rpcErr;
 
-      await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
-      await queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
-      await queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
-      await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
-      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
-      await queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['pos_transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] });
-      await queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+        queryClient.invalidateQueries({ queryKey: ['available_store_os'] }),
+        queryClient.invalidateQueries({ queryKey: ['availableStoreOs'] }),
+        queryClient.invalidateQueries({ queryKey: ['justified_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
+        queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-dashboard'] }),
+        queryClient.invalidateQueries({ queryKey: ['store-ordens-servico'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio-os-detail-modal'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio-os'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio_os'] }),
+        queryClient.invalidateQueries({ queryKey: ['patio_os_for_store'] }),
+        queryClient.invalidateQueries({ queryKey: ['store_pos_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['pos_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['triple-reconciliation'] }),
+        queryClient.invalidateQueries({ queryKey: ['pos_triple_reconciliation'] })
+      ]);
 
-      return { success: true };
+      return { success: true, data };
     } catch (err: any) {
       console.error('Erro ao desvincular transação:', err);
       setError(err.message || 'Erro ao desvincular transação');
