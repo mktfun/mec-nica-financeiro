@@ -1,3 +1,23 @@
+## [2026-09-29] — [Feature ID: 445-motor-dedicado-match-rede-os-por-loja]
+
+**Contexto:** Evolução da RPC `match_stage2_rede_os` e unificação da FASE 1 em `auto_match_daily_transactions`. Eliminação de filtros temporais arbitrários de 7 dias (`closed_at >= target - 7d`), pareamento direto de Valor Bruto da Rede com lançamentos de cartão da OS na mesma filial, proteção anti-colisão e prova categórica de órfãos (`exhausted_orphan`).
+
+**Regra aprendida:**
+1. **Pareamento Direto Valor Bruto x Cartão da Loja:**
+   - A transação de cartão capturada pela maquininha possui `gross_amount` e pertence à loja `store_id`.
+   - Nas OSs daquela mesma loja, os pagamentos em cartão residem em `credit_value`, `debit_value`, `credit_debit_value` ou no saldo pendente `(total_value - paid_value)`.
+   - Qualquer trava temporal arbitrária (ex: 7 dias) quebra o matching de OSs faturadas ou abertas em períodos anteriores contidas na planilha da oficina. A única restrição válida é pertencer à mesma filial e não estar casada (`match_status <> 'MATCHED'`).
+2. **Proteção Anti-Colisão Determinística:**
+   - Se houver mais de uma OS candidata com o mesmo valor na mesma filial, o robô não chuta. Registra a colisão com a lista das candidatas para que o operador humano decida com transparência.
+3. **Prova Negativa de Inexistência de OS:**
+   - Se nenhuma OS daquela filial possuir o valor da transação, o sistema carimba `exhausted_orphan` com garantia formal de inexistência, eliminando a conferência cega manual do analista financeiro.
+4. **Preservação de Integridade Bancária:**
+   - O pareamento de cartão com OS preenche `matched_os_number` e marca `patio_os.match_status = 'MATCHED'`, mas **mantém estritamente `settlement_status = 'a_compensar'`**, impedindo que vincular OS baixe indevidamente o saldo do extrato bancário.
+
+**Risco identificado / Anti-pattern:** Usar janelas artificiais de tempo rígidas em regras de negócio de cartões em vez de permitir o batimento direto de ordens ativas da mesma loja.
+
+---
+
 ## [2026-09-28] — [Feature ID: 443-fix-rede-a-compensar-target-date-e-snapshot-stores]
 
 **Contexto:** Sincronização entre `pos_transactions` e a RPC `get_daily_reconciliation_summary`, garantindo que filtros `WHERE COALESCE(target_date, occurred_at::date) = v_target_date::date` encontrem fidedignamente os lotes de adquirentes ingeridos na Central de Importações.

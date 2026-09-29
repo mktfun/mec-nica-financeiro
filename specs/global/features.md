@@ -225,3 +225,17 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
   - Ancoragem estrita de `pos_transactions.target_date` no `targetDate` do lote contábil da conciliação (em vez de `item.date` da adquirente), mantendo `occurred_at` com o carimbo temporal da venda física.
   - Cálculo resiliente de `cartoesACompensarTotal` e `devolucoesRedeTotal` com suporte unificado a camelCase (`netAmount`, `grossAmount`, `feeAmount`) e snake_case.
   - Enriquecimento prévio do snapshot com busca canônica de `stores` via `get_daily_reconciliation_summary(targetDate, true)` antes da mutação de `saveSnapshot`.
+
+---
+
+## 20. Motor Direto de Match Rede × OS por Loja e Prova Negativa de Órfãos (Spec 445)
+- `match_stage2_rede_os` & `auto_match_daily_transactions` (Migrations `20260929000001_evolve_match_stage2_rede_os.sql` e `20260929000002_delegate_auto_match_fase1_to_stage2.sql`):
+  - Remoção de filtros temporais rígidos de 7 dias (`closed_at >= target - 7d`), permitindo que OSs de todo o período ativo da loja casem com vendas de cartão.
+  - Pareamento direto por loja (`store_id = store_id`): **Valor Bruto da Transação Rede $\leftrightarrow$ Lançamento de Cartão da OS (`credit_value`, `debit_value`, `credit_debit_value`) ou saldo pendente `(total_value - paid_value)`**.
+  - Proteção anti-colisão: quando há múltiplas OSs com o mesmo valor na mesma loja, não chuta e registra a lista de candidatas no retorno.
+  - Prova negativa de inexistência (`exhausted_orphan`): quando nenhuma OS na loja possui o valor, carimba formalmente no log e na UI que a venda não possui OS no sistema.
+  - Preservação do saldo bancário: o vínculo mantém estritamente `settlement_status = 'a_compensar'`.
+  - Unificação da FASE 1 do `auto_match_daily_transactions` para delegar diretamente à `match_stage2_rede_os`.
+- `Fase2RedeVsOsReview.tsx`:
+  - Totalizadores de topo discriminando `CASADAS`, `COLISÕES` e `ÓRFÃOS PROVADOS`.
+  - Badges semânticos de status por transação: verde para casada, amarelo para colisão e cinza (`bg-zinc-800 border-zinc-700`) para `Provado Sem OS na Loja`.

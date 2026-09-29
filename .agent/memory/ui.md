@@ -1,3 +1,18 @@
+## [2026-09-29] — [Feature ID: 445-motor-dedicado-match-rede-os-por-loja]
+
+**Contexto:** Enriquecimento da interface da `Fase2RedeVsOsReview.tsx` com telemetria tri-estado do batimento de cartões da Rede (Casadas, Colisões e Órfãos Provados) e badges semânticos explicativos na lista de sobras.
+
+**Regra aprendida:**
+1. **Telemetria Tri-Estado de Cartões:** A barra de métricas do topo deve discriminar explicitamente as vendas casadas (verde), colisões pendentes de desempate (amarelo) e órfãos comprovados (cinza escuro).
+2. **Badges de Certeza Negativa:** Em vez de rotular todas as sobras genericamente como "Pendente Vínculo", a interface separa:
+   - `Provado Sem OS na Loja`: para transações que o backend auditou e garantiu que nenhuma OS na filial possui aquele valor de cartão.
+   - `Colisão ({X} candidatas)`: para transações com múltiplos candidatos de mesmo valor, incentivando a resolução rápida.
+3. **Padrão Dark UI Zinc-950:** Uso exclusivo de `bg-zinc-950/60`, `border-zinc-800`, `text-zinc-200` e tokens semânticos Tailwind, sem cores arbitrárias.
+
+**Risco identificado / Anti-pattern:** Manter sobras de cartão como pendências sem explicação, forçando o operador a conferir manualmente cada lançamento para descobrir se a OS existia ou não.
+
+---
+
 ## [2026-09-28] — [Feature ID: 439-mapeamento-saldo-ofx-por-conta-e-data]
 
 **Contexto:** Criação do modal `OfxAccountBalanceModal.tsx` e enriquecimento da tabela de auditoria do `CentralImportWizard.tsx` (Etapa 1) e `SaldoBancosDetailModal.tsx`.

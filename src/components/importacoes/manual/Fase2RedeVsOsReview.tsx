@@ -60,10 +60,14 @@ export function Fase2RedeVsOsReview({
   const [matchStats, setMatchStats] = useState<{
     matchedCount: number;
     collisionCount: number;
+    exhaustedOrphansCount: number;
+    exhaustedOrphans: Array<{ pos_id: string; store_id: string; gross_amount: number; net_amount: number; reason: string }>;
     totals: { rede_bruto: number; rede_liquido: number; rede_taxas: number };
   }>({
     matchedCount: 0,
     collisionCount: 0,
+    exhaustedOrphansCount: 0,
+    exhaustedOrphans: [],
     totals: { rede_bruto: 0, rede_liquido: 0, rede_taxas: 0 }
   });
 
@@ -84,9 +88,12 @@ export function Fase2RedeVsOsReview({
       if (matchErr) throw matchErr;
 
       if (matchResult) {
+        const rawOrphans = Array.isArray(matchResult.exhausted_orphans) ? matchResult.exhausted_orphans : [];
         setMatchStats({
           matchedCount: matchResult.matched_count || 0,
           collisionCount: matchResult.collisions_count || 0,
+          exhaustedOrphansCount: matchResult.exhausted_orphans_count || rawOrphans.length || 0,
+          exhaustedOrphans: rawOrphans,
           totals: matchResult.totals || { rede_bruto: 0, rede_liquido: 0, rede_taxas: 0 }
         });
 
@@ -434,7 +441,7 @@ export function Fase2RedeVsOsReview({
             Reimportar Arquivo Rede
           </Button>
 
-          <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
             <div>
               <span className="text-zinc-500 block text-[10px]">BRUTO REDE</span>
               <span className="text-zinc-200 font-bold">{formatBrl(matchStats.totals.rede_bruto)}</span>
@@ -448,6 +455,25 @@ export function Fase2RedeVsOsReview({
             <div>
               <span className="text-zinc-500 block text-[10px]">LÍQUIDO REDE</span>
               <span className="text-emerald-400 font-bold">{formatBrl(matchStats.totals.rede_liquido)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">CASADAS</span>
+              <span className="text-emerald-400 font-bold">{matchStats.matchedCount}</span>
+            </div>
+            {matchStats.collisionCount > 0 && (
+              <>
+                <div className="h-6 w-px bg-zinc-800" />
+                <div>
+                  <span className="text-amber-500/80 block text-[10px]">COLISÕES</span>
+                  <span className="text-amber-400 font-bold">{matchStats.collisionCount}</span>
+                </div>
+              </>
+            )}
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">ÓRFÃOS PROVADOS</span>
+              <span className="text-zinc-400 font-bold">{matchStats.exhaustedOrphansCount}</span>
             </div>
           </div>
         </div>
@@ -544,26 +570,43 @@ export function Fase2RedeVsOsReview({
                 </div>
               ) : (
                 <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
-                  {unmatchedList.map(pos => (
-                    <div 
-                      key={pos.id}
-                      className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-zinc-200">{pos.store_name}</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 font-bold">
-                            Pendente Vínculo
-                          </span>
+                  {unmatchedList.map(pos => {
+                    const isExhausted = matchStats.exhaustedOrphans?.some((e: any) => e.pos_id === pos.id);
+                    const collisionItem = collisions.find(c => c.id === pos.id);
+                    return (
+                      <div 
+                        key={pos.id}
+                        className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-zinc-200">{pos.store_name}</span>
+                            {isExhausted ? (
+                              <span 
+                                className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 font-semibold"
+                                title={`Garantia: Nenhuma OS nesta filial possui lançamento de cartão com o valor ${formatBrl(pos.gross_amount)}`}
+                              >
+                                Provado Sem OS na Loja
+                              </span>
+                            ) : collisionItem ? (
+                              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 font-bold">
+                                Colisão ({collisionItem.candidates.length} candidatas)
+                              </span>
+                            ) : (
+                              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 font-bold">
+                                Pendente Vínculo
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[11px] text-zinc-400">{pos.payment_method}</span>
                         </div>
-                        <span className="text-[11px] text-zinc-400">{pos.payment_method}</span>
+                        <div className="text-right">
+                          <span className="font-bold text-amber-300 block">{formatBrl(pos.net_amount)}</span>
+                          <span className="text-[10px] text-zinc-500">Bruto: {formatBrl(pos.gross_amount)}</span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <span className="font-bold text-amber-300 block">{formatBrl(pos.net_amount)}</span>
-                        <span className="text-[10px] text-zinc-500">Taxa: {formatBrl(pos.fee_amount)}</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

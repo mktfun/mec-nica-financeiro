@@ -370,8 +370,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1790616177.6426394,
-    "ast_hash": "68adc66b479cfac7d0832544eb47dfd4",
+    "mtime": 1790626124.7712142,
+    "ast_hash": "416729aa0a6590c12ae06de0a2c01e9e",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -3240,8 +3240,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1790607510.6010072,
-    "ast_hash": "c096e1e735162a429338e8e13786c911",
+    "mtime": 1790687469.5693722,
+    "ast_hash": "60df34ee072976ddc059c170112db7de",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -3670,8 +3670,8 @@
     "semantic_hash": "45efb6e7237cd757d0cc89de36f22192"
   },
   "src/components/importacoes/manual/Fase2RedeVsOsReview.tsx": {
-    "mtime": 1790600703.592929,
-    "ast_hash": "4fd8bd8d9d2ed4699f1a96b7be1c07c2",
+    "mtime": 1790686217.3844388,
+    "ast_hash": "758153b60e4046d184059d8fe42bcd26",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase3OfxReconciliation.tsx": {
@@ -4969,21 +4969,6 @@
     "ast_hash": "73c4749680fb4b190bfeb045d4a10e85",
     "semantic_hash": ""
   },
-  "specs/443-redesign-vinculo-pix-rede-os/design.md": {
-    "mtime": 1790340766.5025804,
-    "ast_hash": "6e894ea33fa974d2ddabadc13f8dcb8c",
-    "semantic_hash": ""
-  },
-  "specs/443-redesign-vinculo-pix-rede-os/proposal.md": {
-    "mtime": 1790340749.0113208,
-    "ast_hash": "6f4cb35cc942c635fb8a94ea2a0ca101",
-    "semantic_hash": ""
-  },
-  "specs/443-redesign-vinculo-pix-rede-os/spec-plan.md": {
-    "mtime": 1790340778.301329,
-    "ast_hash": "76ee6964cfb66f01d2f4958bb3f2576c",
-    "semantic_hash": ""
-  },
   "tests/e2e/tier2_boundary/ofx_closing_balance_saldo_do_dia.test.mjs": {
     "mtime": 1790347913.70281,
     "ast_hash": "5ea0723bd0cd92d3c2b7c3c617aa407e",
@@ -5044,19 +5029,14 @@
     "ast_hash": "98f86238abbaff97436f186fd84465a4",
     "semantic_hash": ""
   },
-  "specs/443-restaurar-fechamento-rede-compensar-vinculo-os/design.md": {
-    "mtime": 1790613896.8733864,
-    "ast_hash": "5a27a8841e932f0248ad4659447e2535",
+  "supabase/migrations/20260929000001_evolve_match_stage2_rede_os.sql": {
+    "mtime": 1790685989.7520707,
+    "ast_hash": "3b89823033d98e50729f7c9b926485dc",
     "semantic_hash": ""
   },
-  "specs/443-restaurar-fechamento-rede-compensar-vinculo-os/proposal.md": {
-    "mtime": 1790613896.872823,
-    "ast_hash": "8c590e27be766a5fad41e9d9ba27a7c3",
-    "semantic_hash": ""
-  },
-  "specs/443-restaurar-fechamento-rede-compensar-vinculo-os/spec-plan.md": {
-    "mtime": 1790616526.4165776,
-    "ast_hash": "edb44f02085f030a9fa255859103a420",
+  "supabase/migrations/20260929000002_delegate_auto_match_fase1_to_stage2.sql": {
+    "mtime": 1790686357.458245,
+    "ast_hash": "bbf615957cbd7fafd06aa28285a2c603",
     "semantic_hash": ""
   }
 }
