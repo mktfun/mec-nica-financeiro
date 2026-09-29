@@ -264,38 +264,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
 
       const raw = data as any;
 
-      // 1. Busca transações de maquininha da data para apurar rigorosamente o que NÃO ENTROU no banco
-      let posUnsettledByStore: Record<string, number> = {};
-      let totalPosUnsettled = 0;
-      let posQuerySuccess = false;
-      try {
-        const { data: posData, error: posErr } = await supabase
-          .from('pos_transactions')
-          .select('store_id, net_amount, settlement_status, settled_amount')
-          .eq('target_date', date);
-
-        if (!posErr && posData && posData.length > 0) {
-          posData.forEach(p => {
-            const sid = String(p.store_id || '').trim();
-            if (posUnsettledByStore[sid] === undefined) {
-              posUnsettledByStore[sid] = 0;
-            }
-            const isSettled = p.settlement_status === 'entrou' || p.settlement_status === 'liquidado';
-            if (!isSettled) {
-              const net = Number(p.net_amount || 0);
-              const settled = Number(p.settled_amount || 0);
-              const val = Math.max(0, Number((net - settled).toFixed(2)));
-              posUnsettledByStore[sid] = Number((posUnsettledByStore[sid] + val).toFixed(2));
-              totalPosUnsettled = Number((totalPosUnsettled + val).toFixed(2));
-            }
-          });
-          posQuerySuccess = true;
-        }
-      } catch (err) {
-        console.warn('Erro ao enriquecer pos_transactions:', err);
-      }
-
-      // 2. Busca store_cash_vault para apurar rigorosamente dinheiro pendente em cofre (em trânsito)
+      // 1. Busca store_cash_vault para apurar rigorosamente dinheiro pendente em cofre (em trânsito)
       let vaultByStore: Record<string, number> = {};
       let vaultEntriesByStore: Record<string, any[]> = {};
       let totalVaultInTransit = 0;
@@ -303,7 +272,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       try {
         const { data: vaultData, error: vaultErr } = await supabase
           .from('store_cash_vault')
-          .select('id, store_id, amount, status, entry_date, description, os_number_ref, notes')
+          .select('id, store_id, amount, status, entry_date, description, os_number_ref, notes, deposited_at')
           .lte('entry_date', date);
 
         if (!vaultErr && vaultData) {
@@ -312,7 +281,12 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
             if (!vaultEntriesByStore[sid]) vaultEntriesByStore[sid] = [];
             vaultEntriesByStore[sid].push(v);
 
-            if (v.status === 'em_transito' || v.status === 'pending') {
+            // Considera em trânsito se o status for em_transito/pending,
+            // ou se foi depositado em data posterior ao dia consultado (blindagem de histórico)
+            const depDate = (v as any).deposited_at ? String((v as any).deposited_at).split('T')[0] : null;
+            const isDepositedAfterDate = v.status === 'depositado' && depDate && depDate > date;
+
+            if (v.status === 'em_transito' || v.status === 'pending' || isDepositedAfterDate) {
               const val = Number(v.amount || 0);
               vaultByStore[sid] = (vaultByStore[sid] || 0) + val;
               totalVaultInTransit += val;
@@ -359,39 +333,39 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
 
       const snapMeta = (snapshotData?.metadata as any) || {};
 
-      // R4: Se o dia já estiver fechado e não estiver forçando modo dinâmico,
-      // utiliza o snapshot congelado do cofre (cash_vault_snapshot) para blindagem temporal
+      // R4: Se o dia já estiver fechado e não estiver forçando modo dinâmico:
+      // Se houver snapshot congelado do cofre, utiliza frações/total apenas se não divergirem de baixas reais
       if (snapshotData?.is_closed && !forceDynamic && snapMeta.cash_vault_snapshot) {
         const cvSnap = snapMeta.cash_vault_snapshot;
         const fractions = cvSnap.fractions || cvSnap.entries || [];
-        vaultByStore = {};
-        vaultEntriesByStore = {};
-        totalVaultInTransit = Number(cvSnap.total_em_transito !== undefined ? cvSnap.total_em_transito : (snapMeta.dinheiro_lojas || 0));
-        fractions.forEach((v: any) => {
-          const sid = String(v.store_id || '').trim();
-          if (!vaultEntriesByStore[sid]) vaultEntriesByStore[sid] = [];
-          vaultEntriesByStore[sid].push(v);
-          if (v.status === 'em_transito' || v.status === 'pending') {
-            const val = Number(v.amount || 0);
-            vaultByStore[sid] = (vaultByStore[sid] || 0) + val;
+        const snapTotal = Number(cvSnap.total_em_transito !== undefined ? cvSnap.total_em_transito : (snapMeta.dinheiro_lojas || 0));
+
+        // Se a query viva rodou com sucesso e encontrou um total em trânsito MENOR (baixa efetuada),
+        // preservamos a visão viva saneada em vez de restaurar o saldo pré-baixa.
+        if (!vaultQuerySuccess || (totalVaultInTransit >= snapTotal && fractions.length > 0)) {
+          if (fractions.length > 0) {
+            vaultByStore = {};
+            vaultEntriesByStore = {};
+            totalVaultInTransit = snapTotal;
+            fractions.forEach((v: any) => {
+              const sid = String(v.store_id || '').trim();
+              if (!vaultEntriesByStore[sid]) vaultEntriesByStore[sid] = [];
+              vaultEntriesByStore[sid].push(v);
+              if (v.status === 'em_transito' || v.status === 'pending') {
+                const val = Number(v.amount || 0);
+                vaultByStore[sid] = (vaultByStore[sid] || 0) + val;
+              }
+            });
+            vaultQuerySuccess = true;
           }
-        });
-        vaultQuerySuccess = true;
+        }
       }
 
       const storesList: StoreReconciliationSummary[] = (raw.stores || raw.stores_detail || []).map((s: any) => {
         const sid = String(s.store_id || '').trim();
-        const storeNaoEntrou = posQuerySuccess 
-          ? (posUnsettledByStore[sid] ?? 0)
-          : Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? 0);
-
         const redeLiq = Number(s.rede_liquido ?? s.maquininha ?? 0);
         const ofxMaq = Number(s.ofx_maquininhas ?? 0);
-
-        // Se a busca de pos_transactions teve sucesso, respeita estritamente o valor não liquidado
-        const finalNaoEntrou = posQuerySuccess 
-          ? storeNaoEntrou 
-          : (storeNaoEntrou > 0 ? storeNaoEntrou : (redeLiq > 0 ? Math.max(0, redeLiq - ofxMaq) : 0));
+        const finalNaoEntrou = Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? 0);
 
         const storeVault = vaultQuerySuccess
           ? (vaultByStore[sid] || 0)
@@ -458,16 +432,17 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
             ? Number(snapMeta.dinheiro_lojas) 
             : Number(raw.dinheiro_lojas || raw.dinheiro_em_lojas || 0));
 
-      // Spec 443: Cálculo de Cartões a Compensar SEM corte arbitrário de 40.000
-      // Prioridade: 1) live query de pos_transactions com pendências; 2) RPC dynamic/raw; 3) snapshot congelado
-      const rawCartoesBackend = Number(raw.cartoes_a_compensar || 0);
-      const snapCartoes = snapMeta.cartoes_a_compensar !== undefined ? Number(snapMeta.cartoes_a_compensar) : undefined;
-      
-      const finalCartoesACompensar = (posQuerySuccess && totalPosUnsettled > 0)
-        ? Number(totalPosUnsettled.toFixed(2))
-        : (rawCartoesBackend > 0
-            ? rawCartoesBackend
-            : (snapCartoes !== undefined ? snapCartoes : rawCartoesBackend));
+      // Spec 448: SSOT Canônico para Cartões a Compensar (direto da RPC / Snapshot)
+      const rawCartoesBackend = raw.cartoes_a_compensar !== undefined && raw.cartoes_a_compensar !== null
+        ? Number(raw.cartoes_a_compensar)
+        : undefined;
+      const snapCartoes = snapMeta.cartoes_a_compensar !== undefined && snapMeta.cartoes_a_compensar !== null
+        ? Number(snapMeta.cartoes_a_compensar)
+        : undefined;
+
+      const finalCartoesACompensar = rawCartoesBackend !== undefined
+        ? Number(rawCartoesBackend.toFixed(2))
+        : (snapCartoes !== undefined ? Number(snapCartoes.toFixed(2)) : 0);
 
       // Isolamento de Saldo Bancário Puro (OFX)
       // O saldo positivo puro das 10 contas de extrato OFX vem de saldo_bancos_ofx_positivo ou saldo_bancos_positivo
@@ -530,13 +505,42 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const finalCaixaAnterior = Number(snapMeta.caixa_anterior ?? raw.caixa_anterior ?? 0);
       const finalFluxoCaixa = Number((finalCaixaAtual - finalCaixaAnterior).toFixed(2));
 
-      const finalSubtotalContas = Number(totalManualBills + Number(raw.juros_rede || 0));
-      const finalValorDisp = Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2));
-      const finalDiferenca = Number(
-        (snapMeta.is_marco_zero && snapMeta.diferenca_final !== undefined)
-          ? snapMeta.diferenca_final
-          : (finalValorDisp - finalSubtotalContas).toFixed(2)
-      );
+      // Spec 451: SSOT de Contas e Diferença Final para Dias Fechados
+      const isSnapshotClosed = Boolean(snapshotData?.is_closed && !forceDynamic);
+
+      const snapContas = snapshotData?.contas_a_pagar !== undefined && snapshotData?.contas_a_pagar !== null
+        ? Number(Number(snapshotData.contas_a_pagar).toFixed(2))
+        : (raw.contas_base !== undefined && raw.contas_base !== null ? Number(Number(raw.contas_base).toFixed(2)) : Number(totalManualBills.toFixed(2)));
+      const finalContasBase = Number((isSnapshotClosed ? snapContas : totalManualBills).toFixed(2));
+
+      const dynamicSubtotal = Number((finalContasBase + Number(raw.juros_rede || 0)).toFixed(2));
+      const snapSubtotal = snapMeta.subtotal_contas !== undefined && snapMeta.subtotal_contas !== null
+        ? Number(snapMeta.subtotal_contas)
+        : (raw.subtotal_contas !== undefined && raw.subtotal_contas !== null
+            ? Number(raw.subtotal_contas)
+            : dynamicSubtotal);
+      const finalSubtotalContas = isSnapshotClosed ? snapSubtotal : dynamicSubtotal;
+
+      const dynamicValorDisp = Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2));
+      const snapValorDisp = snapMeta.valor_disp_contas !== undefined && snapMeta.valor_disp_contas !== null
+        ? Number(snapMeta.valor_disp_contas)
+        : (raw.valor_disp_contas !== undefined && raw.valor_disp_contas !== null
+            ? Number(raw.valor_disp_contas)
+            : dynamicValorDisp);
+      const finalValorDisp = isSnapshotClosed ? snapValorDisp : dynamicValorDisp;
+
+      const dynamicDiferenca = Number((finalValorDisp - finalSubtotalContas).toFixed(2));
+      const snapDiferenca = snapMeta.diferenca_final !== undefined && snapMeta.diferenca_final !== null
+        ? Number(snapMeta.diferenca_final)
+        : (raw.diferenca_final !== undefined && raw.diferenca_final !== null
+            ? Number(raw.diferenca_final)
+            : dynamicDiferenca);
+
+      const finalDiferenca = isSnapshotClosed
+        ? snapDiferenca
+        : (snapMeta.is_marco_zero && snapMeta.diferenca_final !== undefined
+            ? Number(snapMeta.diferenca_final)
+            : dynamicDiferenca);
 
       const totalEntradasOfx = Number(storesList.reduce((acc, s) => acc + (s.entradas_realizadas || 0), 0).toFixed(2));
       const totalSaidasOfx = Number(storesList.reduce((acc, s) => acc + (s.saidas_ofx || 0), 0).toFixed(2));
@@ -572,9 +576,9 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         odometro_hoje: finalOdometroHoje > 0 ? finalOdometroHoje : raw.odometro_hoje,
         faturamento_ajustes: Number(raw.faturamento_ajustes ?? 0),
         valor_disp_contas: finalValorDisp,
-        contas_base: totalManualBills,
+        contas_base: finalContasBase,
         contas_extras: Number(raw.contas_extras ?? 0),
-        contas_manual: totalManualBills,
+        contas_manual: finalContasBase,
         juros_rede: Number(raw.juros_rede ?? 0),
         is_closed: Boolean(snapshotData?.is_closed ?? raw.is_closed),
         is_marco_zero: Boolean(snapMeta.is_marco_zero),

@@ -239,3 +239,15 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 - `Fase2RedeVsOsReview.tsx`:
   - Totalizadores de topo discriminando `CASADAS`, `COLISÕES` e `ÓRFÃOS PROVADOS`.
   - Badges semânticos de status por transação: verde para casada, amarelo para colisão e cinza (`bg-zinc-800 border-zinc-700`) para `Provado Sem OS na Loja`.
+
+---
+
+## 21. Unificação do Cálculo de Diferença Final e Subtotal Contas (Spec 451)
+- `useBackendConciliacao.ts`:
+  - Blindagem de dias fechados (`isSnapshotClosed = Boolean(snapshotData?.is_closed && !forceDynamic)`).
+  - Em dias fechados, o hook respeita soberanamente a autoridade do snapshot congelado e da RPC (`contas_a_pagar`, `subtotal_contas`, `valor_disp_contas`, `diferenca_final`), proibindo o recálculo dinâmico baseado em `daily_manual_bills` com dados parciais.
+  - Arredondamento monetário estrito em 2 casas decimais (`toFixed(2)`).
+- `ResumoDiaPanel.tsx`:
+  - Harmonização de `contasManualValor` e `canonicalDiferencaFinal` para manter 100% de coerência entre a fórmula dos cards e o valor exibido.
+  - Eliminação da reversão de cálculo pós-salvamento: a tela exibe consistentemente a diferença homologada (ex.: R$ 3.660,03 no dia 2026-09-29) tanto em Modo Visualização quanto em Modo Edição e pós-salvamento.
+- Testes automatizados em `tests/e2e/tier2_boundary/spec451_dashboard_reconciliation_math.test.mjs`.

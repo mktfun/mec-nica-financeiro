@@ -145,8 +145,8 @@
     "semantic_hash": "c31f98561148527ba8411689ec6cb924"
   },
   "src/components/conciliacao/BaixaDinheiroModal.tsx": {
-    "mtime": 1790110242.9019117,
-    "ast_hash": "3f0bf5ad54af87593fb0f62dfb157f33",
+    "mtime": 1790709203.9514103,
+    "ast_hash": "302b27b2399541628c0c7244608619c2",
     "semantic_hash": ""
   },
   "src/components/conciliacao/ContasManualModal.tsx": {
@@ -175,8 +175,8 @@
     "semantic_hash": "7a4b02ea3782dcafe458167797b393c5"
   },
   "src/components/conciliacao/ManualMatchOsModal.tsx": {
-    "mtime": 1790603015.0653841,
-    "ast_hash": "0c86a00c44b6e5b3bbd31d3e79232742",
+    "mtime": 1790696006.8056135,
+    "ast_hash": "47d2ef1d1bfebe5699700792d0b01bf2",
     "semantic_hash": ""
   },
   "src/components/conciliacao/MaquininhasDetailModal.tsx": {
@@ -185,9 +185,9 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/OrphanCategorizationModal.tsx": {
-    "mtime": 1788287784.8507807,
-    "ast_hash": "afbb77f19654207603d67a779f46bd48",
-    "semantic_hash": "afbb77f19654207603d67a779f46bd48"
+    "mtime": 1790711481.5433366,
+    "ast_hash": "24d582f5c8e6bc9af77bd45acc464370",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/OsDetailModal.tsx": {
     "mtime": 1790110246.46734,
@@ -200,23 +200,23 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1790342774.5891988,
-    "ast_hash": "edada7bcaa4a7706c482e203db7abda3",
+    "mtime": 1790713281.8080034,
+    "ast_hash": "ec15bb249fba64ede3a1dd35bdeb58ad",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1790564630.03307,
-    "ast_hash": "1bb1ed12c65428a5638f1eca14f65bec",
+    "mtime": 1790702935.1292353,
+    "ast_hash": "1a35b619d8183002567c8d8b0247ddd4",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
-    "mtime": 1790600853.6324813,
-    "ast_hash": "4148ae022966b4af2598d345225e5b4e",
+    "mtime": 1790705837.272725,
+    "ast_hash": "812744d12eb883b86acb07679b4eb8a5",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1790606403.0879,
-    "ast_hash": "ae2d609bb2d6ccfdea98a2c3e77ee7d0",
+    "mtime": 1790711109.1041927,
+    "ast_hash": "7247882b01423282c1c29471afc22bce",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -370,8 +370,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1790626124.7712142,
-    "ast_hash": "416729aa0a6590c12ae06de0a2c01e9e",
+    "mtime": 1790709002.6235645,
+    "ast_hash": "e8e99c45efa294f3fa30946869a0ecd1",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -415,8 +415,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx": {
-    "mtime": 1789394124.1197767,
-    "ast_hash": "2898bcedb114b2c45310cfbf52725713",
+    "mtime": 1790710867.1688132,
+    "ast_hash": "3655a03a35106c62bfb6038dc7569368",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step3CashVaultDaniel.tsx": {
@@ -425,8 +425,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1790130652.818047,
-    "ast_hash": "329df8745962d497369ef7cf43e64401",
+    "mtime": 1790705626.589803,
+    "ast_hash": "02a3bc48bfedd840b762996bac90e0a3",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/types.ts": {
@@ -610,8 +610,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1790615918.835044,
-    "ast_hash": "320615e356e2e8d6a3f354f82a824d68",
+    "mtime": 1790713193.0362022,
+    "ast_hash": "f63e4a8ca9713e41c0ee144e941afaed",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -640,8 +640,8 @@
     "semantic_hash": "5d30c370897450ba6da850a0e5316a00"
   },
   "src/hooks/useCategorizeOrphan.ts": {
-    "mtime": 1790130652.8519912,
-    "ast_hash": "8b03ebb0ba97966e105228e387c07a11",
+    "mtime": 1790711025.8871996,
+    "ast_hash": "8ca4ddf4755d71fb10bc029ee2d71284",
     "semantic_hash": ""
   },
   "src/hooks/useCentralImport.ts": {
@@ -700,8 +700,8 @@
     "semantic_hash": "30b9cec238dda1506c4100fcec42146f"
   },
   "src/hooks/useImportProcessor.ts": {
-    "mtime": 1789692877.42857,
-    "ast_hash": "c601df0a36dfe7f04d746c80bb1d721a",
+    "mtime": 1790690525.4599886,
+    "ast_hash": "50038782a6eb2b1047c9ff3c7805df4c",
     "semantic_hash": ""
   },
   "src/hooks/useIntercompanyEntities.ts": {
@@ -710,13 +710,13 @@
     "semantic_hash": "5c6a16c317826b4701de2d73a955b3d0"
   },
   "src/hooks/useJustifiedTransactions.ts": {
-    "mtime": 1789561189.8827424,
-    "ast_hash": "7bbb615e2a8b4fdca61fc125ed6ee6e8",
+    "mtime": 1790710703.512283,
+    "ast_hash": "248c56a44ca101fbc5964bc3763ea4ef",
     "semantic_hash": ""
   },
   "src/hooks/useManualMatch.ts": {
-    "mtime": 1790602962.414556,
-    "ast_hash": "22510497518cae75d9c7dd4fc8173563",
+    "mtime": 1790691087.9017246,
+    "ast_hash": "3b095faf6652e754c720df208d82df13",
     "semantic_hash": ""
   },
   "src/hooks/useMcpLogs.ts": {
@@ -885,9 +885,9 @@
     "semantic_hash": ""
   },
   "src/lib/logger.ts": {
-    "mtime": 1786977431.537221,
-    "ast_hash": "365b1814e81dfcb1e0e78f4a3891d306",
-    "semantic_hash": "365b1814e81dfcb1e0e78f4a3891d306"
+    "mtime": 1790691419.1349664,
+    "ast_hash": "761b3306da305e735f1a3ee9cbb57760",
+    "semantic_hash": ""
   },
   "src/lib/matchers/autoMatchingEngine.ts": {
     "mtime": 1790600682.4225326,
@@ -960,7 +960,7 @@
     "semantic_hash": "c1ea70a3fb7a73ae5bc7190ba9162796"
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1790605861.87715,
+    "mtime": 1790702406.9835596,
     "ast_hash": "f7fe0b1d287498f16775d5a8493997ca",
     "semantic_hash": ""
   },
@@ -1015,9 +1015,9 @@
     "semantic_hash": "6ada6c58f8ac21af51064cc5fb98ef3f"
   },
   "src/routes/__root.tsx": {
-    "mtime": 1786977431.611835,
-    "ast_hash": "512b588ef320712c9e0f11bbbe6e27ec",
-    "semantic_hash": "512b588ef320712c9e0f11bbbe6e27ec"
+    "mtime": 1790691488.9635842,
+    "ast_hash": "f1eddd1ae7e540f362817d848600ef72",
+    "semantic_hash": ""
   },
   "src/routes/alertas.tsx": {
     "mtime": 1786982263.664382,
@@ -4240,8 +4240,8 @@
     "semantic_hash": ""
   },
   "src/lib/matchers/reconciliadorRedeOfx.ts": {
-    "mtime": 1790130652.8904324,
-    "ast_hash": "ebc435c94a891b67cb74510369556cca",
+    "mtime": 1790706142.0669758,
+    "ast_hash": "41904be7eb71f70104005f5fc03abdcb",
     "semantic_hash": ""
   },
   "supabase/migrations/20260910000046_fix_cash_vault_deposit_and_summary_alignment.sql": {
@@ -4380,8 +4380,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/runner.mjs": {
-    "mtime": 1790110244.4014168,
-    "ast_hash": "38bfb03ad81606612f9b6bff48f913a8",
+    "mtime": 1790711288.3641305,
+    "ast_hash": "4f2e22a6f4d20f985517718f72bdf430",
     "semantic_hash": ""
   },
   "tests/e2e/tier1_features/m1_ssot_calculator.test.mjs": {
@@ -4980,8 +4980,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useOfxBalanceMappings.ts": {
-    "mtime": 1790564964.4822047,
-    "ast_hash": "8ac6aecdc73286fa796d5a8b7de0cf95",
+    "mtime": 1790702981.574133,
+    "ast_hash": "fee5c42c17da57bff9720a9deebe299d",
     "semantic_hash": ""
   },
   "supabase/migrations/20260927000001_ofx_balance_candidates_and_rules.sql": {
@@ -5037,6 +5037,146 @@
   "supabase/migrations/20260929000002_delegate_auto_match_fase1_to_stage2.sql": {
     "mtime": 1790686357.458245,
     "ast_hash": "bbf615957cbd7fafd06aa28285a2c603",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260929000003_create_os_import_observations.sql": {
+    "mtime": 1790690388.4912229,
+    "ast_hash": "1cadb9f5cac0513928872ee02cba4222",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260929000004_canonical_rede_os_matcher.sql": {
+    "mtime": 1790690995.428645,
+    "ast_hash": "2f789cef608c16c2ad4526a595931fb2",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260929000005_rede_ofx_settlements_ssot.sql": {
+    "mtime": 1790707987.853748,
+    "ast_hash": "e8e7d05cfa4615e0ee9b4107a1e1e5a5",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260929000007_sync_cash_vault_baixa_snapshot.sql": {
+    "mtime": 1790708957.951646,
+    "ast_hash": "1288f7a535490767a13fe2e1781fdb73",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260929000008_canonical_orphan_decision_ssot.sql": {
+    "mtime": 1790710592.0202284,
+    "ast_hash": "9658f5c119cf6e1c564d9917136c101c",
+    "semantic_hash": ""
+  },
+  "tests/e2e/tier2_boundary/spec448_rede_a_compensar_ssot.test.mjs": {
+    "mtime": 1790706190.5478508,
+    "ast_hash": "06f468e1f87d91c770417c52699b638a",
+    "semantic_hash": ""
+  },
+  "tests/e2e/tier2_boundary/spec449_cash_vault_sync.test.mjs": {
+    "mtime": 1790709240.8334134,
+    "ast_hash": "2f7ff86536bfee5dd30e677b9a9d53e3",
+    "semantic_hash": ""
+  },
+  "tests/e2e/tier2_boundary/spec450_canonical_orphan_decision.test.mjs": {
+    "mtime": 1790712466.3576734,
+    "ast_hash": "f5613e7f622a10d1acfddcea77b370fa",
+    "semantic_hash": ""
+  },
+  "tests/e2e/tier2_boundary/spec451_dashboard_reconciliation_math.test.mjs": {
+    "mtime": 1790713198.674906,
+    "ast_hash": "b6618a92585dc7c74096485da182abdd",
+    "semantic_hash": ""
+  },
+  "specs/439-selecao-saldo-ofx-wizard/spec-plan.md": {
+    "mtime": 1790703227.3866587,
+    "ast_hash": "359902b300c703f0a879ab62ddfda9c6",
+    "semantic_hash": ""
+  },
+  "specs/444-rede-x-os-mudanca-comprovada-importacao/design.md": {
+    "mtime": 1790690158.9331243,
+    "ast_hash": "0b931ccdc7b79c2a5251335ba87a8b6a",
+    "semantic_hash": ""
+  },
+  "specs/444-rede-x-os-mudanca-comprovada-importacao/proposal.md": {
+    "mtime": 1790690146.541953,
+    "ast_hash": "676026f223af19ee53b886d9aab9c38f",
+    "semantic_hash": ""
+  },
+  "specs/444-rede-x-os-mudanca-comprovada-importacao/spec-plan.md": {
+    "mtime": 1790692864.0344872,
+    "ast_hash": "68e70dd88cdec207f32a188d94a12039",
+    "semantic_hash": ""
+  },
+  "specs/445-remover-contornos-brancos-vinculo-rede-os/design.md": {
+    "mtime": 1790695728.2980323,
+    "ast_hash": "2de54c47738e18183821af7df96e8e16",
+    "semantic_hash": ""
+  },
+  "specs/445-remover-contornos-brancos-vinculo-rede-os/proposal.md": {
+    "mtime": 1790695728.2961757,
+    "ast_hash": "955e0cdf21b820d639d716a379ad1634",
+    "semantic_hash": ""
+  },
+  "specs/445-remover-contornos-brancos-vinculo-rede-os/spec-plan.md": {
+    "mtime": 1790696100.3448772,
+    "ast_hash": "af984f1c2eeaf7f46b9981aa83070a8a",
+    "semantic_hash": ""
+  },
+  "specs/448-rede-a-compensar-ssot/design.md": {
+    "mtime": 1790704399.0869308,
+    "ast_hash": "ab9c997e23c9de31696daf672a60cde8",
+    "semantic_hash": ""
+  },
+  "specs/448-rede-a-compensar-ssot/proposal.md": {
+    "mtime": 1790704314.3662226,
+    "ast_hash": "0e23be7cdc9e09bf4b42cdae8133d891",
+    "semantic_hash": ""
+  },
+  "specs/448-rede-a-compensar-ssot/spec-plan.md": {
+    "mtime": 1790706380.8580925,
+    "ast_hash": "5668ac1a6a745a25b5e544eb20d2dfe4",
+    "semantic_hash": ""
+  },
+  "specs/449-sincronizacao-baixa-dinheiro-cofre-snapshot/design.md": {
+    "mtime": 1790708767.876353,
+    "ast_hash": "d3b1d0c49babf05f564af38b4895baee",
+    "semantic_hash": ""
+  },
+  "specs/449-sincronizacao-baixa-dinheiro-cofre-snapshot/proposal.md": {
+    "mtime": 1790708767.8746886,
+    "ast_hash": "b2f2a02a0376a3800be5a249f17bd7d5",
+    "semantic_hash": ""
+  },
+  "specs/449-sincronizacao-baixa-dinheiro-cofre-snapshot/spec-plan.md": {
+    "mtime": 1790709357.307434,
+    "ast_hash": "0fec901160c57660c14c96e67ebdee09",
+    "semantic_hash": ""
+  },
+  "specs/450-decisao-canonica-orfaos-ofx/design.md": {
+    "mtime": 1790710467.3713362,
+    "ast_hash": "1f38bfe56b4f20073058634af2d33988",
+    "semantic_hash": ""
+  },
+  "specs/450-decisao-canonica-orfaos-ofx/proposal.md": {
+    "mtime": 1790710467.363637,
+    "ast_hash": "eb586806a4165314209531af4108a09f",
+    "semantic_hash": ""
+  },
+  "specs/450-decisao-canonica-orfaos-ofx/spec-plan.md": {
+    "mtime": 1790711653.719676,
+    "ast_hash": "2df0e59d46e1eddbb92f01a70738a46c",
+    "semantic_hash": ""
+  },
+  "specs/451-unificacao-calculo-diferenca-painel/design.md": {
+    "mtime": 1790712709.1080565,
+    "ast_hash": "30fb1a015e5b668179e921fe77703fe3",
+    "semantic_hash": ""
+  },
+  "specs/451-unificacao-calculo-diferenca-painel/proposal.md": {
+    "mtime": 1790712701.9732008,
+    "ast_hash": "5e8b535eaeb13bd7f5902b102b674d92",
+    "semantic_hash": ""
+  },
+  "specs/451-unificacao-calculo-diferenca-painel/spec-plan.md": {
+    "mtime": 1790713409.211937,
+    "ast_hash": "d07f56eb30318557c893c940853f6d07",
     "semantic_hash": ""
   }
 }

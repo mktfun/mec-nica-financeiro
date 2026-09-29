@@ -1,3 +1,22 @@
+## [2026-09-29] — [Feature ID: 451-unificacao-calculo-diferenca-painel]
+
+**Contexto:** Correção da incoerência crítica no painel de conciliação diária (`ResumoDiaPanel.tsx` e `useBackendConciliacao.ts`), onde o Modo Visualização exibia DIFERENÇA FINAL divergente (R$ 7.034,74) incompatível com os próprios cards da tela (R$ 48.805,95 - R$ 45.145,92), enquanto o Modo Edição exibia o valor correto (R$ 3.660,03), e o salvamento revertia para o valor errado.
+
+**Regra aprendida:**
+1. **Soberania Absoluta do Snapshot em Dias Fechados (`isSnapshotClosed`):**
+   - Quando um dia contábil está fechado (`snapshotData.is_closed = true`), os valores homologados no snapshot (`contas_a_pagar`, `subtotal_contas`, `valor_disp_contas`, `diferenca_final`) são a SSOT soberana e imutável.
+   - O hook `useBackendConciliacao.ts` NUNCA deve recalcular `subtotal_contas` e `diferenca_final` a partir de queries dinâmicas a `daily_manual_bills` para dias fechados. A soma bruta de boletos pode divergir do total consolidado de contas aprovado na planilha de fechamento.
+2. **Identidade Matemática Estrita nos Cards de Resumo:**
+   - No componente `ResumoDiaPanel.tsx`, os cards visuais e a DIFERENÇA FINAL devem satisfazer compulsoriamente a identidade:
+     $$\text{DIFERENÇA FINAL} = \text{Valor Disponível Contas} - \text{Subtotal Contas}$$
+   - Não pode existir desacoplamento onde os cards de Contas e Disponível mostram valores A e B, mas a Diferença Final exibe um valor C desvinculado de $A - B$.
+3. **Invariância Pós-Salvamento:**
+   - Ao salvar um snapshot pelo painel, a recarga imediata dos dados (`invalidateQueries`) deve retornar exatamente os mesmos números persistidos, sem sofrer mutações dinâmicas parciais.
+
+**Risco identificado / Anti-pattern:** Recalcular dinamicamente campos de resumo em hooks do cliente sobrescrevendo o payload retornado pela RPC do banco de dados em dias que já foram auditados e congelados no snapshot.
+
+---
+
 ## [2026-09-28] — [Feature ID: 443-fix-rede-a-compensar-target-date-e-snapshot-stores]
 
 **Contexto:** Correção crítica da ancoragem temporal das vendas da Rede (`pos_transactions`) na ingestão do CentralImportWizard, cálculo resiliente de `cartoesACompensarTotal` (suporte a camelCase e snake_case) e persistência de `stores` no metadata do snapshot diário consolidado.

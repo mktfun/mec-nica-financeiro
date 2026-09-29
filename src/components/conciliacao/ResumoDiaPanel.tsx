@@ -265,11 +265,7 @@ export function ResumoDiaPanel({
         : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0));
   const contasManualValor = isEditing 
     ? (contasInput + (summary?.contas_extras || 0)) 
-    : (contasInput > 0 
-        ? (contasInput + (summary?.contas_extras || 0))
-        : (isSandbox
-            ? (Number(summary?.contas_manual ?? summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0))
-            : (Number(summary?.contas_manual || currentSnapshot?.contas_a_pagar || summary?.contas_base || 0) + (summary?.contas_extras || 0))));
+    : (Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? summary?.contas_base ?? contasInput ?? 0) + (summary?.contas_extras || 0));
 
   // Totais Bancários Derivados (SSOT compartilhado rigorosamente com o SaldoBancosDetailModal)
   const derivedBankTotals = useMemo(() => {
@@ -364,9 +360,11 @@ export function ResumoDiaPanel({
   const subtotalContasCalculado = Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100;
 
   const diferencaFinalCalculada = Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100;
-  const canonicalDiferencaFinal = !isEditing && summary?.diferenca_final !== undefined && summary?.diferenca_final !== null
-    ? Number(summary.diferenca_final)
-    : diferencaFinalCalculada;
+  const canonicalDiferencaFinal = isEditing
+    ? diferencaFinalCalculada
+    : (summary?.is_closed && summary?.diferenca_final !== undefined && summary?.diferenca_final !== null
+        ? Number(summary.diferenca_final)
+        : diferencaFinalCalculada);
 
   const diferencaAbs = Math.abs(canonicalDiferencaFinal);
   const isDiferencaOk = diferencaAbs <= 50;
