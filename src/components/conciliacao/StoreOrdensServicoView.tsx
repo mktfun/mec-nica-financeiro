@@ -26,7 +26,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { OsDetailModal } from './OsDetailModal';
-import { CadastrarTransferenciaOsModal } from './CadastrarTransferenciaOsModal';
+import { OsPaymentLaunchModal } from './OsPaymentLaunchModal';
 import { useStores } from '@/hooks/useStores';
 
 interface StoreOrdensServicoViewProps {
@@ -59,11 +59,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
   const [editMethod, setEditMethod] = useState<string>('PIX');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
-  const [transferModalData, setTransferModalData] = useState<{
-    osNumber: string;
-    clientName?: string;
-    totalAmount: number;
-  } | null>(null);
+  const [paymentModalOs, setPaymentModalOs] = useState<any | null>(null);
 
   // Form para nova OS manual
   const [newOsNumber, setNewOsNumber] = useState('');
@@ -251,15 +247,6 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
       toast.success(`OS #${newOsNumber} cadastrada com sucesso!`);
       setIsAddModalOpen(false);
 
-      if (newMethod === 'Transferência') {
-        const remaining = Math.max(0, newTotal - newPaid);
-        setTransferModalData({
-          osNumber: newOsNumber.trim(),
-          clientName: newClient.trim() || 'Cliente Manual',
-          totalAmount: remaining > 0 ? remaining : newTotal
-        });
-      }
-
       setNewOsNumber('');
       setNewPlate('');
       setNewClient('');
@@ -337,15 +324,6 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
       status: editStatus,
       payment_method: editMethod
     });
-
-    if (editMethod === 'Transferência' && currentOs) {
-      const remaining = Math.max(0, editTotal - editPaid);
-      setTransferModalData({
-        osNumber: currentOs.os_number,
-        clientName: currentOs.client_name,
-        totalAmount: remaining > 0 ? remaining : editTotal
-      });
-    }
   };
 
   if (isLoading) {
@@ -428,18 +406,12 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
               size="sm"
               variant="outline"
               onClick={() => {
-                const first = transferAlerts[0];
-                const rem = Math.max(0, first.total_value - first.paid_value);
-                setTransferModalData({
-                  osNumber: first.os_number,
-                  clientName: first.client_name,
-                  totalAmount: rem > 0 ? rem : first.total_value
-                });
+                setPaymentModalOs(transferAlerts[0]);
               }}
               className="text-xs h-7 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 gap-1.5"
             >
-              <CreditCard size={12} />
-              Desdobrar OS #{transferAlerts[0].os_number}
+              <DollarSign size={12} />
+              Lançar Pagamento OS #{transferAlerts[0].os_number}
             </Button>
           </div>
         </div>
@@ -539,13 +511,9 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                           {isTransfer && osRecs.length === 0 && (
                             <button
                               type="button"
-                              onClick={() => setTransferModalData({
-                                osNumber: os.os_number,
-                                clientName: os.client_name,
-                                totalAmount: saldoRestante > 0 ? saldoRestante : os.total_value
-                              })}
+                              onClick={() => setPaymentModalOs(os)}
                               className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors cursor-pointer w-fit"
-                              title="Transferência em conta pendente de parcelas. Clique para desdobrar."
+                              title="Transferência em conta pendente de pagamentos. Clique para lançar."
                             >
                               <AlertCircle size={10} className="text-amber-400" />
                               Transf. Pendente
@@ -554,13 +522,9 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                           {isTransfer && osRecs.length > 0 && (
                             <button
                               type="button"
-                              onClick={() => setTransferModalData({
-                                osNumber: os.os_number,
-                                clientName: os.client_name,
-                                totalAmount: saldoRestante > 0 ? saldoRestante : os.total_value
-                              })}
+                              onClick={() => setPaymentModalOs(os)}
                               className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25 transition-colors cursor-pointer w-fit"
-                              title={`Transferência: ${paidRecs.length}/${osRecs.length} baixadas no extrato. Clique para ver/editar.`}
+                              title={`Transferência: ${paidRecs.length}/${osRecs.length} baixadas no extrato. Clique para ver/editar pagamentos.`}
                             >
                               <CreditCard size={10} className="text-indigo-400" />
                               Transf. ({paidRecs.length}/{osRecs.length})
@@ -679,29 +643,26 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                             </button>
                           </div>
                         ) : (
-                          <div className="flex items-center justify-center gap-1">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="teal"
+                              onClick={() => setPaymentModalOs(os)}
+                              className="text-[11px] h-7 px-2.5 gap-1 font-bold shadow-sm"
+                              title="Lançar ou editar pagamentos desta OS"
+                            >
+                              <DollarSign size={12} />
+                              Lançar Pagamento
+                            </Button>
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => handleStartEdit(os)}
-                              className="text-[11px] h-7 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
-                              title="Editar valores e status"
+                              className="text-[11px] h-7 px-1.5 text-zinc-400 hover:text-zinc-200"
+                              title="Edição rápida inline"
                             >
                               <Edit2 size={11} />
-                              Editar
                             </Button>
-                            <button
-                              type="button"
-                              onClick={() => setTransferModalData({
-                                osNumber: os.os_number,
-                                clientName: os.client_name,
-                                totalAmount: saldoRestante > 0 ? saldoRestante : os.total_value
-                              })}
-                              className="p-1.5 rounded bg-zinc-800/80 hover:bg-indigo-600/30 text-indigo-400 hover:text-indigo-200 border border-zinc-700/50 hover:border-indigo-500/40 transition-colors"
-                              title="Desdobrar Transferência em Conta (Recebíveis)"
-                            >
-                              <CreditCard size={12} />
-                            </button>
                           </div>
                         )}
                       </td>
@@ -892,22 +853,23 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
         />
       )}
 
-      {/* Modal Desdobrar Transferência em Conta */}
-      {transferModalData && (
-        <CadastrarTransferenciaOsModal
-          isOpen={!!transferModalData}
-          onClose={() => setTransferModalData(null)}
-          storeId={storeId}
-          storeName={storeName}
-          osNumber={transferModalData.osNumber}
-          clientName={transferModalData.clientName}
-          totalAmount={transferModalData.totalAmount}
+      {/* Modal Canônico de Lançamento / Edição de Pagamentos da OS */}
+      {paymentModalOs && (
+        <OsPaymentLaunchModal
+          isOpen={!!paymentModalOs}
+          onClose={() => setPaymentModalOs(null)}
+          os={paymentModalOs}
           targetDate={date}
           onSuccess={async () => {
             await refetch();
-            await queryClient.invalidateQueries({ queryKey: ['store-receivables', storeId] });
-            await queryClient.invalidateQueries({ queryKey: ['receivables'] });
-            await queryClient.invalidateQueries({ queryKey: ['receivables-by-date'] });
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+              queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+              queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
+              queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+              queryClient.invalidateQueries({ queryKey: ['patio-os-list'] }),
+              queryClient.invalidateQueries({ queryKey: ['store-os-list'] })
+            ]);
           }}
         />
       )}

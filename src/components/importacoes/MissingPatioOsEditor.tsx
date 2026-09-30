@@ -11,6 +11,7 @@ import {
   Sparkles,
   Info
 } from 'lucide-react';
+import { OsPaymentLaunchModal } from '@/components/conciliacao/OsPaymentLaunchModal';
 
 export interface MissingPatioOsEdit {
   id: string;
@@ -44,6 +45,7 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('ALL');
   const [isExpanded, setIsExpanded] = useState(true);
+  const [selectedOsForPayment, setSelectedOsForPayment] = useState<MissingPatioOsEdit | null>(null);
 
   // Lojas únicas presentes na lista
   const stores = useMemo(() => {
@@ -279,17 +281,15 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
                           />
                         </td>
                         <td className="py-2 px-3 text-right">
-                          <div className="relative group inline-block">
-                            <span 
-                              className="inline-block w-24 bg-zinc-950/70 border border-zinc-800 rounded px-2 py-1 text-right font-mono text-xs text-zinc-400 cursor-not-allowed select-none"
-                              title="O valor pago é amortizado automaticamente vinculando transações de Cartão (Rede), PIX ou Dinheiro no Passo 4."
-                            >
-                              {formatCurrency(item.paid_value)}
-                            </span>
-                            <div className="hidden group-hover:block absolute bottom-full mb-1 right-0 bg-zinc-900 border border-zinc-700 text-zinc-300 text-[10px] p-2 rounded-lg shadow-xl z-20 w-52 text-left pointer-events-none">
-                              🔒 <strong className="text-zinc-100">Valor Pago Protegido:</strong> É liquidado associando transações reais de Cartão (Rede), PIX ou Dinheiro no Passo 4.
-                            </div>
-                          </div>
+                          <input
+                            type="number"
+                            step="0.01"
+                            disabled={isBaixada}
+                            value={item.paid_value}
+                            onChange={(e) => handleUpdateItem(item.id, { paid_value: Math.max(0, Number(e.target.value) || 0) })}
+                            className="w-24 bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-right font-mono text-xs text-emerald-400 focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+                            title="Valor pago registrado na OS"
+                          />
                         </td>
                         <td className="py-2 px-3 text-right font-mono font-bold">
                           <span className={saldoRestante > 0 ? 'text-amber-400' : 'text-zinc-500'}>
@@ -308,14 +308,26 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
                                 Reabrir
                               </button>
                             ) : (
-                              <button
-                                type="button"
-                                onClick={() => handleUpdateItem(item.id, { status: 'finalizada', paid_value: item.total_value })}
-                                className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-[11px] font-semibold flex items-center gap-1 border border-emerald-500/30"
-                              >
-                                <Check className="w-3 h-3" />
-                                Dar Baixa
-                              </button>
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedOsForPayment(item)}
+                                  className="px-2 py-1 rounded bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 text-[11px] font-semibold flex items-center gap-1 border border-teal-500/30"
+                                  title="Lançar ou editar formas de pagamento"
+                                >
+                                  <DollarSign className="w-3 h-3" />
+                                  Lançar
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateItem(item.id, { status: 'finalizada', paid_value: item.total_value })}
+                                  className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-[11px] font-semibold flex items-center gap-1 border border-emerald-500/30"
+                                  title="Quitar integralmente esta OS"
+                                >
+                                  <Check className="w-3 h-3" />
+                                  Baixar
+                                </button>
+                              </>
                             )}
                           </div>
                         </td>
@@ -338,6 +350,17 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
             </span>
           </div>
         </div>
+      )}
+
+      {selectedOsForPayment && (
+        <OsPaymentLaunchModal
+          isOpen={!!selectedOsForPayment}
+          onClose={() => setSelectedOsForPayment(null)}
+          os={selectedOsForPayment}
+          onSuccess={() => {
+            setSelectedOsForPayment(null);
+          }}
+        />
       )}
     </div>
   );

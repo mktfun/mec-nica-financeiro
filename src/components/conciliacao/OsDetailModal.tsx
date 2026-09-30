@@ -1,8 +1,11 @@
+import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { FileText, User, Calendar, CreditCard, QrCode, Banknote, CheckCircle2, ShieldCheck, Check, RotateCcw } from 'lucide-react';
+import { FileText, User, Calendar, CreditCard, QrCode, Banknote, CheckCircle2, ShieldCheck, Check, RotateCcw, DollarSign } from 'lucide-react';
 import { useUpdateOsStatus } from '@/hooks/useConciliacao';
+import { parsePaymentBreakdown } from '@/lib/osPaymentUtils';
+import { OsPaymentLaunchModal } from './OsPaymentLaunchModal';
 
 export interface OsDetailModalProps {
   isOpen: boolean;
@@ -18,6 +21,10 @@ export interface OsDetailModalProps {
     total_value?: number;
     paid_value?: number;
     payment_method?: string;
+    credit_value?: number;
+    debit_value?: number;
+    pix_transfer_value?: number;
+    cash_value?: number;
     parsed_credit_debit?: number;
     parsed_pix_transfer?: number;
     status?: string;
@@ -29,6 +36,8 @@ export interface OsDetailModalProps {
 export function OsDetailModal({ isOpen, onClose, osData: propOsData, ...props }: OsDetailModalProps) {
   const updateOsStatus = useUpdateOsStatus();
   const osData = propOsData || props.os;
+
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   if (!osData) return null;
 
@@ -50,17 +59,16 @@ export function OsDetailModal({ isOpen, onClose, osData: propOsData, ...props }:
     });
   };
 
-  const creditValue = osData.parsed_credit_debit || 0;
-  const pixValue = osData.parsed_pix_transfer || 0;
-  const sumPayments = creditValue + pixValue;
+  const breakdown = parsePaymentBreakdown(osData);
+  const sumBreakdown = breakdown.reduce((acc, b) => acc + b.value, 0);
 
   const rawTotal = Number(osData.total_value || 0);
   const rawPaid = Number(osData.paid_value || 0);
 
-  const totalValue = Math.max(rawTotal, rawPaid, sumPayments);
+  const totalValue = Math.max(rawTotal, rawPaid, sumBreakdown);
   const paidValue = rawPaid > 0 
     ? rawPaid 
-    : (isEntrou || osData.status === 'finalizado' ? totalValue : (sumPayments > 0 ? sumPayments : 0));
+    : (isEntrou || osData.status === 'finalizado' ? totalValue : (sumBreakdown > 0 ? sumBreakdown : 0));
   const openValue = Math.max(0, totalValue - paidValue);
 
 
@@ -125,44 +133,61 @@ export function OsDetailModal({ isOpen, onClose, osData: propOsData, ...props }:
           <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Formas de Pagamento Declaradas</h4>
 
           <div className="space-y-2 font-mono text-xs">
-            {creditValue > 0 && (
-              <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[var(--text-primary)]">
-                  <CreditCard size={16} className="text-[var(--color-primary)]" />
-                  <span>Cartão (Crédito / Débito)</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-[var(--text-primary)]">R$ {creditValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                  <Badge variant="success" className="text-[10px]">
-                    <CheckCircle2 size={10} className="mr-1" /> Pareado com Rede
-                  </Badge>
-                </div>
+            {breakdown.length === 0 ? (
+              <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl text-center text-xs text-[var(--text-tertiary)] italic">
+                Nenhum pagamento registrado nesta Ordem de Serviço.
               </div>
-            )}
+            ) : (
+              breakdown.map((item, i) => {
+                let Icon = CreditCard;
+                let badgeVariant: 'success' | 'brand' | 'warning' | 'neutral' = 'success';
+                let iconColor = 'text-[var(--color-primary)]';
+                let statusLabel = 'Registrado';
 
-            {pixValue > 0 && (
-              <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[var(--text-primary)]">
-                  <QrCode size={16} className="text-[var(--color-accent-light-blue)]" />
-                  <span>PIX / Transferência Direta</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-[var(--text-primary)]">R$ {pixValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                  <Badge variant="brand" className="text-[10px]">
-                    <CheckCircle2 size={10} className="mr-1" /> Pareado com OFX
-                  </Badge>
-                </div>
-              </div>
-            )}
+                if (item.category === 'credito') {
+                  Icon = CreditCard;
+                  badgeVariant = 'success';
+                  iconColor = 'text-blue-400';
+                  statusLabel = 'Pareado com Rede';
+                } else if (item.category === 'debito') {
+                  Icon = CreditCard;
+                  badgeVariant = 'brand';
+                  iconColor = 'text-cyan-400';
+                  statusLabel = 'Cartão Débito';
+                } else if (item.category === 'pix') {
+                  Icon = QrCode;
+                  badgeVariant = 'brand';
+                  iconColor = 'text-[var(--color-accent-light-blue)]';
+                  statusLabel = 'Pareado com OFX';
+                } else if (item.category === 'dinheiro') {
+                  Icon = Banknote;
+                  badgeVariant = 'warning';
+                  iconColor = 'text-[var(--color-accent-warning)]';
+                  statusLabel = 'Cofre da Filial';
+                } else if (item.category === 'boleto') {
+                  Icon = FileText;
+                  badgeVariant = 'neutral';
+                  iconColor = 'text-purple-400';
+                  statusLabel = 'A Receber';
+                }
 
-            {creditValue === 0 && pixValue === 0 && (
-              <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[var(--text-primary)]">
-                  <Banknote size={16} className="text-[var(--color-accent-warning)]" />
-                  <span>{osData.payment_method || 'Outras Formas (Dinheiro / Cheque)'}</span>
-                </div>
-                <span className="font-bold text-[var(--text-primary)]">R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-              </div>
+                return (
+                  <div key={i} className="p-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                      <Icon size={16} className={iconColor} />
+                      <span>{item.method}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-[var(--text-primary)]">
+                        R$ {item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                      <Badge variant={badgeVariant} className="text-[10px]">
+                        <CheckCircle2 size={10} className="mr-1" /> {statusLabel}
+                      </Badge>
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
@@ -174,11 +199,20 @@ export function OsDetailModal({ isOpen, onClose, osData: propOsData, ...props }:
           </div>
         )}
 
-        {/* Botão de Ação: Baixa Manual Direct ("Marcar como ENTROU") */}
+        {/* Ações da OS */}
         {osData.id && (
-          <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-end">
+          <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between">
             <Button
-              variant={isEntrou ? "outline" : "teal"}
+              variant="teal"
+              onClick={() => setIsPaymentModalOpen(true)}
+              className="gap-1.5 text-xs font-bold"
+            >
+              <DollarSign size={14} />
+              Lançar / Editar Pagamento
+            </Button>
+
+            <Button
+              variant={isEntrou ? "outline" : "secondary"}
               onClick={handleToggleEntrou}
               disabled={updateOsStatus.isPending}
               className="gap-2 text-xs font-bold"
@@ -198,6 +232,19 @@ export function OsDetailModal({ isOpen, onClose, osData: propOsData, ...props }:
           </div>
         )}
       </div>
+
+      {isPaymentModalOpen && (
+        <OsPaymentLaunchModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          os={osData}
+          targetDate={osData.target_date}
+          onSuccess={() => {
+            setIsPaymentModalOpen(false);
+            onClose();
+          }}
+        />
+      )}
     </Modal>
   );
 }

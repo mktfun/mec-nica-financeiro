@@ -1,3 +1,21 @@
+## [2026-09-30] — [Feature ID: 456-lancamento-manual-pagamentos-os]
+
+**Contexto:** Desbloqueio e flexibilização do lançamento de pagamentos de Ordens de Serviço (OS), permitindo split payments (crédito, débito, PIX, dinheiro, outros), edição ágil do total da OS e sincronização imediata de deltas para o matcher de maquininhas Rede e PIX.
+
+**Regra aprendida:**
+1. **Consolidação em Colunas Canônicas (`patio_os`):**
+   - Pagamentos manuais devem ser salvos exatamente como se viessem da planilha XLSX: populando `credit_value`, `debit_value`, `pix_transfer_value`, `cash_value`, `paid_value`, `total_value` e a string descritiva em `payment_method`.
+2. **Sincronização de Deltas em `os_import_observations`:**
+   - Para que o matcher da maquininha Rede reconheça uma OS lançada ou retificada manualmente, é obrigatório atualizar `os_import_observations` (`delta_credit`, `delta_debit`, `delta_pix`). Sem isso, o matcher ignora a elegibilidade de vendas de cartões.
+3. **Sincronização com o Cofre Físico (`store_cash_vault`):**
+   - Pagamentos em dinheiro físico vinculados a OS geram lançamento correspondente no cofre com `source_type = 'os_cash_payment'`, garantindo que a sangria ou saldo do cofre reflita a realidade da loja física.
+4. **Resiliência no Parsing de Moedas (`parseMoneyString`):**
+   - Tratar tanto o formato brasileiro (`1.000,00`) quanto o formato internacional (`1000.00`) sem supor cegamente que o ponto sempre representa separador de milhar.
+
+**Risco identificado / Anti-pattern:** Travar campos de formulário como "protegidos" impedindo o operador de retificar dados divergentes da planilha física no dia da conciliação.
+
+---
+
 ## [2026-09-29] — [Feature ID: 451-unificacao-calculo-diferenca-painel]
 
 **Contexto:** Correção da incoerência crítica no painel de conciliação diária (`ResumoDiaPanel.tsx` e `useBackendConciliacao.ts`), onde o Modo Visualização exibia DIFERENÇA FINAL divergente (R$ 7.034,74) incompatível com os próprios cards da tela (R$ 48.805,95 - R$ 45.145,92), enquanto o Modo Edição exibia o valor correto (R$ 3.660,03), e o salvamento revertia para o valor errado.
