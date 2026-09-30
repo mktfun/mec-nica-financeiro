@@ -67,6 +67,15 @@ export interface BalanceSelectionPayload {
   selection_mode?: 'rule' | 'manual';
 }
 
+export interface SaveRulePayload {
+  account_key: string;
+  store_id?: string;
+  source_kind: string;
+  memo_normalized?: string;
+  is_active: boolean;
+  user_id?: string;
+}
+
 export interface BalancePreviewImpact {
   store_id: string;
   store_name: string;
@@ -164,6 +173,28 @@ export function useOfxBalanceMappings(options?: { accountKeys?: string[]; date?:
     },
   });
 
+  // 5. Mutação imediata para salvar ou revogar regra duradoura (Spec 439 / 459 via RPC atômica)
+  const saveRuleMutation = useMutation({
+    mutationFn: async (payload: SaveRulePayload) => {
+      const { data, error } = await (supabase as any).rpc('save_ofx_balance_rule', {
+        p_account_key: payload.account_key,
+        p_source_kind: payload.source_kind,
+        p_memo_normalized: payload.memo_normalized || null,
+        p_store_id: payload.store_id || null,
+        p_is_active: payload.is_active ?? true,
+        p_user_id: payload.user_id || null,
+      });
+      if (error) {
+        console.error('[useOfxBalanceMappings] Erro na RPC save_ofx_balance_rule:', error);
+        throw error;
+      }
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ofx_balance_rules'] });
+    },
+  });
+
   return {
     rules,
     selections,
@@ -172,6 +203,8 @@ export function useOfxBalanceMappings(options?: { accountKeys?: string[]; date?:
     isCalculatingPreview: previewMutation.isPending,
     applySelection: applyMutation.mutateAsync,
     isApplyingSelection: applyMutation.isPending,
+    saveRule: saveRuleMutation.mutateAsync,
+    isSavingRule: saveRuleMutation.isPending,
   };
 }
 

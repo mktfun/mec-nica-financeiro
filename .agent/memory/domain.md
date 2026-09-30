@@ -1,3 +1,27 @@
+## [2026-09-30] — [Feature ID: 459-fix-salvar-regra-ofx-e-reversao-completa-limpeza-dia]
+
+**Contexto:** Correção de falha de persistência ao marcar "Lembrar esta fonte como regra para próximas importações" na seleção de saldo OFX (erro 42501 RLS na role anon) e evolução do "Resetar Dados do Dia" (Purge diário) para realizar reversão transacional e restauração fiel do pátio (`patio_os`) ao estado pré-importação via backup snapshot em `patio_os_daily_backups`.
+
+**Regra aprendida:**
+1. **Mutação de Regras OFX via RPC Atômica (`save_ofx_balance_rule`):**
+   - O frontend da aplicação opera sob a role Supabase `anon`. Mutações diretas em tabelas de configuração com RLS restritivo falham silenciosamente ou sofrem bloqueio `42501`.
+   - O salvamento de regras de saldo OFX (`ofx_balance_rules`) DEVE ocorrer exclusivamente via RPC `SECURITY DEFINER` (`save_ofx_balance_rule`), com concessão explícita para `anon`, realizando o `upsert` com base em `(account_number, bank_code, store_id)` ou `(account_number, bank_code)` quando sem loja vinculada.
+2. **Snapshot de Pátio Pré-Importação (`patio_os_daily_backups`):**
+   - Antes de qualquer mutação de importação no `patio_os`, o sistema grava um backup JSONB atômico do pátio atual da loja para aquela `target_date`.
+   - Isso garante uma cópia fiel de segurança ("backup de ponto no tempo") contendo exatamente as OSs existentes e seus respectivos valores e status.
+3. **Reversão Transacional no Purge Diário (`purge_daily_financial_data`):**
+   - A limpeza do dia não pode apenas deletar tabelas satélites. Ao purgar uma data:
+     a) Restaura todas as OSs existentes ao estado exato guardado em `patio_os_daily_backups` (revertendo `paid_value`, `credit_value`, `debit_value`, `status`, `closed_at`, etc.).
+     b) Remove OSs novas criadas naquele dia (IDs ausentes no snapshot).
+     c) Recalcula `patio_total` em `reconciliations`.
+     d) Remove artefatos de `os_import_observations`, `receivables`, `ofx_balance_selections`, `store_cash_vault` e `patio_os_daily_backups`.
+
+**Risco identificado / Anti-pattern:** Tentar mutações diretas via client Supabase em tabelas protegidas por RLS para anon, e realizar purge diário que deixa o pátio de OSs alterado sem reversão.
+
+**Não fazer:** Fazer purge de dados diários sem restaurar o passivo de OSs que foi modificado pelo fluxo de importação daquele dia.
+
+---
+
 ## [2026-09-30] — [Feature ID: 458-fix-rede-os-bruto-vs-liquido-e-conciliacao-incremental]
 
 **Contexto:** Correção de divergência crítica no batimento Rede × OS onde o matcher em memória, resolução de colisões e ordenações utilizavam o valor líquido (`net_amount`) ao invés do valor bruto da venda (`gross_amount`), e registro formal da arquitetura incremental de deltas de pagamentos de OS.

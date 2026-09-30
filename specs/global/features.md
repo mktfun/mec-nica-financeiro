@@ -71,3 +71,6 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 ## 8. Motores Canônicos de Conciliação Financeira
 - `autoMatchingEngine.ts`: Motor de correspondência em memória entre OS, PIX e Maquininhas Rede. Prioriza compulsoriamente valor bruto (`gross_amount`) para vendas de cartão, conferindo integridade contábil estrita com tolerância de até R$ 0,05.
 - `Fase2RedeVsOsReview.tsx`: Interface de revisão de batimento Rede x OS com agrupamento por filial e resolução interativa de colisões via `SmartResolutionStrip`.
+- `save_ofx_balance_rule`: RPC atômica (`SECURITY DEFINER`) para upsert de regras em `ofx_balance_rules` por conta e filial, garantindo persistência sem bloqueio RLS para a role `anon`.
+- `patio_os_daily_backups` & `purge_daily_financial_data`: Snapshot de pátio pré-importação por data/loja e reversão transacional no "Resetar Dados do Dia", restaurando OSs modificadas ao estado exato anterior e expurgando adições órfãs.
+

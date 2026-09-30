@@ -33,12 +33,28 @@ export function usePurgeDailyData() {
       queryClient.invalidateQueries({ queryKey: ['daily_revenue_adjustments'] });
       queryClient.invalidateQueries({ queryKey: ['reconciliation_audit_logs'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      queryClient.invalidateQueries({ queryKey: ['patio-os'] });
+      queryClient.invalidateQueries({ queryKey: ['patio'] });
+      queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
+      queryClient.invalidateQueries({ queryKey: ['store-ordens-servico'] });
+      queryClient.invalidateQueries({ queryKey: ['os_import_observations'] });
+      queryClient.invalidateQueries({ queryKey: ['ofx_balance_selections'] });
+      queryClient.invalidateQueries({ queryKey: ['receivables'] });
+      queryClient.invalidateQueries({ queryKey: ['cash_vault'] });
 
       const d = new Date(targetDate + 'T12:00:00');
       const formatted = d.toLocaleDateString('pt-BR');
 
+      const res = data as any;
+      const osRestored = Number(res?.restored_os_count || 0);
+      const osDeleted = Number(res?.deleted_new_os_count || 0);
+      const desc = osRestored > 0 || osDeleted > 0
+        ? `${osRestored} OS(s) restaurada(s) para o estado anterior, ${osDeleted} nova(s) removida(s). Dados do dia limpos com sucesso.`
+        : 'Transações, contas, extratos e snapshot foram limpos para este dia.';
+
       toast.success(`Dados do dia ${formatted} foram resetados com sucesso!`, {
-        description: 'Transações, contas, extratos e snapshot foram limpos para este dia.',
+        description: desc,
       });
     },
     onError: (err: any) => {

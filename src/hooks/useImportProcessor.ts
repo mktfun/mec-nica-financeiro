@@ -48,18 +48,54 @@ export async function savePatioOsAndReceivables(
 ) {
   // 1. Process Patio OS (upsert by os_number — idempotent)
   if (osArray.length > 0) {
+    const effectiveDate = targetDate || new Date().toISOString().split('T')[0];
+
     const { data: existingOs } = await supabase
       .from('patio_os')
-      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, cash_value, history_log, last_payment_date')
+      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, cash_value, history_log, last_payment_date, client_name, plate')
       .eq('store_id', storeId);
+
+    // Snapshot pré-importação do pátio para rollback cirúrgico caso o dia seja resetado (Spec 459)
+    try {
+      const { data: existingBackup } = await supabase
+        .from('patio_os_daily_backups')
+        .select('id')
+        .eq('target_date', effectiveDate)
+        .eq('store_id', storeId)
+        .maybeSingle();
+
+      if (!existingBackup && existingOs && existingOs.length > 0) {
+        await supabase
+          .from('patio_os_daily_backups')
+          .insert({
+            target_date: effectiveDate,
+            store_id: storeId,
+            os_data: existingOs,
+          });
+      }
+    } catch (backupErr) {
+      console.warn('[useImportProcessor] Aviso ao registrar backup pré-importação do pátio:', backupErr);
+    }
 
     const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
 
+    // Buscar observações já registradas nesta mesma data/loja para preservar linha de base em reimportações
+    const { data: existingObsList } = await supabase
+      .from('os_import_observations')
+      .select('id, os_number, credit_before, debit_before, pix_before, paid_before, consumed_credit, consumed_debit')
+      .eq('store_id', storeId)
+      .eq('target_date', effectiveDate);
+
+    const existingObsMap = new Map((existingObsList || []).map(obs => [String(obs.os_number), obs]));
+
     const toInsert: any[] = [];
     const toUpdate: any[] = [];
+    const observationsToUpsert: any[] = [];
 
     for (const os of osArray) {
       const existingObj = existingMap.get(String(os.os_number));
+      const existingObs = existingObsMap.get(String(os.os_number));
+
       const velho_valor_pago = existingObj ? Number(existingObj.paid_value) : 0;
       const delta_paid = os.paid_value - velho_valor_pago;
       (os as any).delta_paid = delta_paid;
@@ -145,6 +181,47 @@ export async function savePatioOsAndReceivables(
       } else {
         toInsert.push({ history_log: [], ...payload });
       }
+
+      // Cálculo de deltas comprovados para os_import_observations
+      const creditBefore = existingObs ? Number(existingObs.credit_before || 0) : (existingObj ? Number(existingObj.credit_value || 0) : 0);
+      const debitBefore = existingObs ? Number(existingObs.debit_before || 0) : (existingObj ? Number(existingObj.debit_value || 0) : 0);
+      const pixBefore = existingObs ? Number(existingObs.pix_before || 0) : (existingObj ? Number(existingObj.pix_transfer_value || 0) : 0);
+      const paidBefore = existingObs ? Number(existingObs.paid_before || 0) : (existingObj ? Number(existingObj.paid_value || 0) : 0);
+
+      const creditAfter = Number(payload.credit_value || 0);
+      const debitAfter = Number(payload.debit_value || 0);
+      const pixAfter = Number(payload.pix_transfer_value || 0);
+      const paidAfter = Number(payload.paid_value || 0);
+
+      const deltaCredit = Math.max(0, Number((creditAfter - creditBefore).toFixed(2)));
+      const deltaDebit = Math.max(0, Number((debitAfter - debitBefore).toFixed(2)));
+      const deltaPix = Math.max(0, Number((pixAfter - pixBefore).toFixed(2)));
+      const deltaPaid = Math.max(0, Number((paidAfter - paidBefore).toFixed(2)));
+
+      observationsToUpsert.push({
+        store_id: storeId,
+        os_number: String(os.os_number),
+        target_date: effectiveDate,
+        credit_before: creditBefore,
+        credit_after: creditAfter,
+        delta_credit: deltaCredit,
+        debit_before: debitBefore,
+        debit_after: debitAfter,
+        delta_debit: deltaDebit,
+        pix_before: pixBefore,
+        pix_after: pixAfter,
+        delta_pix: deltaPix,
+        paid_before: paidBefore,
+        paid_after: paidAfter,
+        delta_paid: deltaPaid,
+        total_value: Number(payload.total_value || 0),
+        status: payload.status,
+        client_name: payload.client_name,
+        plate: payload.plate,
+        consumed_credit: existingObs ? Number(existingObs.consumed_credit || 0) : 0,
+        consumed_debit: existingObs ? Number(existingObs.consumed_debit || 0) : 0,
+        updated_at: new Date().toISOString()
+      });
     }
 
     if (toInsert.length > 0) {
@@ -152,6 +229,18 @@ export async function savePatioOsAndReceivables(
     }
     for (const update of toUpdate) {
       await supabase.from('patio_os').update(update).eq('id', update.id);
+    }
+
+    if (observationsToUpsert.length > 0) {
+      for (let i = 0; i < observationsToUpsert.length; i += 200) {
+        const chunk = observationsToUpsert.slice(i, i + 200);
+        const { error: obsErr } = await supabase
+          .from('os_import_observations')
+          .upsert(chunk, { onConflict: 'store_id,target_date,os_number' });
+        if (obsErr) {
+          console.warn('[useImportProcessor] Erro ao persistir os_import_observations:', obsErr);
+        }
+      }
     }
 
     // Sincronizar store_cash_vault para OSs com pagamento em dinheiro físico de forma atômica

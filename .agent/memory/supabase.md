@@ -1,3 +1,20 @@
+## [2026-09-30] — [Feature ID: 459-fix-salvar-regra-ofx-e-reversao-completa-limpeza-dia]
+
+**Contexto:** Migration `20260930000005_fix_ofx_balance_rule_and_daily_purge_reversion.sql`. Criação da RPC `save_ofx_balance_rule` (SECURITY DEFINER com grant para anon), criação da tabela `patio_os_daily_backups`, extensão de políticas RLS para `anon` em tabelas de saldo OFX e backup, e aprimoramento da RPC `purge_daily_financial_data(p_date)` para restauração pontual e atômica de OSs do pátio.
+
+**Regra aprendida:**
+1. **Permissões RLS e RPCs SECURITY DEFINER para Anon:**
+   - O aplicativo roda com chave anônima (`anon`). Operações em tabelas de configuração como `ofx_balance_rules` devem ter políticas RLS explícitas para `anon` (`FOR ALL USING (true) WITH CHECK (true)`) e/ou serem encapsuladas em funções `SECURITY DEFINER` com `GRANT EXECUTE ON FUNCTION ... TO anon, authenticated, service_role`.
+2. **Snapshot Atômico de Pátio (`patio_os_daily_backups`):**
+   - Tabela com constraint única `UNIQUE(target_date, store_id)` que armazena `os_data JSONB` (lista serializada das OSs da filial antes da ingestão diária).
+3. **Restauração Pericial no Purge Diário:**
+   - A função `purge_daily_financial_data` itera sobre os backups da data e executa `UPDATE patio_os` restaurando os campos financeiros originais de cada OS, além de `DELETE FROM patio_os` para OSs criadas na data do purge cujo ID não constava no backup.
+   - Recalcula `patio_total` da data em `reconciliations` imediatamente.
+
+**Risco identificado / Anti-pattern:** Contar com permissões de usuário autenticado no frontend público ou realizar limpezas parciais de dados diários sem reverter alterações em tabelas mestres.
+
+---
+
 ## [2026-09-29] — [Feature ID: 445-motor-dedicado-match-rede-os-por-loja]
 
 **Contexto:** Evolução da RPC `match_stage2_rede_os` e unificação da FASE 1 em `auto_match_daily_transactions`. Eliminação de filtros temporais arbitrários de 7 dias (`closed_at >= target - 7d`), pareamento direto de Valor Bruto da Rede com lançamentos de cartão da OS na mesma filial, proteção anti-colisão e prova categórica de órfãos (`exhausted_orphan`).
