@@ -1,3 +1,20 @@
+## [2026-09-30] — [Feature ID: 458-fix-rede-os-bruto-vs-liquido-e-conciliacao-incremental]
+
+**Contexto:** Correção de divergência crítica no batimento Rede × OS onde o matcher em memória, resolução de colisões e ordenações utilizavam o valor líquido (`net_amount`) ao invés do valor bruto da venda (`gross_amount`), e registro formal da arquitetura incremental de deltas de pagamentos de OS.
+
+**Regra aprendida:**
+1. **Soberania do Valor Bruto na Conciliação de Vendas:**
+   - O valor registrado na OS pelo operador reflete o total da compra do cliente (valor bruto). Taxas de MDR e antecipação deduzidas pela adquirente (`fee_amount`) reduzem o valor líquido (`net_amount`), que pertence estritamente à conciliação de recebimento bancário (OFX), nunca ao pareamento com a OS.
+   - Qualquer atribuição de `amount` para vendas de maquininha em conciliação com OS DEVE priorizar: `gross_amount > 0 ? gross_amount : net_amount`.
+2. **Coerência de Ordenação e Resolução de Colisões:**
+   - Telas de revisão de lote e cards de resolução de colisão devem ordenar e exibir o valor bruto para conferir diretamente com os comprovantes e OSs físicas.
+
+**Risco identificado:** Usar `net_amount` causa falsos positivos ou rejeição indevida de OSs elegíveis cujo valor bate 100% com o comprovante do cliente emitido na maquineta.
+
+**Não fazer:** Comparar valor líquido de adquirente com o valor de pagamento declarado na OS.
+
+---
+
 ## [2026-09-30] — [Feature ID: 456-lancamento-manual-pagamentos-os]
 
 **Contexto:** Desbloqueio e flexibilização do lançamento de pagamentos de Ordens de Serviço (OS), permitindo split payments (crédito, débito, PIX, dinheiro, outros), edição ágil do total da OS e sincronização imediata de deltas para o matcher de maquininhas Rede e PIX.

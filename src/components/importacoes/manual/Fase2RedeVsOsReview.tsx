@@ -103,7 +103,7 @@ export function Fase2RedeVsOsReview({
             const storeObj = stores.find(s => s.id === c.store_id);
             return {
               id: c.pos_id,
-              amount: Number(c.net_amount || 0),
+              amount: Number(c.gross_amount || c.net_amount || 0),
               storeId: c.store_id,
               storeName: storeObj?.name || c.store_id,
               counterpartName: c.payment_method,
@@ -128,7 +128,7 @@ export function Fase2RedeVsOsReview({
         .from('pos_transactions')
         .select('*')
         .eq('target_date', targetDate)
-        .order('net_amount', { ascending: false });
+        .order('gross_amount', { ascending: false });
 
       if (!posErr && posData) {
         setPosList(posData.map((p: any) => {
@@ -188,7 +188,7 @@ export function Fase2RedeVsOsReview({
           const storeObj = stores.find(s => s.id === storeId || s.name === t.storeName);
           const resolvedStoreId = storeId || storeObj?.id || null;
 
-          const baseDate = t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : targetDate;
+          const baseDate = (t.date ? String(t.date).split('T')[0] : '') || targetDate;
 
           let occurredAt: string;
           if (t.time && /^\d{1,2}:\d{2}(:\d{2})?$/.test(t.time.trim())) {

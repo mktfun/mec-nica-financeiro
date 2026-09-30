@@ -1142,7 +1142,7 @@ export function CentralImportWizard({
           date: t.target_date || tDate,
           description: t.machine_name || `Venda Cartão ${t.payment_method || 'REDE'}`.trim(),
           paymentMethod: t.payment_method || 'CARTAO',
-          amount: Math.abs(Number(t.net_amount || t.gross_amount || 0)),
+          amount: Math.abs(Number(t.gross_amount || t.net_amount || 0)),
           status: 'pendente'
         });
       });

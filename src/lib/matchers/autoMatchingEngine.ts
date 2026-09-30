@@ -12,6 +12,8 @@ export interface PendingUnmatchedTransaction {
   amount: number;
   status: 'pendente' | 'vinculada';
   matchedOsNumber?: string;
+  rejectionReason?: string;
+  candidateCount?: number;
 }
 
 export const KNOWN_POS_RENTAL_FEES = [119.00, 119.90, 120.00, 238.00, 239.80, 240.00, 357.00, 476.00];
@@ -162,9 +164,12 @@ function isSameDate(txDate: string | undefined | null, targetDate: string): bool
  * Validação rigorosa de Duplo Fator para Casamento PIX x OS.
  * Exige CUMULATIVAMENTE:
  * 1. Não ser adquirente, rendimento ou transferência interna / intercompany.
- * 2. A OS DEVE ter registrado forma de pagamento PIX / Transferência.
- * 3. O valor do PIX deve bater com a parcela de PIX da OS (tolerância <= 0.05).
- * 4. Correspondência inequívoca de Identidade do Cliente (CPF/CNPJ exato ou Tokens de Nome fortes).
+ * 2. O valor do PIX deve bater com:
+ *    a) Parcela declarada em PIX da OS (pix_transfer_value / parsed_pix_transfer); OU
+ *    b) Saldo em aberto da OS (total_value - paid_value); OU
+ *    c) Valor total da OS quando ainda totalmente em aberto (paid_value == 0).
+ * 3. Correspondência inequívoca de Identidade do Cliente (CPF/CNPJ exato ou Tokens de Nome fortes).
+ *    (Zero Match Cego por Valor).
  */
 export function isStrictPixOsMatch(
   txAmount: number,
@@ -180,28 +185,34 @@ export function isStrictPixOsMatch(
     return false;
   }
 
-  // 2. A OS DEVE ter registrado recebimento em PIX / Transferência > 0
+  // 2. Avaliação de Valor Elegível (Parcela Pix, Saldo em Aberto ou Total da OS)
   const osPix = Number(os.parsed_pix_transfer ?? os.pix_transfer_value ?? 0);
-  if (osPix <= 0) {
-    return false;
-  }
+  const totalVal = Number(os.total_value ?? os.totalValue ?? os.valor_total ?? 0);
+  const paidVal = Number(os.paid_value ?? os.paidValue ?? 0);
+  const openBalance = Math.max(0, totalVal - paidVal);
 
-  // 3. Valor deve bater estritamente com a parcela de PIX (sem fallback para total_value ou paid_value)
-  const valueMatches = Math.abs(osPix - txAmount) <= tolerance;
+  let valueMatches = false;
+  if (osPix > 0 && Math.abs(osPix - txAmount) <= tolerance) {
+    valueMatches = true;
+  } else if (openBalance > 0 && Math.abs(openBalance - txAmount) <= tolerance) {
+    valueMatches = true;
+  } else if (paidVal <= 0.05 && totalVal > 0 && Math.abs(totalVal - txAmount) <= tolerance) {
+    valueMatches = true;
+  }
 
   if (!valueMatches) {
     return false;
   }
 
-  // 4. Identidade do Cliente DEVE ter correspondência (Zero Match Cego por Valor)
-  // 4.1 Guard: se documentos (CPF/CNPJ) constarem em ambos e divergirem -> rejeitar
+  // 3. Identidade do Cliente DEVE ter correspondência (Zero Match Cego por Valor)
+  // 3.1 Guard: se documentos (CPF/CNPJ) constarem em ambos e divergirem -> rejeitar
   const txDoc = extractDocDigits(fullOfxText);
   const osDoc = extractDocDigits(os.client_name || os.client_cpf_cnpj || os.cnpj_cpf || '');
   if (txDoc && osDoc && txDoc !== osDoc) {
     return false;
   }
 
-  // 4.2 Guard: se remetente bancário for PJ (CNPJ 14 dígitos), exige match estrito de tokens
+  // 3.2 Guard: se remetente bancário for PJ (CNPJ 14 dígitos), exige match estrito de tokens
   if (txDoc && txDoc.length === 14) {
     if (!matchClientTokens(os.client_name, fullOfxText)) {
       return false;
@@ -258,7 +269,7 @@ export function executeAutoMatchingEngine(
         const txId = tx.nsu ? `rede-nsu-${tx.nsu}` : (tx.authorization ? `rede-auth-${tx.authorization}` : `rede-tx-${idx}`);
         const gross = Number(tx.grossAmount || 0);
         const net = Number(tx.netAmount || 0);
-        const amount = net > 0 ? net : gross;
+        const amount = gross > 0 ? gross : net;
 
         const methodRaw = String(tx.method || '').toLowerCase();
         const methodDesc = methodRaw.includes('debito')
@@ -271,7 +282,7 @@ export function executeAutoMatchingEngine(
         const storeReceivables = receivablesByStore.get(storeId) || [];
 
         // Tier 1: Match direto em parsed_credit / parsed_debit (Exclusivamente Bruto)
-        let matchedOs = storeOss.find(os => {
+        let tier1Candidates = storeOss.filter(os => {
           if (matchedOsNumbers.has(String(os.os_number))) return false;
           const credit = Number(os.parsed_credit || 0);
           const debit = Number(os.parsed_debit || 0);
@@ -280,9 +291,18 @@ export function executeAutoMatchingEngine(
           return Math.abs(osCardVal - gross) <= TOLERANCE;
         });
 
+        let matchedOs: ParsedOS | undefined;
+        let isCollision = false;
+
+        if (tier1Candidates.length === 1) {
+          matchedOs = tier1Candidates[0];
+        } else if (tier1Candidates.length > 1) {
+          isCollision = true;
+        }
+
         // Tier 2: Match via receivablesArray de Cartão da Loja
-        if (!matchedOs) {
-          const matchedReceivable = storeReceivables.find(rec => {
+        if (!matchedOs && !isCollision) {
+          const matchedReceivables = storeReceivables.filter(rec => {
             if (!rec.os_number || matchedOsNumbers.has(String(rec.os_number))) return false;
             const recVal = Number(rec.value || 0);
             const isCardRec = /CART|CRED|DEB|OUTR|POS/i.test(rec.type || '') || /CART|CRED|DEB/i.test(rec.description || '');
@@ -290,14 +310,16 @@ export function executeAutoMatchingEngine(
             return Math.abs(recVal - gross) <= TOLERANCE;
           });
 
-          if (matchedReceivable && matchedReceivable.os_number) {
-            matchedOs = storeOss.find(os => String(os.os_number) === String(matchedReceivable.os_number));
+          if (matchedReceivables.length === 1 && matchedReceivables[0].os_number) {
+            matchedOs = storeOss.find(os => String(os.os_number) === String(matchedReceivables[0].os_number));
+          } else if (matchedReceivables.length > 1) {
+            isCollision = true;
           }
         }
 
         // Tier 3: Match via payment_method tag ou fallback com paid_value / total_value
-        if (!matchedOs) {
-          matchedOs = storeOss.find(os => {
+        if (!matchedOs && !isCollision) {
+          const tier3Candidates = storeOss.filter(os => {
             if (matchedOsNumbers.has(String(os.os_number))) return false;
             const pm = String(os.payment_method || '').toLowerCase();
             const isCardTagged = pm.includes('cart') || pm.includes('cred') || pm.includes('deb') || pm.includes('visa') || pm.includes('master') || pm.includes('elo') || pm.includes('pos') || pm.includes('rede') || pm.includes('outr');
@@ -305,14 +327,17 @@ export function executeAutoMatchingEngine(
             const osVal = Number(os.paid_value || 0) || Number(os.total_value || 0);
             if (osVal <= 0) return false;
 
-            if (isCardTagged) {
-              return Math.abs(osVal - gross) <= TOLERANCE;
-            }
-            return false;
+            return isCardTagged && Math.abs(osVal - gross) <= TOLERANCE;
           });
+
+          if (tier3Candidates.length === 1) {
+            matchedOs = tier3Candidates[0];
+          } else if (tier3Candidates.length > 1) {
+            isCollision = true;
+          }
         }
 
-        if (matchedOs) {
+        if (matchedOs && !isCollision) {
           matchedOsNumbers.add(String(matchedOs.os_number));
           resolvedMatches.push({
             storeId,
@@ -323,6 +348,12 @@ export function executeAutoMatchingEngine(
             paymentMethod: methodDesc
           });
         } else {
+          let reason = `Nenhuma OS encontrada para o valor bruto de R$ ${gross.toFixed(2)} na filial.`;
+          if (isCollision) {
+            const count = tier1Candidates.length > 1 ? tier1Candidates.length : 2;
+            reason = `Colisão ambígua: ${count} OSs com o mesmo valor bruto de R$ ${gross.toFixed(2)} na filial. Requer seleção manual.`;
+          }
+
           unmatchedTransactions.push({
             id: txId,
             source: 'rede',
@@ -332,7 +363,9 @@ export function executeAutoMatchingEngine(
             description: `NSU ${tx.nsu || 'S/N'} — ${tx.method || 'Cartão'} ${tx.authorization ? '(' + tx.authorization + ')' : ''}`.trim(),
             paymentMethod: methodDesc,
             amount,
-            status: 'pendente'
+            status: 'pendente',
+            candidateCount: isCollision ? (tier1Candidates.length || 2) : 0,
+            rejectionReason: reason
           });
         }
       });
@@ -366,15 +399,24 @@ export function executeAutoMatchingEngine(
         const storeOss = osByStore.get(storeId) || [];
         const storeReceivables = receivablesByStore.get(storeId) || [];
 
-        // Tier 1: Match Rigoroso de Duplo Fator (Valor Exato + Identidade do Cliente + Forma PIX na OS)
-        let matchedOs = storeOss.find(os => {
+        // Tier 1: Match Rigoroso de Duplo Fator (Valor Exato/Aberto + Identidade do Cliente)
+        const eligibleCandidates = storeOss.filter(os => {
           if (matchedOsNumbers.has(String(os.os_number))) return false;
           return isStrictPixOsMatch(txAmount, fullOfxText, os, TOLERANCE);
         });
 
+        let matchedOs: ParsedOS | undefined;
+        let isCollision = false;
+
+        if (eligibleCandidates.length === 1) {
+          matchedOs = eligibleCandidates[0];
+        } else if (eligibleCandidates.length > 1) {
+          isCollision = true;
+        }
+
         // Tier 2: Match via recebíveis de Transferência/PIX da Loja com validação estrita de identidade
-        if (!matchedOs) {
-          const matchedReceivable = storeReceivables.find(rec => {
+        if (!matchedOs && !isCollision) {
+          const matchedReceivables = storeReceivables.filter(rec => {
             if (!rec.os_number || matchedOsNumbers.has(String(rec.os_number))) return false;
             const recVal = Number(rec.value || 0);
             if (Math.abs(recVal - txAmount) > TOLERANCE) return false;
@@ -383,12 +425,14 @@ export function executeAutoMatchingEngine(
             return matchClientTokens(rec.client_name, fullOfxText);
           });
 
-          if (matchedReceivable && matchedReceivable.os_number) {
-            matchedOs = storeOss.find(os => String(os.os_number) === String(matchedReceivable.os_number));
+          if (matchedReceivables.length === 1 && matchedReceivables[0].os_number) {
+            matchedOs = storeOss.find(os => String(os.os_number) === String(matchedReceivables[0].os_number));
+          } else if (matchedReceivables.length > 1) {
+            isCollision = true;
           }
         }
 
-        if (matchedOs) {
+        if (matchedOs && !isCollision) {
           matchedOsNumbers.add(String(matchedOs.os_number));
           (tx as any).matched_os_number = String(matchedOs.os_number);
           (tx as any).match_status = 'matched';
@@ -401,6 +445,33 @@ export function executeAutoMatchingEngine(
             paymentMethod: 'PIX'
           });
         } else if (/PIX|TRANSF|TED|DOC|DEP|CRED|QRS/i.test(upperText)) {
+          let reason = `Nenhuma OS encontrada para o valor de R$ ${txAmount.toFixed(2)} na filial.`;
+          if (isCollision) {
+            const count = eligibleCandidates.length > 1 ? eligibleCandidates.length : 2;
+            reason = `Colisão ambígua: ${count} OSs elegíveis com valor R$ ${txAmount.toFixed(2)} na filial. Requer seleção manual.`;
+          } else {
+            // Verificar se há OS com o mesmo valor mas nome divergente
+            const sameValueOs = storeOss.find(os => {
+              const osPix = Number(os.parsed_pix_transfer ?? os.pix_transfer_value ?? 0);
+              const totalVal = Number(os.total_value ?? os.totalValue ?? 0);
+              const paidVal = Number(os.paid_value ?? os.paidValue ?? 0);
+              const openBalance = Math.max(0, totalVal - paidVal);
+              return Math.abs(osPix - txAmount) <= TOLERANCE ||
+                     Math.abs(openBalance - txAmount) <= TOLERANCE ||
+                     (paidVal <= 0.05 && totalVal > 0 && Math.abs(totalVal - txAmount) <= TOLERANCE);
+            });
+
+            // Verificar se há OS do mesmo cliente com valor divergente
+            const sameClientOs = storeOss.find(os => matchClientTokens(os.client_name, fullOfxText));
+
+            if (sameValueOs && !matchClientTokens(sameValueOs.client_name, fullOfxText)) {
+              reason = `OS #${sameValueOs.os_number} tem valor compatível, porém o nome do cliente diverge (${sameValueOs.client_name || 'OS'} vs ${tx.counterpart_name || 'Extrato'}).`;
+            } else if (sameClientOs) {
+              const osVal = Number(sameClientOs.total_value || 0);
+              reason = `Cliente identificado na OS #${sameClientOs.os_number} (${sameClientOs.client_name}), porém o valor diverge (OS R$ ${osVal.toFixed(2)} vs Pix R$ ${txAmount.toFixed(2)}).`;
+            }
+          }
+
           unmatchedTransactions.push({
             id: txId,
             source: 'ofx_pix',
@@ -410,7 +481,9 @@ export function executeAutoMatchingEngine(
             description: tx.counterpart_name || tx.title || 'PIX Recebido de Cliente',
             paymentMethod: 'PIX',
             amount: txAmount,
-            status: 'pendente'
+            status: 'pendente',
+            candidateCount: isCollision ? (eligibleCandidates.length || 2) : 0,
+            rejectionReason: reason
           });
         }
       });
