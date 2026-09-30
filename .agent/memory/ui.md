@@ -1,3 +1,19 @@
+## [2026-09-30] — [Feature ID: 457-remover-cockpit-por-completo]
+
+**Contexto:** Remoção completa do componente "Cockpit de Diagnóstico 360° Pós-Motor" (`PostMotorDiagnosticCockpit.tsx`), seus subcomponentes (`DiagnosticActionCards.tsx`, `StoreDiagnosticRow.tsx`), tipos (`src/types/cockpit360.ts`) e desacoplamento do `CentralImportWizard.tsx` (Step 8).
+
+**Regra aprendida:**
+1. **Desacoplamento Limpo de Telas Transitórias:**
+   - O fluxo de conclusão da importação (`saveFinished === true`) deve focar no feedback executivo, auditoria pericial de auto-healing e navegação primária ("Ir para a Conciliação do Dia", "Revisar Pagamentos sem OS"), sem carregar árvores de visualização redundantes ou pesadas que já possuem telas dedicadas em `/conciliacao`.
+2. **Preservação Canônica de Serviços Compartilhados:**
+   - Ao remover módulos ou views obsoletas, auditar o grafo de dependências via AST/Graphify para blindar hooks e tipos compartilhados. O hook `usePosTripleReconciliation` e o tipo `PosTripleReconciliationResult` em `useBackendConciliacao.ts` devem ser rigorosamente preservados, pois alimentam `ResumoDiaPanel.tsx` e `StoreCartaoMaquininhaView.tsx`.
+3. **Otimização de Bundle:**
+   - A purga de componentes secundários pesados de importação reduz o bundle do roteador (redução de 65 kB no bundle do TanStack Router) e elimina requisições desnecessárias ao Supabase na finalização do motor.
+
+**Risco identificado / Anti-pattern:** Deletar código compartilhado (como RPCs de batimento triplo ou colunas de banco) assumindo que pertenciam exclusivamente à UI obsoleta.
+
+---
+
 ## [2026-09-29] — [Feature ID: 445-motor-dedicado-match-rede-os-por-loja]
 
 **Contexto:** Enriquecimento da interface da `Fase2RedeVsOsReview.tsx` com telemetria tri-estado do batimento de cartões da Rede (Casadas, Colisões e Órfãos Provados) e badges semânticos explicativos na lista de sobras.

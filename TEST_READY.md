@@ -144,7 +144,7 @@ The baseline run identifies exactly what code changes and migrations are needed 
 2. **Raw String Comparisons**:
    - 4 instances of `=== 'conciliado'` (`LegacyOsTable.tsx`, `StoreCardModulo1.tsx`, `conciliacao.$lojaId.tsx`).
    - 7 instances of `=== 'pendente'` (`Step4FinalAuditAndClose.tsx`, `StoreReceivablesCard.tsx`, `useConciliacao.ts`, etc.).
-   - 9 instances of `status === 'divergente'` (`PostMotorDiagnosticCockpit.tsx`, `MdrAuditView.tsx`, `useMdrAudit.ts`, `redeSalesParser.ts`).
+   - instances of `status === 'divergente'` (`MdrAuditView.tsx`, `useMdrAudit.ts`, `redeSalesParser.ts`).
 3. **Data Migration**: Historical table rows still contain `'intercompany_paired'` and legacy statuses.
 
 ### Milestone 5: Real Table Write Paths

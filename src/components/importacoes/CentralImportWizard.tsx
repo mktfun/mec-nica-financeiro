@@ -57,7 +57,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTerminal';
 import { ExecutionErrorBanner } from './ExecutionErrorBanner';
 import { MissingPatioOsEditor, MissingPatioOsEdit } from './MissingPatioOsEditor';
-import { PostMotorDiagnosticCockpit } from './wizard/PostMotorDiagnosticCockpit';
 import { buildSimulatedDailySummary } from '@/lib/sandbox/sandboxCalculator';
 import { 
   saveSandboxSession, 
@@ -132,12 +131,91 @@ export function CentralImportWizard({
     return results.ofxResults.map(o => o.accountKey || o.alias).filter(Boolean);
   }, [results.ofxResults]);
 
-  const { rules: activeBalanceRules, applySelection: applyOfxBalanceSelection } = useOfxBalanceMappings({
+  const { rules: activeBalanceRules, applySelection: applyOfxBalanceSelection, saveRule } = useOfxBalanceMappings({
     accountKeys: ofxAccountKeys,
     date: targetDate,
   });
 
   const [selectedBalances, setSelectedBalances] = useState<Record<string, { candidateIndex: number; rememberRule: boolean }>>({});
+  const [ruleSaveStatus, setRuleSaveStatus] = useState<Record<string, 'saving' | 'saved' | 'error'>>({});
+
+  const handleToggleRememberRule = async (
+    acctKey: string,
+    storeId: string | undefined,
+    candidate: any,
+    shouldRemember: boolean,
+    candidateIndex: number
+  ) => {
+    setSelectedBalances(prev => ({
+      ...prev,
+      [acctKey]: {
+        candidateIndex,
+        rememberRule: shouldRemember
+      }
+    }));
+
+    setRuleSaveStatus(prev => ({ ...prev, [acctKey]: 'saving' }));
+    try {
+      await saveRule({
+        account_key: acctKey,
+        store_id: storeId && storeId !== 'GLOBAL' ? storeId : undefined,
+        source_kind: candidate?.sourceKind || 'STMTTRN_MEMO',
+        memo_normalized: candidate?.memoNormalized || undefined,
+        is_active: shouldRemember
+      });
+      setRuleSaveStatus(prev => ({ ...prev, [acctKey]: 'saved' }));
+      setTimeout(() => {
+        setRuleSaveStatus(prev => {
+          const next = { ...prev };
+          delete next[acctKey];
+          return next;
+        });
+      }, 3000);
+    } catch (err) {
+      console.error('Erro ao salvar regra de saldo OFX:', err);
+      setRuleSaveStatus(prev => ({ ...prev, [acctKey]: 'error' }));
+    }
+  };
+
+  const handleChangeCandidate = async (
+    acctKey: string,
+    newIdx: number,
+    candidate: any,
+    storeId: string | undefined,
+    isCurrentlyRemembered: boolean
+  ) => {
+    setSelectedBalances(prev => ({
+      ...prev,
+      [acctKey]: {
+        candidateIndex: newIdx,
+        rememberRule: isCurrentlyRemembered
+      }
+    }));
+
+    if (isCurrentlyRemembered && candidate) {
+      setRuleSaveStatus(prev => ({ ...prev, [acctKey]: 'saving' }));
+      try {
+        await saveRule({
+          account_key: acctKey,
+          store_id: storeId && storeId !== 'GLOBAL' ? storeId : undefined,
+          source_kind: candidate.sourceKind,
+          memo_normalized: candidate.memoNormalized || undefined,
+          is_active: true
+        });
+        setRuleSaveStatus(prev => ({ ...prev, [acctKey]: 'saved' }));
+        setTimeout(() => {
+          setRuleSaveStatus(prev => {
+            const next = { ...prev };
+            delete next[acctKey];
+            return next;
+          });
+        }, 3000);
+      } catch (err) {
+        console.error('Erro ao atualizar regra de saldo OFX:', err);
+        setRuleSaveStatus(prev => ({ ...prev, [acctKey]: 'error' }));
+      }
+    }
+  };
 
   // Encadeamento do Fechamento Anterior
   const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
@@ -1055,11 +1133,6 @@ export function CentralImportWizard({
       if (posErr) console.warn('Erro ao consultar pos_transactions pendentes:', posErr);
 
       (posTxs || []).forEach((t: any) => {
-        // Validação defensiva: garantir que a ocorrência real é da data alvo
-        if (t.occurred_at && String(t.occurred_at).slice(0, 10) !== tDate) {
-          return;
-        }
-
         const sid = t.store_id || '';
         unmatched.push({
           id: t.id,
@@ -1510,7 +1583,7 @@ export function CentralImportWizard({
             payment_method: finalPaymentMethod,
             manual_category: itemBrand !== 'Outros' ? itemBrand : null,
             brand: itemBrand !== 'Outros' ? itemBrand : null,
-            dedup_hash: generateDeterministicHash(targetDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos'),
+            dedup_hash: generateDeterministicHash(rawItemDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos'),
             settlement_status: 'a_compensar'
           });
         });
@@ -1556,10 +1629,12 @@ export function CentralImportWizard({
 
             // Validação Estrita de Duplo Fator: APENAS na mesma loja, forma PIX e correspondência de identidade
             if (matched_store_id && autoMatchMap[matched_store_id] && txAmount > 0) {
-              const matchedOs = autoMatchMap[matched_store_id].find(os => {
+              const matchedCandidates = autoMatchMap[matched_store_id].filter(os => {
                 return isStrictPixOsMatch(txAmount, fullOfxText, os, 0.05);
               });
-              if (matchedOs) {
+              // Prevenção de Colisões: somente vincula automaticamente se houver exatamente 1 candidato inequívoco
+              if (matchedCandidates.length === 1) {
+                const matchedOs = matchedCandidates[0];
                 matched_os_number = matchedOs.os_number;
                 // Remove a OS para evitar que múltiplos PIX casem com a mesma OS
                 autoMatchMap[matched_store_id] = autoMatchMap[matched_store_id].filter(os => os.os_number !== matchedOs.os_number);
@@ -2258,12 +2333,37 @@ export function CentralImportWizard({
         console.warn("Aviso ao executar auto_match_receivables:", recErr);
       }
 
-      // 4.1. Conciliação Determinística de Cartões & Banco (Spec 426 - 100% A Compensar)
-      addLog("⚡ Executando Blindagem de Cartões REDE (Spec 426 - 100% A Compensar)...", "info");
+      // 4.1. Conciliação Determinística de Cartões & Banco (Spec 448 - SSOT Canônico)
+      addLog("⚡ Executando Blindagem de Cartões REDE (Spec 448 - SSOT Canônico)...", "info");
       try {
         const redeEntries = Object.entries(redeByStore);
+        const allSettlementsPayload: Array<{
+          pos_id: string;
+          ofx_id: string;
+          store_id: string;
+          allocated_amount: number;
+        }> = [];
+
         if (redeEntries.length > 0) {
           for (const [sId, redeItems] of redeEntries) {
+            // Busca as pos_transactions inseridas para esta loja nesta data
+            const { data: storePosTxs } = await supabase
+              .from('pos_transactions')
+              .select('id, store_id, net_amount, gross_amount, machine_name, dedup_hash, payment_method, occurred_at')
+              .eq('store_id', sId)
+              .eq('target_date', targetDate);
+
+            // Busca os lançamentos OFX do banco para mapear IDs reais
+            const { data: storeOfxDb } = await supabase
+              .from('ofx_transactions')
+              .select('id, fitid, amount, type')
+              .eq('store_id', sId);
+
+            const ofxDbByFitid = new Map<string, string>();
+            storeOfxDb?.forEach((o: any) => {
+              if (o.fitid) ofxDbByFitid.set(o.fitid, o.id);
+            });
+
             const storeOfx = results.ofxResults.filter(o => (resolveStoreForOfx(o) || mapping[o.alias]) === sId);
             const prevBalance = storeOfx.length > 0 ? storeOfx[0].previousBalance : undefined;
             const bankTotal = storeOfx.length > 0 ? (storeOfx[0].bankBalance ?? storeOfx[0].balance) : undefined;
@@ -2277,7 +2377,7 @@ export function CentralImportWizard({
               const isMatchWindow = cleanDate === cleanTarget || diffDays <= 4;
               return isCredit && isMatchWindow;
             }).map((t: any) => ({
-              id: t.id,
+              id: (t.fitid && ofxDbByFitid.get(t.fitid)) || t.id,
               fitid: t.fitid || '',
               type: t.type || 'in',
               title: t.title || t.memo || '',
@@ -2288,19 +2388,32 @@ export function CentralImportWizard({
               occurred_at: t.date || targetDate
             })));
 
-            const redeSaleItems = redeItems.map((item, idx) => ({
-              id: item.id || `sale-${idx}`,
-              nsu: item.nsu,
-              authorization: item.authorization,
-              grossAmount: item.grossAmount || item.amount || 0,
-              feeAmount: item.interest || item.feeAmount || 0,
-              netAmount: item.netAmount || item.amount || 0,
-              method: item.method || 'rede',
-              brand: (item as any).brand,
-              dateVenda: item.date || targetDate,
-              date: item.date || targetDate,
-              creditDate: item.creditDate || item.date || targetDate
-            }));
+            const redeSaleItems = (storePosTxs && storePosTxs.length > 0)
+              ? storePosTxs.map((p: any) => ({
+                  id: p.id,
+                  nsu: p.dedup_hash,
+                  grossAmount: Number(p.gross_amount || p.amount || 0),
+                  feeAmount: Number(p.fee_amount || 0),
+                  netAmount: Number(p.net_amount || p.amount || 0),
+                  method: p.payment_method || 'rede',
+                  brand: p.machine_name,
+                  dateVenda: p.occurred_at ? p.occurred_at.split('T')[0] : targetDate,
+                  date: p.occurred_at ? p.occurred_at.split('T')[0] : targetDate,
+                  creditDate: targetDate
+                }))
+              : redeItems.map((item, idx) => ({
+                  id: item.id || `sale-${idx}`,
+                  nsu: item.nsu,
+                  authorization: item.authorization,
+                  grossAmount: item.grossAmount || item.amount || 0,
+                  feeAmount: item.interest || item.feeAmount || 0,
+                  netAmount: item.netAmount || item.amount || 0,
+                  method: item.method || 'rede',
+                  brand: (item as any).brand,
+                  dateVenda: item.date || targetDate,
+                  date: item.date || targetDate,
+                  creditDate: item.creditDate || item.date || targetDate
+                }));
 
             const reconciliador = new ReconciliadorRedeOFX(
               sId,
@@ -2313,54 +2426,17 @@ export function CentralImportWizard({
             );
             const reconResult = reconciliador.executarReconciliacao();
 
-            // Busca as pos_transactions inseridas para esta loja nesta data
-            const { data: storePosTxs } = await supabase
-              .from('pos_transactions')
-              .select('id, store_id, net_amount, gross_amount, machine_name, dedup_hash, payment_method')
-              .eq('store_id', sId)
-              .eq('target_date', targetDate);
-
-            // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 436)
-            if (storePosTxs && storePosTxs.length > 0) {
-              for (const t of storePosTxs) {
-                const net = Number(t.net_amount || 0);
-                const matchedSale = reconResult.conciliados.find(c => 
-                  Math.abs(c.valorLiquido - net) <= 0.05 ||
-                  (t.dedup_hash && c.saleId && t.dedup_hash.includes(c.saleId))
-                );
-
-                if (matchedSale) {
-                  await supabase
-                    .from('pos_transactions')
-                    .update({ 
-                      settlement_status: 'entrou', 
-                      settled_date: targetDate,
-                      settled_amount: net 
-                    })
-                    .eq('id', t.id);
-                } else {
-                  await supabase
-                    .from('pos_transactions')
-                    .update({ 
-                      settlement_status: 'a_compensar', 
-                      settled_date: null,
-                      settled_amount: 0 
-                    })
-                    .eq('id', t.id);
-                }
+            // Mapeia matches comprovados com IDs de banco válidos para a RPC canônica
+            reconResult.conciliados.forEach(c => {
+              if (c.saleId && c.ofxTransactionId && !c.fitidBancoVinculado?.startsWith('ofx-balance-absorbed')) {
+                allSettlementsPayload.push({
+                  pos_id: c.saleId,
+                  ofx_id: c.ofxTransactionId,
+                  store_id: sId,
+                  allocated_amount: Number(c.valorLiquido.toFixed(2))
+                });
               }
-
-              // Atualiza match_status nos créditos do OFX que foram vinculados aos lotes da Rede
-              const matchedFitids = reconResult.conciliados
-                .map(c => c.fitidBancoVinculado)
-                .filter(f => f && !f.startsWith('ofx-balance-absorbed'));
-              if (matchedFitids.length > 0) {
-                await supabase
-                  .from('ofx_transactions')
-                  .update({ match_status: 'conciliado', manual_category: 'Cartão Rede' })
-                  .in('fitid', matchedFitids);
-              }
-            }
+            });
 
             const totalVendasRedeLoja = reconResult.totalVendasLiquidas > 0
               ? reconResult.totalVendasLiquidas
@@ -2368,6 +2444,21 @@ export function CentralImportWizard({
 
             const totalNaoEntrouLoja = reconResult.totalNaoEntrou;
             addLog(`💳 Cartões REDE: ${reconResult.storeName} -> R$ ${(totalVendasRedeLoja - totalNaoEntrouLoja).toFixed(2)} conciliados no banco, R$ ${totalNaoEntrouLoja.toFixed(2)} A Compensar.`, "info");
+          }
+
+          // Executa a liquidação canônica via RPC transacional
+          const { data: rpcRes, error: rpcErr } = await supabase.rpc('apply_rede_ofx_settlements', {
+            p_target_date: targetDate,
+            p_settlements: allSettlementsPayload
+          });
+
+          if (rpcErr) {
+            console.error("[Wizard] Erro ao aplicar liquidações Rede x OFX via RPC:", rpcErr);
+            addLog(`⚠️ Erro ao registrar liquidações de cartões: ${rpcErr.message}`, "warning");
+          } else {
+            const count = (rpcRes as any)?.settled_count || 0;
+            const total = (rpcRes as any)?.total_allocated || 0;
+            addLog(`✅ Liquidações Rede x OFX registradas com sucesso: ${count} parcelas (R$ ${Number(total).toFixed(2)}) comprovadas e vinculadas na SSOT.`, "success");
           }
         }
       } catch (detErr: any) {
@@ -2420,7 +2511,7 @@ export function CentralImportWizard({
           console.warn("Aviso ao buscar stores canônicas para o snapshot:", e);
         }
 
-        const effectiveCartoesACompensar = cartoesACompensarTotal > 0 ? cartoesACompensarTotal : rpcCartoesFallback;
+        const effectiveCartoesACompensar = rpcCartoesFallback;
 
         const payload = {
           date: targetDate,
@@ -2437,8 +2528,8 @@ export function CentralImportWizard({
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          is_closed: true,
-          closed_at: new Date().toISOString(),
+          is_closed: false,
+          closed_at: null,
           notes: isNoOsMode ? 'Fechamento Assistido via Mapa de Metas (Sem Arquivo de OS)' : 'Valores calculados via Importacao Centralizada',
           metadata: {
             caixa_atual: caixaAtualCalculado,
@@ -2469,7 +2560,7 @@ export function CentralImportWizard({
             total_patio: veiculosPatioValor,
             status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
             stores: storesToPersist.length > 0 ? storesToPersist : undefined,
-            is_closed: true,
+            is_closed: false,
           }
         };
         await saveSnapshot.mutateAsync(payload);
@@ -3288,9 +3379,12 @@ export function CentralImportWizard({
                                     {storeObj ? (
                                       <span className="text-emerald-400 font-semibold">{storeObj.name}</span>
                                     ) : (
-                                      <span className="text-amber-400 font-medium flex items-center gap-1">
-                                        <AlertCircle size={12} /> Não vinculada
-                                      </span>
+                                      <div className="flex flex-col gap-0.5">
+                                        <span className="text-amber-400 font-medium flex items-center gap-1">
+                                          <AlertCircle size={12} /> Não vinculada
+                                        </span>
+                                        <span className="text-[9px] text-amber-500/80">Saldo pendente: conta sem loja</span>
+                                      </div>
                                     )}
                                   </td>
                                   <td className="p-3 text-right text-zinc-400 tabular-nums">
@@ -3311,13 +3405,7 @@ export function CentralImportWizard({
                                           value={selectedIdx}
                                           onChange={(e) => {
                                             const newIdx = Number(e.target.value);
-                                            setSelectedBalances(prev => ({
-                                              ...prev,
-                                              [acctKey]: {
-                                                candidateIndex: newIdx,
-                                                rememberRule: prev[acctKey]?.rememberRule ?? (activeRule !== undefined)
-                                              }
-                                            }));
+                                            handleChangeCandidate(acctKey, newIdx, candidates[newIdx], storeId, isRemembered);
                                           }}
                                           className="bg-zinc-900 border border-zinc-700 hover:border-zinc-600 text-sky-400 font-mono text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 max-w-[320px] transition-colors"
                                         >
@@ -3333,24 +3421,41 @@ export function CentralImportWizard({
                                               type="checkbox"
                                               checked={isRemembered}
                                               onChange={(e) => {
-                                                setSelectedBalances(prev => ({
-                                                  ...prev,
-                                                  [acctKey]: {
-                                                    candidateIndex: selectedIdx,
-                                                    rememberRule: e.target.checked
-                                                  }
-                                                }));
+                                                handleToggleRememberRule(acctKey, storeId, chosenCand, e.target.checked, selectedIdx);
                                               }}
                                               className="rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-0 w-3 h-3 cursor-pointer"
                                             />
                                             Lembrar esta fonte para esta conta
                                           </label>
-                                          {activeRule && (
-                                            <span className="text-[9px] text-emerald-400 font-sans px-1.5 py-0.2 bg-emerald-500/10 border border-emerald-500/20 rounded">
-                                              ✓ Regra Ativa
-                                            </span>
-                                          )}
+
+                                          <div className="flex items-center gap-1.5">
+                                            {ruleSaveStatus[acctKey] === 'saving' && (
+                                              <span className="text-[10px] text-sky-400 flex items-center gap-1 animate-pulse font-sans">
+                                                <Loader2 size={10} className="animate-spin" /> Salvando regra...
+                                              </span>
+                                            )}
+                                            {ruleSaveStatus[acctKey] === 'saved' && (
+                                              <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-sans font-semibold">
+                                                <Check size={10} /> Regra salva
+                                              </span>
+                                            )}
+                                            {ruleSaveStatus[acctKey] === 'error' && (
+                                              <span className="text-[10px] text-rose-400 flex items-center gap-1 font-sans font-semibold">
+                                                <AlertCircle size={10} /> Erro ao salvar regra
+                                              </span>
+                                            )}
+                                            {activeRule && ruleSaveStatus[acctKey] !== 'saving' && ruleSaveStatus[acctKey] !== 'saved' && (
+                                              <span className="text-[9px] text-emerald-400 font-sans px-1.5 py-0.2 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                                                ✓ Regra Ativa
+                                              </span>
+                                            )}
+                                          </div>
                                         </div>
+                                        {candidates.length > 1 && hasDivergence && curSel === undefined && !activeRule && (
+                                          <span className="text-[9px] font-sans text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                                            <AlertTriangle size={10} /> Saldo pendente de escolha
+                                          </span>
+                                        )}
                                         {chosenCand && chosenCand.postedDate !== targetDate && (
                                           <span className="text-[9px] font-sans text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded flex items-center gap-1">
                                             <AlertTriangle size={10} /> Saldo de {chosenCand.postedDate.split('-').reverse().join('/')} (diferente de {targetDate.split('-').reverse().join('/')})
@@ -4330,16 +4435,6 @@ export function CentralImportWizard({
                     <AgentStageItem key={stage.id} stage={stage} />
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* NOVO COCKPIT DE DIAGNÓSTICO 360° PÓS-MOTOR (SPEC 384) */}
-            {saveFinished && (
-              <div className="pt-2">
-                <PostMotorDiagnosticCockpit
-                  targetDate={targetDate}
-                  onRefreshParent={() => queryClient.invalidateQueries()}
-                />
               </div>
             )}
 
