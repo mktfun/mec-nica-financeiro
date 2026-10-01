@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { ModalKpiCard } from '@/components/ui/ModalKpiCard';

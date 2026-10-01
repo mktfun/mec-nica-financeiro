@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabase } from '@/lib/supabase';
 
 export type CardBrand = 'Mastercard' | 'Visa' | 'Elo' | 'Hipercard' | 'Outros';

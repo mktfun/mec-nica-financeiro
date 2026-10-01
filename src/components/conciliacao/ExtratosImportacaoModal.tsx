@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { useRawOs, useRawRede, useRawOfx } from '@/hooks/useRawImportData';

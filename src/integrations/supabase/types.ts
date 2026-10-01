@@ -1300,6 +1300,235 @@ export type Database = {
         }
         Relationships: []
       }
+      ofx_balance_candidates: {
+        Row: {
+          account_key: string
+          amount_cents: number
+          balance_role: string
+          created_at: string | null
+          file_fingerprint: string | null
+          fitid: string | null
+          id: string
+          memo_normalized: string | null
+          memo_raw: string | null
+          posted_date: string
+          raw_amount: number
+          source_kind: string
+          store_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_key: string
+          amount_cents: number
+          balance_role: string
+          created_at?: string | null
+          file_fingerprint?: string | null
+          fitid?: string | null
+          id?: string
+          memo_normalized?: string | null
+          memo_raw?: string | null
+          posted_date: string
+          raw_amount: number
+          source_kind: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_key?: string
+          amount_cents?: number
+          balance_role?: string
+          created_at?: string | null
+          file_fingerprint?: string | null
+          fitid?: string | null
+          id?: string
+          memo_normalized?: string | null
+          memo_raw?: string | null
+          posted_date?: string
+          raw_amount?: number
+          source_kind?: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ofx_balance_candidates_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ofx_balance_rules: {
+        Row: {
+          account_key: string
+          created_at: string | null
+          date_role: string
+          id: string
+          is_active: boolean
+          memo_normalized: string | null
+          source_kind: string
+          store_id: string | null
+          updated_at: string | null
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          account_key: string
+          created_at?: string | null
+          date_role?: string
+          id?: string
+          is_active?: boolean
+          memo_normalized?: string | null
+          source_kind: string
+          store_id?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          account_key?: string
+          created_at?: string | null
+          date_role?: string
+          id?: string
+          is_active?: boolean
+          memo_normalized?: string | null
+          source_kind?: string
+          store_id?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ofx_balance_rules_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ofx_balance_selection_events: {
+        Row: {
+          account_key: string
+          actor_id: string | null
+          created_at: string | null
+          id: string
+          new_amount: number | null
+          new_candidate_id: string | null
+          previous_amount: number | null
+          previous_candidate_id: string | null
+          reason: string | null
+          reconciliation_date: string
+          selection_mode: string | null
+          store_bank_total_after: number | null
+          store_bank_total_before: number | null
+          store_id: string | null
+        }
+        Insert: {
+          account_key: string
+          actor_id?: string | null
+          created_at?: string | null
+          id?: string
+          new_amount?: number | null
+          new_candidate_id?: string | null
+          previous_amount?: number | null
+          previous_candidate_id?: string | null
+          reason?: string | null
+          reconciliation_date: string
+          selection_mode?: string | null
+          store_bank_total_after?: number | null
+          store_bank_total_before?: number | null
+          store_id?: string | null
+        }
+        Update: {
+          account_key?: string
+          actor_id?: string | null
+          created_at?: string | null
+          id?: string
+          new_amount?: number | null
+          new_candidate_id?: string | null
+          previous_amount?: number | null
+          previous_candidate_id?: string | null
+          reason?: string | null
+          reconciliation_date?: string
+          selection_mode?: string | null
+          store_bank_total_after?: number | null
+          store_bank_total_before?: number | null
+          store_id?: string | null
+        }
+        Relationships: []
+      }
+      ofx_balance_selections: {
+        Row: {
+          account_key: string
+          candidate_id: string | null
+          created_at: string | null
+          id: string
+          memo_normalized: string | null
+          posted_date: string
+          reconciliation_date: string
+          rule_version: number | null
+          selected_amount: number
+          selected_at: string | null
+          selected_by: string | null
+          selection_mode: string
+          source_kind: string
+          store_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_key: string
+          candidate_id?: string | null
+          created_at?: string | null
+          id?: string
+          memo_normalized?: string | null
+          posted_date: string
+          reconciliation_date: string
+          rule_version?: number | null
+          selected_amount: number
+          selected_at?: string | null
+          selected_by?: string | null
+          selection_mode?: string
+          source_kind: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_key?: string
+          candidate_id?: string | null
+          created_at?: string | null
+          id?: string
+          memo_normalized?: string | null
+          posted_date?: string
+          reconciliation_date?: string
+          rule_version?: number | null
+          selected_amount?: number
+          selected_at?: string | null
+          selected_by?: string | null
+          selection_mode?: string
+          source_kind?: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ofx_balance_selections_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "ofx_balance_candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ofx_balance_selections_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ofx_transactions: {
         Row: {
           amount: number
@@ -1312,6 +1541,8 @@ export type Database = {
           fitid: string
           id: string
           import_batch_id: string | null
+          justified_at: string | null
+          justified_by: string | null
           manual_category: string | null
           manual_justification: string | null
           match_status: string | null
@@ -1319,6 +1550,7 @@ export type Database = {
           matched_os_number: string | null
           occurred_at: string
           original_fitid: string | null
+          pending_reason: string | null
           raw_memo: string | null
           raw_name: string | null
           store_id: string | null
@@ -1337,6 +1569,8 @@ export type Database = {
           fitid: string
           id?: string
           import_batch_id?: string | null
+          justified_at?: string | null
+          justified_by?: string | null
           manual_category?: string | null
           manual_justification?: string | null
           match_status?: string | null
@@ -1344,6 +1578,7 @@ export type Database = {
           matched_os_number?: string | null
           occurred_at: string
           original_fitid?: string | null
+          pending_reason?: string | null
           raw_memo?: string | null
           raw_name?: string | null
           store_id?: string | null
@@ -1362,6 +1597,8 @@ export type Database = {
           fitid?: string
           id?: string
           import_batch_id?: string | null
+          justified_at?: string | null
+          justified_by?: string | null
           manual_category?: string | null
           manual_justification?: string | null
           match_status?: string | null
@@ -1369,6 +1606,7 @@ export type Database = {
           matched_os_number?: string | null
           occurred_at?: string
           original_fitid?: string | null
+          pending_reason?: string | null
           raw_memo?: string | null
           raw_name?: string | null
           store_id?: string | null
@@ -1392,6 +1630,140 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      orphan_justification_history: {
+        Row: {
+          action: string
+          category: string | null
+          details: Json | null
+          id: string
+          impacts_subtotal: boolean | null
+          justification: string | null
+          ofx_id: string
+          performed_at: string | null
+          performed_by: string | null
+        }
+        Insert: {
+          action: string
+          category?: string | null
+          details?: Json | null
+          id?: string
+          impacts_subtotal?: boolean | null
+          justification?: string | null
+          ofx_id: string
+          performed_at?: string | null
+          performed_by?: string | null
+        }
+        Update: {
+          action?: string
+          category?: string | null
+          details?: Json | null
+          id?: string
+          impacts_subtotal?: boolean | null
+          justification?: string | null
+          ofx_id?: string
+          performed_at?: string | null
+          performed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orphan_justification_history_ofx_id_fkey"
+            columns: ["ofx_id"]
+            isOneToOne: false
+            referencedRelation: "ofx_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      os_import_observations: {
+        Row: {
+          baseline_source: string | null
+          client_name: string | null
+          consumed_credit: number | null
+          consumed_debit: number | null
+          created_at: string | null
+          credit_after: number | null
+          credit_before: number | null
+          debit_after: number | null
+          debit_before: number | null
+          delta_credit: number | null
+          delta_debit: number | null
+          delta_paid: number | null
+          delta_pix: number | null
+          id: string
+          is_negative_correction: boolean | null
+          os_number: string
+          paid_after: number | null
+          paid_before: number | null
+          pix_after: number | null
+          pix_before: number | null
+          plate: string | null
+          revision_count: number | null
+          status: string | null
+          store_id: string
+          target_date: string
+          total_value: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          baseline_source?: string | null
+          client_name?: string | null
+          consumed_credit?: number | null
+          consumed_debit?: number | null
+          created_at?: string | null
+          credit_after?: number | null
+          credit_before?: number | null
+          debit_after?: number | null
+          debit_before?: number | null
+          delta_credit?: number | null
+          delta_debit?: number | null
+          delta_paid?: number | null
+          delta_pix?: number | null
+          id?: string
+          is_negative_correction?: boolean | null
+          os_number: string
+          paid_after?: number | null
+          paid_before?: number | null
+          pix_after?: number | null
+          pix_before?: number | null
+          plate?: string | null
+          revision_count?: number | null
+          status?: string | null
+          store_id: string
+          target_date: string
+          total_value?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          baseline_source?: string | null
+          client_name?: string | null
+          consumed_credit?: number | null
+          consumed_debit?: number | null
+          created_at?: string | null
+          credit_after?: number | null
+          credit_before?: number | null
+          debit_after?: number | null
+          debit_before?: number | null
+          delta_credit?: number | null
+          delta_debit?: number | null
+          delta_paid?: number | null
+          delta_pix?: number | null
+          id?: string
+          is_negative_correction?: boolean | null
+          os_number?: string
+          paid_after?: number | null
+          paid_before?: number | null
+          pix_after?: number | null
+          pix_before?: number | null
+          plate?: string | null
+          revision_count?: number | null
+          status?: string | null
+          store_id?: string
+          target_date?: string
+          total_value?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       patio_os: {
         Row: {
@@ -1478,6 +1850,90 @@ export type Database = {
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patio_os_daily_backups: {
+        Row: {
+          created_at: string | null
+          id: string
+          os_data: Json
+          store_id: string
+          target_date: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          os_data: Json
+          store_id: string
+          target_date: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          os_data?: Json
+          store_id?: string
+          target_date?: string
+        }
+        Relationships: []
+      }
+      pos_ofx_settlements: {
+        Row: {
+          allocated_amount: number
+          created_at: string
+          effective_date: string
+          id: string
+          import_batch_id: string | null
+          ofx_transaction_id: string
+          pos_transaction_id: string
+          reversal_reason: string | null
+          reversed_at: string | null
+          store_id: string
+          target_date: string
+          updated_at: string
+        }
+        Insert: {
+          allocated_amount: number
+          created_at?: string
+          effective_date: string
+          id?: string
+          import_batch_id?: string | null
+          ofx_transaction_id: string
+          pos_transaction_id: string
+          reversal_reason?: string | null
+          reversed_at?: string | null
+          store_id: string
+          target_date: string
+          updated_at?: string
+        }
+        Update: {
+          allocated_amount?: number
+          created_at?: string
+          effective_date?: string
+          id?: string
+          import_batch_id?: string | null
+          ofx_transaction_id?: string
+          pos_transaction_id?: string
+          reversal_reason?: string | null
+          reversed_at?: string | null
+          store_id?: string
+          target_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_ofx_settlements_ofx_transaction_id_fkey"
+            columns: ["ofx_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "ofx_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pos_ofx_settlements_pos_transaction_id_fkey"
+            columns: ["pos_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "pos_transactions"
             referencedColumns: ["id"]
           },
         ]
@@ -2122,6 +2578,19 @@ export type Database = {
         }
         Returns: Json
       }
+      apply_ofx_balance_selection: {
+        Args: {
+          p_reason?: string
+          p_selections: Json
+          p_target_date: string
+          p_user_id?: string
+        }
+        Returns: Json
+      }
+      apply_rede_ofx_settlements: {
+        Args: { p_settlements?: Json; p_target_date: string }
+        Returns: Json
+      }
       auto_match_daily_transactions: { Args: { p_date: string }; Returns: Json }
       auto_match_receivables: {
         Args: { p_date?: string; p_store_id?: string }
@@ -2136,6 +2605,10 @@ export type Database = {
       categorize_orphan_transaction: {
         Args: { p_category: string; p_justification: string; p_tx_id: string }
         Returns: Json
+      }
+      check_client_name_match: {
+        Args: { p_os_name: string; p_tx_name: string }
+        Returns: boolean
       }
       clear_all_financial_data: { Args: never; Returns: Json }
       close_daily_snapshot: {
@@ -2178,6 +2651,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      fechar_dia: {
+        Args: { p_date: string; p_force_reopen?: boolean }
+        Returns: Json
+      }
       get_conciliation_breakdown: {
         Args: { p_date: string; p_store_id: string }
         Returns: Json
@@ -2187,6 +2664,36 @@ export type Database = {
         Returns: Json
       }
       get_dashboard_metrics: { Args: { p_date: string }; Returns: Json }
+      get_ofx_account_history: {
+        Args: { p_account_key: string; p_limit?: number }
+        Returns: {
+          account_key: string
+          actor_id: string
+          created_at: string
+          id: string
+          new_amount: number
+          previous_amount: number
+          reason: string
+          reconciliation_date: string
+          selection_mode: string
+          store_id: string
+        }[]
+      }
+      get_ofx_balance_rules: {
+        Args: { p_account_keys?: string[] }
+        Returns: {
+          account_key: string
+          date_role: string
+          id: string
+          is_active: boolean
+          memo_normalized: string
+          source_kind: string
+          store_id: string
+          updated_at: string
+          updated_by: string
+          version: number
+        }[]
+      }
       get_patio_summary: { Args: never; Returns: Json }
       get_pending_patio_os_for_ocr: {
         Args: { p_target_date?: string }
@@ -2209,6 +2716,22 @@ export type Database = {
       get_pipeline_session_state: {
         Args: { p_target_date: string }
         Returns: Json
+      }
+      get_pix_os_eligible_candidates: {
+        Args: { p_include_historical?: boolean; p_ofx_id: string }
+        Returns: {
+          candidate_status: string
+          client_name: string
+          observed_at: string
+          open_balance: number
+          os_number: string
+          paid_value: number
+          payment_method: string
+          pix_amount: number
+          plate: string
+          reason_code: string
+          total_value: number
+        }[]
       }
       get_raw_ofx_data: {
         Args: { p_date: string; p_store_id: string }
@@ -2244,6 +2767,31 @@ export type Database = {
         }[]
       }
       get_receivables_summary: { Args: { p_date?: string }; Returns: Json }
+      get_rede_os_eligible_candidates: {
+        Args: { p_include_historical?: boolean; p_pos_id: string }
+        Returns: {
+          available_card_amount: number
+          candidate_status: string
+          client_name: string
+          consumed_credit: number
+          consumed_debit: number
+          credit_after: number
+          credit_before: number
+          debit_after: number
+          debit_before: number
+          delta_credit: number
+          delta_debit: number
+          observed_at: string
+          open_balance: number
+          os_number: string
+          paid_value: number
+          payment_method: string
+          plate: string
+          pos_gross_amount: number
+          reason_code: string
+          total_value: number
+        }[]
+      }
       get_store_financial_stats: {
         Args: { p_end_date: string; p_start_date: string; p_store_id: string }
         Returns: Json
@@ -2267,7 +2815,7 @@ export type Database = {
           p_amount?: number
           p_os_number: string
           p_pos_id: string
-          p_store_id: string
+          p_store_id?: string
         }
         Returns: Json
       }
@@ -2280,12 +2828,56 @@ export type Database = {
         Args: { p_store_id?: string; p_target_date: string }
         Returns: Json
       }
+      preview_ofx_balance_selection: {
+        Args: { p_date: string; p_selections: Json }
+        Returns: Json
+      }
       process_marco_zero_import: {
         Args: { p_global: Json; p_stores: Json; p_target_date: string }
         Returns: Json
       }
       purge_daily_financial_data: { Args: { p_date: string }; Returns: Json }
       purge_expired_bot_files: { Args: never; Returns: number }
+      recompute_patio_for_date_and_store: {
+        Args: { p_date: string; p_store_id?: string }
+        Returns: Json
+      }
+      record_os_import_batch: {
+        Args: {
+          p_os_batch: Json
+          p_receivables?: Json
+          p_store_id: string
+          p_store_name: string
+          p_target_date: string
+        }
+        Returns: Json
+      }
+      register_or_update_os_payments: {
+        Args: {
+          p_cash_value?: number
+          p_credit_value?: number
+          p_debit_value?: number
+          p_os_id: string
+          p_other_value?: number
+          p_payment_method_text?: string
+          p_pix_transfer_value?: number
+          p_target_date?: string
+          p_total_value: number
+        }
+        Returns: Json
+      }
+      resolve_orphan_ofx_decision: {
+        Args: {
+          p_action: string
+          p_bill_id?: string
+          p_category?: string
+          p_justification?: string
+          p_ofx_id: string
+          p_os_number?: string
+          p_user_email?: string
+        }
+        Returns: Json
+      }
       resolve_orphan_saida_ofx: {
         Args: {
           p_amount?: number
@@ -2305,6 +2897,17 @@ export type Database = {
       }
       run_autonomous_reconciliation_loop: {
         Args: { p_date: string }
+        Returns: Json
+      }
+      save_ofx_balance_rule: {
+        Args: {
+          p_account_key: string
+          p_is_active?: boolean
+          p_memo_normalized?: string
+          p_source_kind: string
+          p_store_id?: string
+          p_user_id?: string
+        }
         Returns: Json
       }
       save_pipeline_step_progress: {

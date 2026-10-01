@@ -32,3 +32,10 @@ export function traceLog(
 
 // Utilitário para gerar session_id único
 export const generateSessionId = () => `imp_${Math.random().toString(36).substring(2, 10)}`;
+
+// Logger genérico de cliente (payload livre)
+export function clientLog(entry: { level?: string; [key: string]: unknown }) {
+  const lvl = String(entry?.level ?? 'info').toLowerCase();
+  const fn = lvl === 'error' ? console.error : lvl === 'warn' ? console.warn : console.info;
+  fn('[CLIENT]', entry);
+}
