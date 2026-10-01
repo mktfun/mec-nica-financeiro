@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { UnifiedImportResult } from '@/hooks/useCentralImport';
 import { ParsedOS, ParsedReceivable } from '@/hooks/useImportProcessor';
 

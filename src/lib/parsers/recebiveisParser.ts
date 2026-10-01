@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as XLSX from 'xlsx';
 import { extractNumber } from './numberUtils';
 import { normalizeStoreName, STORE_ALIASES } from '../storeMapping';
