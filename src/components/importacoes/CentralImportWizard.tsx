@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
-import { useOfxBalanceMappings, BalanceSelectionPayload } from '@/hooks/useOfxBalanceMappings';
+import { useOfxBalanceMappings, BalanceSelectionPayload, OfxBalanceSelectionErrorState } from '@/hooks/useOfxBalanceMappings';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { CentralImportResults, parseCentralImports } from '@/lib/parsers/centralImportManager';
 import { traceLog, generateSessionId } from '@/lib/logger';
@@ -138,6 +138,9 @@ export function CentralImportWizard({
 
   const [selectedBalances, setSelectedBalances] = useState<Record<string, { candidateIndex: number; rememberRule: boolean }>>({});
   const [ruleSaveStatus, setRuleSaveStatus] = useState<Record<string, 'saving' | 'saved' | 'error'>>({});
+  const [ofxBalanceSelectionError, setOfxBalanceSelectionError] = useState<OfxBalanceSelectionErrorState | null>(null);
+  const [isRetryingOfxBalance, setIsRetryingOfxBalance] = useState<boolean>(false);
+  const [lastBalancePayload, setLastBalancePayload] = useState<BalanceSelectionPayload[]>([]);
 
   const handleToggleRememberRule = async (
     acctKey: string,
@@ -949,6 +952,59 @@ export function CentralImportWizard({
     }]);
   };
 
+  const handleRetryOfxBalance = async () => {
+    if (lastBalancePayload.length === 0) {
+      toast.error('Nenhuma seleção de saldo OFX encontrada para repetir.');
+      return;
+    }
+    setIsRetryingOfxBalance(true);
+    addLog("🔄 Repetindo persistência isolada de saldos e regras OFX (apply_ofx_balance_selection)...", "info");
+    try {
+      await applyOfxBalanceSelection({
+        selections: lastBalancePayload,
+        targetDate,
+        userId: undefined,
+        reason: 'Retry Isolado CentralImportWizard'
+      });
+      setOfxBalanceSelectionError(null);
+      updateStage(2, 'success', 'Saldo OFX reaplicado com sucesso!');
+      setImportStages(prev => prev.map(s => s.id === 'ofx' ? { 
+        ...s, 
+        status: 'success',
+        subSteps: s.subSteps.map(sub => sub.status === 'error' ? { ...sub, status: 'success' } : sub)
+      } : s));
+      addLog("✅ Saldos oficiais OFX e regras reaplicados com sucesso!", "success");
+      toast.success("Saldo OFX reaplicado com sucesso!");
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['ofx_balance_rules'] }),
+        queryClient.invalidateQueries({ queryKey: ['ofx_balance_selections'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['stores'] }),
+      ]);
+    } catch (err: any) {
+      const errorState: OfxBalanceSelectionErrorState = {
+        code: err?.code || (typeof err === 'object' && err?.status) || 'RPC_ERROR',
+        message: err?.message || String(err),
+        targetDate,
+        affectedAccounts: lastBalancePayload.map(p => p.account_key),
+        details: err?.details || err,
+        failedAt: new Date().toISOString()
+      };
+      setOfxBalanceSelectionError(errorState);
+      updateStage(2, 'error', `Falha ao repetir saldo OFX: ${errorState.message}`);
+      addLog(`❌ Falha na tentativa de reaplicação do saldo OFX: ${errorState.message}`, 'error', {
+        source: 'ofx',
+        error: err
+      });
+      toast.error(`Falha ao reaplicar saldo OFX: ${errorState.message}`);
+    } finally {
+      setIsRetryingOfxBalance(false);
+    }
+  };
+
   useEffect(() => {
     const checkSnapshots = async () => {
       const { count } = await supabase
@@ -1376,6 +1432,7 @@ export function CentralImportWizard({
     }
 
     try {
+      let currentOfxError: OfxBalanceSelectionErrorState | null = null;
       updateStage(0, 'running', 'Iniciando gravação...');
       await new Promise(r => setTimeout(r, 200));
 
@@ -1408,13 +1465,13 @@ export function CentralImportWizard({
       // 1. OSs do Pátio e Recebíveis
       const osCountTotal = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.length, 0);
       updateStage(0, 'running', `Registrando OSs (${osCountTotal} ordens)...`);
-      
-      const osPromises = results.osFiles.filter(r => r.success).map(osResult => {
+      // Execução Sequencial por Filial para garantir integridade e ordem determinística (Spec 460)
+      for (const osResult of results.osFiles.filter(r => r.success)) {
         let store_id: string | null = mapping[osResult.storeAlias];
         if (store_id === 'GLOBAL') store_id = null;
-        if (!store_id) return Promise.resolve();
-        return savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || [], targetDate);
-      });
+        if (!store_id) continue;
+        await savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || [], targetDate);
+      }
 
       // Maquininha (agrupamento para transactions)
       const maqByStore: Record<string, any[]> = {};
@@ -1450,7 +1507,7 @@ export function CentralImportWizard({
         });
       });
 
-      await Promise.all(osPromises);
+      // OSs já salvas sequencialmente por filial acima (Spec 460)
       updateStage(0, 'success', 'OSs e Recebíveis salvos!');
       updateStage(1, 'success', 'Maquininhas processadas!');
       
@@ -2100,6 +2157,8 @@ export function CentralImportWizard({
         };
       });
 
+      setLastBalancePayload(balanceSelectionPayload);
+
       if (balanceSelectionPayload.length > 0 && !isSandbox) {
         addLog("Persistindo seleções oficiais de saldo e regras OFX (apply_ofx_balance_selection)...", "info");
         try {
@@ -2109,8 +2168,25 @@ export function CentralImportWizard({
             userId: undefined,
             reason: 'Importação Centralizada'
           });
-        } catch (selErr) {
+          setOfxBalanceSelectionError(null);
+          addLog("✅ Saldos oficiais de extrato OFX e regras persistidos no banco!", "success");
+        } catch (selErr: any) {
           console.warn('Erro ao aplicar seleções de saldo OFX:', selErr);
+          currentOfxError = {
+            code: selErr?.code || (typeof selErr === 'object' && selErr?.status) || 'RPC_ERROR',
+            message: selErr?.message || String(selErr),
+            targetDate,
+            affectedAccounts: balanceSelectionPayload.map(p => p.account_key),
+            details: selErr?.details || selErr,
+            failedAt: new Date().toISOString()
+          };
+          setOfxBalanceSelectionError(currentOfxError);
+          updateStage(2, 'error', `Falha ao persistir saldo OFX: ${currentOfxError.message}`);
+          addLog(`❌ Falha ao persistir saldos e regras OFX: ${currentOfxError.message}`, 'error', {
+            source: 'ofx',
+            error: selErr,
+            details: balanceSelectionPayload
+          });
         }
       }
 
@@ -2305,9 +2381,16 @@ export function CentralImportWizard({
           console.warn("auto_match_daily_transactions retornou erro (não crítico):", matchErr);
           addLog(`Pareamento automático parcial: ${matchErr.message}`, "warning");
         } else {
-          const posCount = (matchData as any)?.matched_pos_count || 0;
-          const pixCount = (matchData as any)?.matched_pix_count || 0;
+          const posCount = (matchData as any)?.matched_pos_count ?? (matchData as any)?.pos_matched ?? 0;
+          const pixCount = (matchData as any)?.matched_pix_count ?? (matchData as any)?.pix_matched ?? 0;
+          const stage2Err = (matchData as any)?.stage2_error;
           const saidasCount = (matchData as any)?.saidas_result?.matched_saidas_count || 0;
+
+          if (stage2Err) {
+            console.warn("auto_match_daily_transactions reportou aviso em stage2:", stage2Err);
+            addLog(`⚠️ Aviso no pareamento Rede × OS: ${stage2Err}`, "warning");
+          }
+
           if (posCount > 0 || pixCount > 0 || saidasCount > 0) {
             addLog(`🤖 Pareamento Concluído: ${posCount} Venda(s) REDE e ${pixCount} PIX casados com OSs (${saidasCount} despesas conciliadas).`, "success");
           } else {
@@ -2588,7 +2671,11 @@ export function CentralImportWizard({
         }
       }
 
-      addLog("✅ TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
+      if (currentOfxError) {
+        addLog("⚠️ Importação concluída com pendência: saldo oficial OFX não aplicado.", "warning");
+      } else {
+        addLog("✅ TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
+      }
       
       // Generate JSON Trail
       const auditData = {
@@ -2600,19 +2687,29 @@ export function CentralImportWizard({
         insertedData: {
           txsToInsert,
           matchesToInsert
-        }
+        },
+        ofxBalanceSelectionError: currentOfxError || undefined
       };
       const blob = new Blob([JSON.stringify(auditData, null, 2)], { type: 'application/json' });
       setAuditTrailUrl(URL.createObjectURL(blob));
       
       updateStage(0, 'success', 'OSs e Recebíveis salvos!');
       updateStage(1, 'success', 'Maquininhas processadas!');
-      updateStage(2, 'success', 'OFX conciliado!');
-      setImportStages(prev => prev.map(s => ({ 
-        ...s, 
-        status: s.id === 'auto_healing' ? s.status : 'success', 
-        subSteps: s.subSteps.map(sub => ({ ...sub, status: 'success' })) 
-      })));
+      if (currentOfxError) {
+        updateStage(2, 'error', `Saldo OFX pendente: ${currentOfxError.message}`);
+      } else {
+        updateStage(2, 'success', 'OFX conciliado!');
+      }
+      setImportStages(prev => prev.map(s => {
+        if (s.id === 'ofx' && currentOfxError) {
+          return { ...s, status: 'error' };
+        }
+        return { 
+          ...s, 
+          status: s.id === 'auto_healing' ? s.status : 'success', 
+          subSteps: s.subSteps.map(sub => ({ ...sub, status: sub.status === 'error' ? 'error' : 'success' })) 
+        };
+      }));
 
       if (advanceToWizard) {
         await Promise.all([
@@ -2635,7 +2732,7 @@ export function CentralImportWizard({
         } else {
           toast.success('🎉 100% das transações e OSs foram conciliadas automaticamente pelo motor e IA!');
         }
-        if (autoAdvanceToStep4) {
+        if (autoAdvanceToStep4 && !currentOfxError) {
           setStep(4);
         }
       } else {
@@ -4295,18 +4392,67 @@ export function CentralImportWizard({
                 animate={{ opacity: 1, y: 0 }} 
                 className="rounded-2xl bg-zinc-900/60 border border-zinc-800 p-8 text-center space-y-6"
               >
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-sm">
-                  <CheckCircle2 size={28} />
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-sm ${
+                  ofxBalanceSelectionError
+                    ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
+                    : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                }`}>
+                  {ofxBalanceSelectionError ? <AlertTriangle size={28} /> : <CheckCircle2 size={28} />}
                 </div>
 
                 <div>
                   <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
-                    Importação e Conciliação Concluída com Sucesso
+                    {ofxBalanceSelectionError 
+                      ? 'Importação Concluída com Pendência no Saldo OFX' 
+                      : 'Importação e Conciliação Concluída com Sucesso'}
                   </h2>
                   <p className="text-xs text-zinc-400 max-w-md mx-auto mt-1">
-                    Os arquivos foram auditados, as OSs e transações foram persistidas no banco e os saldos consolidados para {formattedTargetDate}.
+                    {ofxBalanceSelectionError
+                      ? `Os arquivos foram processados e persistidos, mas a aplicação do saldo oficial OFX falhou para ${formattedTargetDate}. Recomenda-se repetir a aplicação.`
+                      : `Os arquivos foram auditados, as OSs e transações foram persistidas no banco e os saldos consolidados para ${formattedTargetDate}.`}
                   </p>
                 </div>
+
+                {ofxBalanceSelectionError && (
+                  <div className="p-4 rounded-xl border text-left max-w-2xl mx-auto bg-amber-500/10 border-amber-500/30 space-y-3">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div className="flex items-start gap-2.5">
+                        <AlertTriangle className="text-amber-400 shrink-0 mt-0.5" size={18} />
+                        <div>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-200">
+                            Falha na Aplicação do Saldo Oficial OFX
+                          </h4>
+                          <p className="text-xs text-amber-300/90 mt-0.5">
+                            {ofxBalanceSelectionError.message}
+                          </p>
+                          {ofxBalanceSelectionError.code && (
+                            <span className="inline-block mt-1 font-mono text-[10px] text-amber-400/80 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/20">
+                              Código: {ofxBalanceSelectionError.code}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleRetryOfxBalance}
+                        disabled={isRetryingOfxBalance}
+                        className="shrink-0 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs py-2 px-3 rounded-lg shadow-sm"
+                      >
+                        {isRetryingOfxBalance ? (
+                          <>
+                            <Loader2 size={13} className="mr-1.5 animate-spin" />
+                            Reaplicando...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCcw size={13} className="mr-1.5" />
+                            Repetir Saldo OFX
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {/* 4 Cards de Métricas do Lote */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-1">
@@ -4331,7 +4477,9 @@ export function CentralImportWizard({
                   <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
                     <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Data Base</span>
                     <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{formattedTargetDate}</p>
-                    <span className="text-[10px] text-emerald-400 font-medium">Consolidado</span>
+                    <span className={`text-[10px] font-medium ${ofxBalanceSelectionError ? 'text-amber-400' : 'text-emerald-400'}`}>
+                      {ofxBalanceSelectionError ? 'Saldo Pendente' : 'Consolidado'}
+                    </span>
                   </div>
                 </div>
 
@@ -4376,6 +4524,26 @@ export function CentralImportWizard({
 
                 {/* Botões de Ação Final */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-lg mx-auto">
+                  {ofxBalanceSelectionError && (
+                    <Button
+                      onClick={handleRetryOfxBalance}
+                      disabled={isRetryingOfxBalance}
+                      className="w-full sm:w-auto text-xs py-2.5 px-4 font-bold bg-amber-500 text-zinc-950 hover:bg-amber-400 rounded-xl shadow-md shadow-amber-950/40"
+                    >
+                      {isRetryingOfxBalance ? (
+                        <>
+                          <Loader2 size={13} className="mr-1.5 animate-spin" />
+                          Repetindo Saldo OFX...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCcw size={13} className="mr-1.5" />
+                          Repetir Saldo OFX
+                        </>
+                      )}
+                    </Button>
+                  )}
+
                   <Button
                     onClick={() => setStep(4)}
                     variant="outline"

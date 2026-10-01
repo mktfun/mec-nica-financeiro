@@ -1484,3 +1484,26 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
    - A interface deve distinguir com clareza matemática uma loja sem movimento de uma loja com divergência zerada (selos `SEM MOVIMENTO`, `Sem Mov. Entradas` e `Sem Mov. Saídas` em vez do falso selo `100% Conciliado`).
 5. **Autocura de Snapshots Desatualizados (`get_daily_reconciliation_summary`):** Quando um snapshot diário foi fechado prematuramente antes da ingestão dos lotes de cartão ou extratos, a RPC deve recuperar o total a compensar das transações ativas persistidas em vez de perpetuar zero congelado.
 **Não fazer:** Considerar uma venda de cartão liquidada no banco simplesmente porque ela foi casada com uma Ordem de Serviço, ou ocultar totais legítimos através de limites estáticos de corte.
+
+## [2026-10-01] — [Feature ID: 460-preservar-incremento-real-pagamentos-os] Incremento Real de Pagamento da OS vs Acumulado
+
+**Contexto:** Ao reimportar arquivos ou salvar novamente OSs com formas de pagamento no pátio, o sistema capturava o valor acumulado já gravado (`before = after = 2.727,00`, delta = 0), perdendo a linha de base histórica anterior e impedindo o casamento com as vendas do dia da maquininha Rede.
+**Regra aprendida:**
+1. **Preservação de Linha de Base em Reimportações:** Quando uma OS é reimportada, o saldo anterior (`credit_before`, `debit_before`) deve ser obtido da primeira observação registrada na data ou do estado comprovado antes do lote. A reimportação nunca deve sobrescrever a linha de base com o saldo acumulado.
+2. **Proibição de Inferência Cega de Modalidade:** O parser de importação de OS (`useOsImportProcessor.ts`) NÃO deve atribuir valores a `parsed_credit` na ausência de texto explicativo de cartão ou modalidade de pagamento. Se não houver método informado, o crédito atribuído é 0.
+3. **Delta por Modalidade:** Vendas de crédito conferem contra `delta_credit`; vendas de débito conferem contra `delta_debit`.
+
+## [2026-10-01] — [Feature ID: 461-unificar-matcher-rede-os-selecao-manual-diagnostico] Fim do "Match por Valor" e Diagnóstico Contábil de Delta
+
+**Contexto:** O modal manual e o auto-match usavam critérios discrepantes: enquanto o auto-match buscava deltas do dia, o modal manual exibia o badge verde "Match por Valor" e destacava OSs com `available_card_amount === 0` recorrendo a fallbacks enganosos como `paid_value` ou `total_value`.
+**Regra aprendida:**
+1. **Critério Único de Elegibilidade:** Tanto o motor automático quanto a interface manual utilizam estritamente o incremento comprovado no dia (`delta_credit` ou `delta_debit`). OSs com incremento zero ou já consumido por outras vendas não podem receber destaque de compatibilidade nem falso selo de "Match por Valor".
+2. **Normalização de Diacríticos em Cartões:** Modalidades de pagamento em relatórios bancários e de adquirentes frequentemente contêm acentos (`"Cartão Crédito VISA"`, `"Débito ELO"`). Todas as comparações devem utilizar normalização NFD sem marcas diacríticas para evitar falsos negativos.
+3. **Confirmação Explícita para Casos Excepcionais:** Vincular manualmente uma OS sem incremento disponível (`available_card_amount <= 0.05`) exige confirmação ativa do operador com aviso de divergência residual.
+
+## [2026-10-01] — [Feature ID: 462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso] Bloqueio de Falso Sucesso e Soma Algébrica no Saldo OFX
+
+**Contexto:** Ao escolher fontes de saldo OFX, o assistente proclamava "TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!" mesmo quando o banco de dados abortava a persistência de saldos com erro 42703.
+**Regra aprendida:**
+1. **Transparência de Desfecho no Assistente:** Nenhuma mensagem triunfante de sucesso pode ser exibida se qualquer operação financeira (OS, Rede ou Saldo OFX) falhar. O estágio deve receber status `'error'` e o erro detalhado deve ser embutido no arquivo JSON de auditoria pericial.
+2. **Mecanismo de Retry Isolado:** Quando uma etapa transacional secundária (como persistência de saldos escolhidos) falha, o assistente deve fornecer um botão de retry isolado que execute exclusivamente a etapa pendente a partir do cache da sessão, sem forçar o operador a recarregar arquivos ou reprocessar transações já salvas.

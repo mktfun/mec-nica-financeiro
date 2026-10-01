@@ -18,25 +18,160 @@ export interface StoreOsCandidate {
   status: string;
   date: string;
   matched_ofx_id?: string | null;
+  candidate_status?: 'eligible' | 'collision' | 'identity_mismatch' | 'modality_mismatch' | 'unrecognized_modality' | 'already_consumed' | 'divergent_value' | 'no_card_delta' | 'historical_no_delta';
+  reason_code?: string;
+  credit_before?: number;
+  credit_after?: number;
+  consumed_credit?: number;
+  delta_credit?: number;
+  debit_before?: number;
+  debit_after?: number;
+  consumed_debit?: number;
+  delta_debit?: number;
+  available_card_amount?: number;
+  pos_gross_amount?: number;
 }
 
-export function useAvailableStoreOs(storeId: string, date?: string, matchType: 'pix' | 'rede' | 'all' = 'all') {
+export function useAvailableStoreOs(
+  storeId: string, 
+  date?: string, 
+  matchType: 'pix' | 'rede' | 'all' = 'all',
+  posId?: string,
+  includeHistorical: boolean = false
+) {
   return useQuery<StoreOsCandidate[]>({
-    queryKey: ['available_store_os', storeId, date, matchType],
+    queryKey: ['available_store_os', storeId, date, matchType, posId, includeHistorical],
     queryFn: async () => {
       if (!storeId) return [];
 
+      // 1. SE FOR REDE E HOUVER posId: CHAMA DIRETAMENTE A RPC CANÔNICA get_rede_os_eligible_candidates
+      if (matchType === 'rede' && posId) {
+        try {
+          const { data: candidates, error } = await supabase.rpc('get_rede_os_eligible_candidates', {
+            p_pos_id: posId,
+            p_include_historical: includeHistorical
+          });
+
+          if (error) {
+            console.error('[useAvailableStoreOs] RPC get_rede_os_eligible_candidates retornou erro:', error);
+            throw new Error(`Erro ao buscar candidatos da maquininha: ${error.message} (código ${error.code || 'N/A'})`);
+          }
+
+          if (candidates && Array.isArray(candidates)) {
+            return (candidates as any[]).map(c => ({
+              id: c.os_number,
+              os_number: c.os_number,
+              client_name: c.client_name || 'Cliente',
+              plate: c.plate || '',
+              total_value: Number(c.total_value || 0),
+              paid_value: Number(c.paid_value || 0),
+              pix_transfer_value: 0,
+              credit_value: Number(c.delta_credit || 0),
+              debit_value: Number(c.delta_debit || 0),
+              cash_value: 0,
+              open_balance: Number(c.open_balance || 0),
+              payment_method: c.payment_method || 'Cartão',
+              status: c.candidate_status || 'PENDENTE',
+              date: c.observed_at || date || '',
+              candidate_status: c.candidate_status,
+              reason_code: c.reason_code,
+              credit_before: Number(c.credit_before || 0),
+              credit_after: Number(c.credit_after || 0),
+              consumed_credit: Number(c.consumed_credit || 0),
+              delta_credit: Number(c.delta_credit || 0),
+              debit_before: Number(c.debit_before || 0),
+              debit_after: Number(c.debit_after || 0),
+              consumed_debit: Number(c.consumed_debit || 0),
+              delta_debit: Number(c.delta_debit || 0),
+              available_card_amount: Number(c.available_card_amount || 0),
+              pos_gross_amount: Number(c.pos_gross_amount || 0)
+            }));
+          }
+          return [];
+        } catch (err) {
+          console.error('[useAvailableStoreOs] Falha na consulta de candidatos da maquininha:', err);
+          throw err;
+        }
+      }
+
+      // 2. SE FOR PIX E HOUVER posId (ID OFX): CHAMA DIRETAMENTE A RPC CANÔNICA get_pix_os_eligible_candidates
+      if (matchType === 'pix' && posId) {
+        try {
+          const { data: candidates, error } = await supabase.rpc('get_pix_os_eligible_candidates', {
+            p_ofx_id: posId,
+            p_include_historical: includeHistorical
+          });
+
+          if (error) {
+            console.error('[useAvailableStoreOs] RPC get_pix_os_eligible_candidates retornou erro:', error);
+            throw new Error(`Erro ao buscar candidatos de PIX: ${error.message} (código ${error.code || 'N/A'})`);
+          }
+
+          if (candidates && Array.isArray(candidates)) {
+            return (candidates as any[]).map(c => ({
+              id: c.os_number,
+              os_number: c.os_number,
+              client_name: c.client_name || 'Cliente',
+              plate: c.plate || '',
+              total_value: Number(c.total_value || 0),
+              paid_value: Number(c.paid_value || 0),
+              pix_transfer_value: Number(c.pix_amount || 0),
+              credit_value: 0,
+              debit_value: 0,
+              cash_value: 0,
+              open_balance: Number(c.open_balance || 0),
+              payment_method: c.payment_method || 'PIX',
+              status: c.candidate_status || 'PENDENTE',
+              date: c.observed_at || date || '',
+              candidate_status: c.candidate_status,
+              reason_code: c.reason_code,
+              delta_credit: 0,
+              delta_debit: 0,
+              available_card_amount: 0
+            }));
+          }
+          return [];
+        } catch (err) {
+          console.error('[useAvailableStoreOs] Falha na consulta de candidatos de PIX:', err);
+          throw err;
+        }
+      }
+
       const candidatesMap = new Map<string, StoreOsCandidate>();
 
-      // 1. Busca OSs que JÁ ESTÃO vinculadas em ofx_transactions ou pos_transactions para esta loja
-      const { data: linkedOfx } = await supabase
+      // 1. Busca OSs que JÁ ESTÃO vinculadas em ofx_transactions ou pos_transactions para esta conciliação e filial
+      const alreadyLinkedSet = new Set<string>();
+
+      let ofxLinkedQuery = supabase
         .from('ofx_transactions')
         .select('matched_os_number')
         .eq('store_id', storeId)
         .not('matched_os_number', 'is', null);
 
-      const alreadyLinkedSet = new Set<string>();
+      if (date && !includeHistorical) {
+        ofxLinkedQuery = ofxLinkedQuery.eq('target_date', date);
+      }
+
+      const { data: linkedOfx } = await ofxLinkedQuery;
+
       (linkedOfx || []).forEach(row => {
+        const num = String(row.matched_os_number || '').trim();
+        if (num) alreadyLinkedSet.add(num);
+      });
+
+      let posLinkedQuery = supabase
+        .from('pos_transactions')
+        .select('matched_os_number')
+        .eq('store_id', storeId)
+        .not('matched_os_number', 'is', null);
+
+      if (date && !includeHistorical) {
+        posLinkedQuery = posLinkedQuery.eq('target_date', date);
+      }
+
+      const { data: linkedPos } = await posLinkedQuery;
+
+      (linkedPos || []).forEach(row => {
         const num = String(row.matched_os_number || '').trim();
         if (num) alreadyLinkedSet.add(num);
       });
@@ -48,8 +183,8 @@ export function useAvailableStoreOs(storeId: string, date?: string, matchType: '
           .select('*')
           .eq('store_id', storeId);
 
-        if (date) {
-          patioQuery = patioQuery.lte('opened_at', date + 'T23:59:59');
+        if (date && !includeHistorical) {
+          patioQuery = patioQuery.or(`last_payment_date.eq.${date},opened_at.gte.${date}T00:00:00`);
         }
 
         const { data: patioData } = await patioQuery;
@@ -58,6 +193,7 @@ export function useAvailableStoreOs(storeId: string, date?: string, matchType: '
           patioData.forEach((row: any) => {
             const num = String(row.os_number || '').trim();
             if (!num) return;
+            if (alreadyLinkedSet.has(num)) return;
 
             const totalVal = Number(row.total_value || 0);
             const paidVal = Number(row.paid_value || 0);
@@ -95,49 +231,6 @@ export function useAvailableStoreOs(storeId: string, date?: string, matchType: '
         }
       } catch (e) {
         console.warn('Aviso ao consultar patio_os:', e);
-      }
-
-      // 3. Complementa com estoque_os_pendente
-      try {
-        const { data: pendenteData } = await supabase
-          .from('estoque_os_pendente')
-          .select('*')
-          .eq('store_id', storeId);
-
-        if (pendenteData) {
-          pendenteData.forEach((row: any) => {
-            const num = String(row.os_number || row.numero_os || '').trim();
-            if (!num || candidatesMap.has(num)) return;
-
-            const totalVal = Number(row.total_value || row.valor_os || 0);
-            const paidVal = Number(row.paid_value || row.valor_pago || 0);
-            const pixVal = Number(row.pix_transfer_value || 0);
-            const creditVal = Number(row.credit_value || 0);
-            const debitVal = Number(row.debit_value || 0);
-            const cashVal = Number(row.cash_value || 0);
-            const openVal = Math.max(0, totalVal - paidVal);
-
-            candidatesMap.set(num, {
-              id: row.id,
-              os_number: num,
-              client_name: row.client_name || row.cliente || 'Cliente',
-              plate: row.plate || row.placa || '',
-              total_value: totalVal,
-              paid_value: paidVal,
-              pix_transfer_value: pixVal,
-              credit_value: creditVal,
-              debit_value: debitVal,
-              cash_value: cashVal,
-              open_balance: openVal,
-              payment_method: row.payment_method || row.forma_pagamento || (pixVal > 0 ? 'PIX' : 'Em Aberto'),
-              status: row.status || 'PENDENTE',
-              date: row.date || row.data || date || '',
-              matched_ofx_id: null,
-            });
-          });
-        }
-      } catch (e) {
-        console.warn('Aviso ao consultar estoque_os_pendente:', e);
       }
 
       return Array.from(candidatesMap.values());

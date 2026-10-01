@@ -240,10 +240,9 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           finalPaidValue = totalValue;
         }
 
-        // Fallback apenas se NENHUM método foi identificado no texto
-        if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0 && parsed_cash === 0) {
-          parsed_credit = totalValue || finalPaidValue;
-        }
+        // Spec 460: Proibido inferir crédito arbitrário quando nenhum método é identificado no texto.
+        // Se a modalidade não foi informada ou comprovada no arquivo, não atribui parsed_credit
+        // para não tornar a OS elegível indevidamente ao auto-match de cartão da Rede.
 
         // 3. Determinação precisa do Status da OS com corte financeiro
         let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';

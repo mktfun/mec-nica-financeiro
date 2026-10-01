@@ -1400,4 +1400,33 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
    - Rastreamento de revisão (`revision = existing_rev + 1`) gravado no `metadata` a cada selagem do snapshot.
 **Não fazer:** Confiar em campos JSONB de summary sem COALESCE para INSERTs em colunas NOT NULL.
 
+## [2026-10-01] — [Feature ID: 460-preservar-incremento-real-pagamentos-os] Ingestão Atômica de OS e Linha de Base Incremental
+
+**Contexto:** Migration `20261001000001_atomic_os_import_and_incremental_baseline.sql` criando a RPC `record_os_import_batch` e saneando a base histórica de 30/09 para a OS 22622 (Mauá).
+**Regra aprendida:**
+1. **Atomicidade em `record_os_import_batch`:** A atualização do pátio (`patio_os`) e o registro das observações (`os_import_observations`) devem ocorrer dentro da mesma transação no PostgreSQL. A linha de base anterior (`credit_before`, `debit_before`) deve ser consultada a partir do registro mais recente da OS antes de qualquer mutação de saldo, preservando a base histórica em reimportações.
+2. **Cálculo Fiel de Delta por Modalidade:**
+   $$\text{delta\_credit} = \text{credit\_after} - \text{credit\_before}$$
+   $$\text{delta\_debit} = \text{debit\_after} - \text{debit\_before}$$
+   Não aplicar `GREATEST(0, ...)` que apague correções negativas ou estornos de pagamento da OS.
+**Risco identificado / Não fazer:** Fazer mutações em `patio_os` separadamente de `os_import_observations` no frontend ou sobrescrever a base anterior `credit_before` com o valor acumulado final em reimportações.
+
+## [2026-10-01] — [Feature ID: 461-unificar-matcher-rede-os-selecao-manual-diagnostico] Qualificação de Colunas, Eliminação de Erro 42702 e Unicidade Bidirecional
+
+**Contexto:** Migration `20261001000002_unify_rede_os_matcher_and_diagnostics.sql` reformulando `get_rede_os_eligible_candidates`, `match_stage2_rede_os` e `auto_match_daily_transactions`.
+**Regra aprendida:**
+1. **Qualificação Estrita de Colunas em RPCs:** Em funções PL/pgSQL onde parâmetros de saída (OUT/TABLE) compartilham o nome de colunas da tabela (ex.: `payment_method`), todas as referências nas cláusulas `SELECT`, `WHERE`, `ORDER BY` devem ser explicitamente qualificadas com o alias da tabela (ex.: `c.payment_method`) para evitar erro Postgres `42702 (column reference is ambiguous)`.
+2. **Substituição de Tabelas Temporárias por CTEs:** Em conexões em pool (Supabase Pooler/pgbouncer), tabelas temporárias (`CREATE TEMP TABLE ... ON COMMIT DROP`) causam colisão de nome (`relation already exists`) se transações forem reexecutadas na mesma conexão. Utilizar CTEs puras (`WITH ... AS (...)`).
+3. **Unicidade Bidirecional (1:1):** O motor de pareamento (`match_stage2_rede_os`) deve verificar se múltiplas vendas POS disputam a mesma OS ou se múltiplas OSs disputam a mesma venda, marcando colisões e suspendendo o pareamento automático para decisão humana.
+4. **Propagação de Erros via `stage2_error`:** Em `auto_match_daily_transactions`, capturar erros da etapa de cartões e devolvê-los no payload de retorno em vez de mascarar a falha como zero matches.
+
+## [2026-10-01] — [Feature ID: 462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso] Eliminação do Erro 42703 e Idempotência de Regras de Saldo OFX
+
+**Contexto:** Migration `20261001000003_fix_apply_ofx_balance_selection_and_idempotency.sql` corrigindo a função `apply_ofx_balance_selection`.
+**Regra aprendida:**
+1. **Schema de `reconciliations` Não Possui `updated_at`:** A tabela `reconciliations` possui as colunas `created_at` e `processed_at`, mas NÃO possui `updated_at`. Qualquer comando `INSERT` ou `UPDATE` direcionado a ela que mencione `updated_at` resulta em erro abortivo `42703 (column "updated_at" of relation "reconciliations" does not exist)`.
+2. **Soma Algébrica por Filial:** O cálculo de `bank_total` em `reconciliations` deve ser `SUM(selected_amount)` agrupado por `store_id`, suportando saldos positivos, saldos negativos (cheques especiais) e zero.
+3. **Idempotência de Versão em `ofx_balance_rules`:** Antes de criar nova versão de regra, verificar se a regra ativa atual para `account_key` já possui os mesmos atributos (`source_kind`, `memo_normalized`, `store_id`). Se idêntica, preservar a versão atual sem gerar novas linhas nem desativar a regra existente.
+4. **Idempotência de Auditoria em `ofx_balance_selection_events`:** Registrar histórico apenas se a seleção ou montante diferirem do evento anterior na data.
+
 

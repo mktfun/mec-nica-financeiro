@@ -88,10 +88,15 @@ export function Fase2RedeVsOsReview({
       if (matchErr) throw matchErr;
 
       if (matchResult) {
+        if (matchResult.stage2_error) {
+          console.warn("[Fase2RedeVsOsReview] match_stage2_rede_os avisou:", matchResult.stage2_error);
+          toast.warning(`Aviso no pareamento de cartões: ${matchResult.stage2_error}`);
+        }
+
         const rawOrphans = Array.isArray(matchResult.exhausted_orphans) ? matchResult.exhausted_orphans : [];
         setMatchStats({
-          matchedCount: matchResult.matched_count || 0,
-          collisionCount: matchResult.collisions_count || 0,
+          matchedCount: matchResult.matched_count ?? matchResult.pos_matched ?? 0,
+          collisionCount: matchResult.collisions_count ?? 0,
           exhaustedOrphansCount: matchResult.exhausted_orphans_count || rawOrphans.length || 0,
           exhaustedOrphans: rawOrphans,
           totals: matchResult.totals || { rede_bruto: 0, rede_liquido: 0, rede_taxas: 0 }
@@ -112,8 +117,8 @@ export function Fase2RedeVsOsReview({
                 osNumber: cand.os_number,
                 clientName: cand.client_name,
                 totalValue: Number(cand.total_value || 0),
-                paidValue: Number(cand.total_value - cand.pending_value || 0),
-                openBalance: Number(cand.pending_value || 0)
+                paidValue: Number(cand.paid_value || (cand.total_value - (cand.pending_value ?? cand.open_balance ?? 0)) || 0),
+                openBalance: Number(cand.pending_value ?? cand.open_balance ?? 0)
               }))
             };
           });

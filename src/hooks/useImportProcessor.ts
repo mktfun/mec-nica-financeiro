@@ -50,198 +50,42 @@ export async function savePatioOsAndReceivables(
   if (osArray.length > 0) {
     const effectiveDate = targetDate || new Date().toISOString().split('T')[0];
 
-    const { data: existingOs } = await supabase
-      .from('patio_os')
-      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, cash_value, history_log, last_payment_date, client_name, plate')
-      .eq('store_id', storeId);
-
-    // Snapshot pré-importação do pátio para rollback cirúrgico caso o dia seja resetado (Spec 459)
-    try {
-      const { data: existingBackup } = await supabase
-        .from('patio_os_daily_backups')
-        .select('id')
-        .eq('target_date', effectiveDate)
-        .eq('store_id', storeId)
-        .maybeSingle();
-
-      if (!existingBackup && existingOs && existingOs.length > 0) {
-        await supabase
-          .from('patio_os_daily_backups')
-          .insert({
-            target_date: effectiveDate,
-            store_id: storeId,
-            os_data: existingOs,
-          });
-      }
-    } catch (backupErr) {
-      console.warn('[useImportProcessor] Aviso ao registrar backup pré-importação do pátio:', backupErr);
-    }
-
-    const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
-
-    // Buscar observações já registradas nesta mesma data/loja para preservar linha de base em reimportações
-    const { data: existingObsList } = await supabase
-      .from('os_import_observations')
-      .select('id, os_number, credit_before, debit_before, pix_before, paid_before, consumed_credit, consumed_debit')
-      .eq('store_id', storeId)
-      .eq('target_date', effectiveDate);
-
-    const existingObsMap = new Map((existingObsList || []).map(obs => [String(obs.os_number), obs]));
-
-    const toInsert: any[] = [];
-    const toUpdate: any[] = [];
-    const observationsToUpsert: any[] = [];
-
-    for (const os of osArray) {
-      const existingObj = existingMap.get(String(os.os_number));
-      const existingObs = existingObsMap.get(String(os.os_number));
-
-      const velho_valor_pago = existingObj ? Number(existingObj.paid_value) : 0;
-      const delta_paid = os.paid_value - velho_valor_pago;
-      (os as any).delta_paid = delta_paid;
-
-      let paymentDate: string | null = null;
-      if (delta_paid > 0) {
-        paymentDate = targetDate || new Date().toISOString().split('T')[0];
-      } else if (existingObj?.last_payment_date) {
-        paymentDate = existingObj.last_payment_date;
-      } else if (os.paid_value > 0) {
-        paymentDate = targetDate || new Date().toISOString().split('T')[0];
-      }
-
+    const osBatchPayload = osArray.map(os => {
       const osCash = os.parsed_cash || os.cash_value || 0;
-
-      const payload = {
-        store_id: storeId,
-        store_name: storeName,
+      return {
         os_number: String(os.os_number),
-        plate: os.plate,
-        client_name: os.client_name || existingObj?.client_name || null,
+        plate: os.plate || null,
+        client_name: os.client_name || null,
         total_value: os.total_value,
         paid_value: os.paid_value,
-        payment_method: os.payment_method,
+        payment_method: os.payment_method || null,
         status: os.status,
         raw_status: os.raw_status || null,
         credit_value: os.parsed_credit || 0,
         debit_value: os.parsed_debit || 0,
         pix_transfer_value: os.parsed_pix_transfer || 0,
         cash_value: osCash,
-        opened_at: os.opened_at,
-        closed_at: os.closed_at,
-        days_open: os.days_open,
-        last_payment_date: paymentDate,
-        updated_at: new Date().toISOString()
+        opened_at: os.opened_at || null,
+        closed_at: os.closed_at || null,
+        days_open: os.days_open || null,
       };
+    });
 
-      if (existingObj) {
-        const oldTotal = Number(existingObj.total_value);
-        const newTotal = Number(payload.total_value);
-        const oldPaid = Number(existingObj.paid_value || 0);
-        const incomingPaid = Number(payload.paid_value || 0);
-        // Merge defensivo: quitação prévia nunca regride
-        const finalPaid = Math.max(oldPaid, incomingPaid);
-        payload.paid_value = finalPaid;
+    // Chamada atômica: garante integridade da linha de base, histórico e observações sem race conditions (Spec 460)
+    const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('record_os_import_batch', {
+      p_store_id: storeId,
+      p_target_date: effectiveDate,
+      p_store_name: storeName,
+      p_os_batch: osBatchPayload,
+      p_receivables: []
+    });
 
-        const oldStatus = existingObj.status;
-        let newStatus = os.status;
-        if (finalPaid >= newTotal && newTotal > 0) {
-          newStatus = 'finalizado';
-          payload.status = 'finalizado';
-        }
-
-        const oldRawStatus = existingObj.raw_status;
-        const newRawStatus = payload.raw_status;
-        const oldCredit = Number(existingObj.credit_value || 0);
-        const newCredit = Number(payload.credit_value);
-        const oldDebit = Number(existingObj.debit_value || 0);
-        const newDebit = Number(payload.debit_value);
-        const oldPix = Number(existingObj.pix_transfer_value || 0);
-        const newPix = Number(payload.pix_transfer_value);
-        
-        const changes = [];
-        if (oldTotal !== newTotal) changes.push({ field: 'total_value', from: oldTotal, to: newTotal });
-        if (oldPaid !== finalPaid) changes.push({ field: 'paid_value', from: oldPaid, to: finalPaid });
-        if (oldStatus !== newStatus) changes.push({ field: 'status', from: oldStatus, to: newStatus });
-        if (oldRawStatus !== newRawStatus) changes.push({ field: 'raw_status', from: oldRawStatus, to: newRawStatus });
-        if (oldCredit !== newCredit) changes.push({ field: 'credit_value', from: oldCredit, to: newCredit });
-        if (oldDebit !== newDebit) changes.push({ field: 'debit_value', from: oldDebit, to: newDebit });
-        if (oldPix !== newPix) changes.push({ field: 'pix_transfer_value', from: oldPix, to: newPix });
-        
-        let currentHistory = existingObj.history_log || [];
-        if (!Array.isArray(currentHistory)) currentHistory = [];
-        
-        if (changes.length > 0) {
-           currentHistory.push({
-             date: new Date().toISOString(),
-             changes
-           });
-        }
-        
-        toUpdate.push({ id: existingObj.id, history_log: currentHistory, ...payload });
-      } else {
-        toInsert.push({ history_log: [], ...payload });
-      }
-
-      // Cálculo de deltas comprovados para os_import_observations
-      const creditBefore = existingObs ? Number(existingObs.credit_before || 0) : (existingObj ? Number(existingObj.credit_value || 0) : 0);
-      const debitBefore = existingObs ? Number(existingObs.debit_before || 0) : (existingObj ? Number(existingObj.debit_value || 0) : 0);
-      const pixBefore = existingObs ? Number(existingObs.pix_before || 0) : (existingObj ? Number(existingObj.pix_transfer_value || 0) : 0);
-      const paidBefore = existingObs ? Number(existingObs.paid_before || 0) : (existingObj ? Number(existingObj.paid_value || 0) : 0);
-
-      const creditAfter = Number(payload.credit_value || 0);
-      const debitAfter = Number(payload.debit_value || 0);
-      const pixAfter = Number(payload.pix_transfer_value || 0);
-      const paidAfter = Number(payload.paid_value || 0);
-
-      const deltaCredit = Math.max(0, Number((creditAfter - creditBefore).toFixed(2)));
-      const deltaDebit = Math.max(0, Number((debitAfter - debitBefore).toFixed(2)));
-      const deltaPix = Math.max(0, Number((pixAfter - pixBefore).toFixed(2)));
-      const deltaPaid = Math.max(0, Number((paidAfter - paidBefore).toFixed(2)));
-
-      observationsToUpsert.push({
-        store_id: storeId,
-        os_number: String(os.os_number),
-        target_date: effectiveDate,
-        credit_before: creditBefore,
-        credit_after: creditAfter,
-        delta_credit: deltaCredit,
-        debit_before: debitBefore,
-        debit_after: debitAfter,
-        delta_debit: deltaDebit,
-        pix_before: pixBefore,
-        pix_after: pixAfter,
-        delta_pix: deltaPix,
-        paid_before: paidBefore,
-        paid_after: paidAfter,
-        delta_paid: deltaPaid,
-        total_value: Number(payload.total_value || 0),
-        status: payload.status,
-        client_name: payload.client_name,
-        plate: payload.plate,
-        consumed_credit: existingObs ? Number(existingObs.consumed_credit || 0) : 0,
-        consumed_debit: existingObs ? Number(existingObs.consumed_debit || 0) : 0,
-        updated_at: new Date().toISOString()
-      });
+    if (rpcErr) {
+      console.error('[useImportProcessor] Erro crítico na RPC record_os_import_batch:', rpcErr);
+      throw new Error(`Falha ao registrar OSs da loja ${storeName}: ${rpcErr.message}`);
     }
 
-    if (toInsert.length > 0) {
-      await supabase.from('patio_os').upsert(toInsert, { onConflict: 'store_id,os_number', ignoreDuplicates: true });
-    }
-    for (const update of toUpdate) {
-      await supabase.from('patio_os').update(update).eq('id', update.id);
-    }
-
-    if (observationsToUpsert.length > 0) {
-      for (let i = 0; i < observationsToUpsert.length; i += 200) {
-        const chunk = observationsToUpsert.slice(i, i + 200);
-        const { error: obsErr } = await supabase
-          .from('os_import_observations')
-          .upsert(chunk, { onConflict: 'store_id,target_date,os_number' });
-        if (obsErr) {
-          console.warn('[useImportProcessor] Erro ao persistir os_import_observations:', obsErr);
-        }
-      }
-    }
+    console.log(`[useImportProcessor] Lote de OSs persistido via RPC com sucesso para ${storeName}:`, rpcRes);
 
     // Sincronizar store_cash_vault para OSs com pagamento em dinheiro físico de forma atômica
     const cashOsList = osArray.filter(os => (os.parsed_cash && os.parsed_cash > 0) || (os.cash_value && os.cash_value > 0));

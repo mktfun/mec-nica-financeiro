@@ -253,6 +253,24 @@ export function executeAutoMatchingEngine(
       }
     });
 
+  // Mapa de todas as vendas Rede por loja para validação de unicidade bidirecional (1:1)
+  const allRedeTxsByStore = new Map<string, Array<{ gross: number; isDebit: boolean; isCredit: boolean }>>();
+  results.redeResults
+    .filter(r => r.success)
+    .forEach(r => {
+      r.transactions.forEach(tx => {
+        if (targetDate && tx.date && !isWithinDateWindow(tx.date, targetDate, 3)) return;
+        const storeId = mapping[tx.storeName];
+        if (!storeId || storeId === 'GLOBAL') return;
+        const gross = Number(tx.grossAmount || 0);
+        const norm = String(tx.method || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const isDeb = norm.includes('deb');
+        const isCred = norm.includes('cred');
+        if (!allRedeTxsByStore.has(storeId)) allRedeTxsByStore.set(storeId, []);
+        allRedeTxsByStore.get(storeId)!.push({ gross, isDebit: isDeb, isCredit: isCred });
+      });
+    });
+
   // 2. Auto-Match Rede (Vendas de Cartão) x OSs com recebimento em Cartão / Recebíveis de Cartão
   results.redeResults
     .filter(r => r.success)
@@ -271,68 +289,64 @@ export function executeAutoMatchingEngine(
         const net = Number(tx.netAmount || 0);
         const amount = gross > 0 ? gross : net;
 
-        const methodRaw = String(tx.method || '').toLowerCase();
-        const methodDesc = methodRaw.includes('debito')
+        const methodRaw = String(tx.method || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const isDebit = methodRaw.includes('deb');
+        const isCredit = methodRaw.includes('cred');
+        const methodDesc = isDebit
           ? 'Cartão de Débito'
-          : methodRaw.includes('credito')
+          : isCredit
           ? 'Cartão de Crédito'
           : 'Cartão / POS';
 
         const storeOss = osByStore.get(storeId) || [];
         const storeReceivables = receivablesByStore.get(storeId) || [];
 
-        // Tier 1: Match direto em parsed_credit / parsed_debit (Exclusivamente Bruto)
+        // Tier 1: Match direto em parsed_credit / parsed_debit por modalidade estrita
         let tier1Candidates = storeOss.filter(os => {
           if (matchedOsNumbers.has(String(os.os_number))) return false;
+          if (!isDebit && !isCredit) return false;
           const credit = Number(os.parsed_credit || 0);
           const debit = Number(os.parsed_debit || 0);
-          const osCardVal = credit + debit;
-          if (osCardVal <= 0) return false;
-          return Math.abs(osCardVal - gross) <= TOLERANCE;
+          if (isDebit && Math.abs(debit - gross) <= TOLERANCE) return true;
+          if (isCredit && Math.abs(credit - gross) <= TOLERANCE) return true;
+          return false;
         });
+
+        // Contagem de transações POS concorrentes pelo mesmo valor e modalidade na mesma loja
+        const storeAllTxs = allRedeTxsByStore.get(storeId) || [];
+        const competingTxsCount = storeAllTxs.filter(t =>
+          Math.abs(t.gross - gross) <= TOLERANCE &&
+          ((isDebit && t.isDebit) || (isCredit && t.isCredit))
+        ).length;
 
         let matchedOs: ParsedOS | undefined;
         let isCollision = false;
 
-        if (tier1Candidates.length === 1) {
+        if (tier1Candidates.length === 1 && competingTxsCount === 1) {
           matchedOs = tier1Candidates[0];
-        } else if (tier1Candidates.length > 1) {
+        } else if (tier1Candidates.length > 1 || (tier1Candidates.length === 1 && competingTxsCount > 1)) {
           isCollision = true;
         }
 
-        // Tier 2: Match via receivablesArray de Cartão da Loja
-        if (!matchedOs && !isCollision) {
+        // Tier 2: Match via receivablesArray de Cartão da Loja com verificação estrita de modalidade
+        if (!matchedOs && !isCollision && (isDebit || isCredit)) {
           const matchedReceivables = storeReceivables.filter(rec => {
             if (!rec.os_number || matchedOsNumbers.has(String(rec.os_number))) return false;
             const recVal = Number(rec.value || 0);
-            const isCardRec = /CART|CRED|DEB|OUTR|POS/i.test(rec.type || '') || /CART|CRED|DEB/i.test(rec.description || '');
+            const recDesc = String(rec.description || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const recType = String(rec.type || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const isRecDebit = recDesc.includes('deb') || recType.includes('deb');
+            const isRecCredit = recDesc.includes('cred') || recType.includes('cred');
+            const isCardRec = isRecDebit || isRecCredit || /cart|outr|pos/i.test(rec.type || '') || /cart/i.test(rec.description || '');
             if (!isCardRec) return false;
+            if (isDebit && !isRecDebit && isRecCredit) return false;
+            if (isCredit && !isRecCredit && isRecDebit) return false;
             return Math.abs(recVal - gross) <= TOLERANCE;
           });
 
-          if (matchedReceivables.length === 1 && matchedReceivables[0].os_number) {
+          if (matchedReceivables.length === 1 && competingTxsCount === 1 && matchedReceivables[0].os_number) {
             matchedOs = storeOss.find(os => String(os.os_number) === String(matchedReceivables[0].os_number));
-          } else if (matchedReceivables.length > 1) {
-            isCollision = true;
-          }
-        }
-
-        // Tier 3: Match via payment_method tag ou fallback com paid_value / total_value
-        if (!matchedOs && !isCollision) {
-          const tier3Candidates = storeOss.filter(os => {
-            if (matchedOsNumbers.has(String(os.os_number))) return false;
-            const pm = String(os.payment_method || '').toLowerCase();
-            const isCardTagged = pm.includes('cart') || pm.includes('cred') || pm.includes('deb') || pm.includes('visa') || pm.includes('master') || pm.includes('elo') || pm.includes('pos') || pm.includes('rede') || pm.includes('outr');
-
-            const osVal = Number(os.paid_value || 0) || Number(os.total_value || 0);
-            if (osVal <= 0) return false;
-
-            return isCardTagged && Math.abs(osVal - gross) <= TOLERANCE;
-          });
-
-          if (tier3Candidates.length === 1) {
-            matchedOs = tier3Candidates[0];
-          } else if (tier3Candidates.length > 1) {
+          } else if (matchedReceivables.length > 1 || (matchedReceivables.length === 1 && competingTxsCount > 1)) {
             isCollision = true;
           }
         }
@@ -348,10 +362,14 @@ export function executeAutoMatchingEngine(
             paymentMethod: methodDesc
           });
         } else {
-          let reason = `Nenhuma OS encontrada para o valor bruto de R$ ${gross.toFixed(2)} na filial.`;
+          let reason = `Nenhuma OS com delta de ${isDebit ? 'débito' : isCredit ? 'crédito' : 'cartão'} no valor bruto de R$ ${gross.toFixed(2)} encontrada na filial.`;
           if (isCollision) {
-            const count = tier1Candidates.length > 1 ? tier1Candidates.length : 2;
-            reason = `Colisão ambígua: ${count} OSs com o mesmo valor bruto de R$ ${gross.toFixed(2)} na filial. Requer seleção manual.`;
+            if (competingTxsCount > 1) {
+              reason = `Colisão bidirecional: ${competingTxsCount} vendas de maquininha de R$ ${gross.toFixed(2)} disputam a mesma OS. Requer seleção manual.`;
+            } else {
+              const count = tier1Candidates.length > 1 ? tier1Candidates.length : 2;
+              reason = `Colisão ambígua: ${count} OSs com o mesmo valor bruto de R$ ${gross.toFixed(2)} na filial. Requer seleção manual.`;
+            }
           }
 
           unmatchedTransactions.push({
@@ -364,7 +382,7 @@ export function executeAutoMatchingEngine(
             paymentMethod: methodDesc,
             amount,
             status: 'pendente',
-            candidateCount: isCollision ? (tier1Candidates.length || 2) : 0,
+            candidateCount: isCollision ? (tier1Candidates.length || competingTxsCount || 2) : 0,
             rejectionReason: reason
           });
         }

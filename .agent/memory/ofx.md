@@ -168,3 +168,18 @@
    - Ao limpar prefixos bancários (`BOLETO PAGO`, `PIX ENVIADO`, `SISPAG FORNECEDORES`), se o que restar for vazio ou apenas dígitos, o rótulo da transação é preservado (ex.: "SISPAG Fornecedores" ou "Boleto Pago 0039..."), nunca deixando dígitos soltos sem contexto.
    - Referências bancárias (`#CHECKNUM`) são expostas em badges secundárias e na ficha de detalhes (`TransactionDetailModal.tsx`).
 **Não fazer:** Gravar o alias da conta bancária (`ITAU - 8813994293`) em `counterpart_name` durante a ingestão do OFX.
+
+## [2026-10-01] — [Feature ID: 462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso] Persistência de Seleção de Saldo e Idempotência de Regras OFX
+
+**Contexto:** Erro 42703 na RPC `apply_ofx_balance_selection` impedia a gravação das fontes de saldo escolhidas e suas regras, gerando falso sucesso no assistente de importação.
+**Regra aprendida:**
+1. **Incompatibilidade de Schema com `updated_at`:** A tabela `reconciliations` não possui `updated_at`. Consultas de saldo bancário oficial devem atualizar exclusivamente `bank_total`, sem tentar gravar timestamps inexistentes.
+2. **Idempotência de Versão em `ofx_balance_rules`:**
+   - Apenas incrementar a versão da regra quando os parâmetros normativos (`source_kind`, `memo_normalized`, `store_id`) forem alterados.
+   - Em retries de importação ou reexecuções com as mesmas seleções, a versão da regra ativa existente deve ser preservada.
+3. **Agregação Algébrica por Filial:**
+   - Para múltiplas contas associadas à mesma loja na data, `bank_total = SUM(selected_amount)`.
+   - Contas com saldo devedor (cheque especial / saldo negativo) devem ser abatidas algebricamente do saldo credor da mesma filial.
+4. **Retry Isolado sem Reimportação:**
+   - O assistente de importação deve reter `lastBalancePayload` para permitir reaplicação direta da RPC `apply_ofx_balance_selection`, sem forçar reenvio de arquivos OFX nem reprocessamento de lançamentos já persistidos.
+

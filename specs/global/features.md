@@ -73,4 +73,9 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 - `Fase2RedeVsOsReview.tsx`: Interface de revisão de batimento Rede x OS com agrupamento por filial e resolução interativa de colisões via `SmartResolutionStrip`.
 - `save_ofx_balance_rule`: RPC atômica (`SECURITY DEFINER`) para upsert de regras em `ofx_balance_rules` por conta e filial, garantindo persistência sem bloqueio RLS para a role `anon`.
 - `patio_os_daily_backups` & `purge_daily_financial_data`: Snapshot de pátio pré-importação por data/loja e reversão transacional no "Resetar Dados do Dia", restaurando OSs modificadas ao estado exato anterior e expurgando adições órfãs.
+- `record_os_import_batch`: RPC atômica para ingestão serializada de OSs e gravação pericial de linha de base e incrementos por modalidade em `os_import_observations`, preservando deltas reais em reimportações.
+- `get_rede_os_eligible_candidates` & `match_stage2_rede_os`: RPCs canônicas atualizadas com colunas totalmente qualificadas (fim do erro 42702 em `payment_method`), CTEs seguras para pooling, normalização de diacríticos e unicidade bidirecional (1:1) contra colisões em loop.
+- `apply_ofx_balance_selection`: RPC corrigida para atualização exclusiva de `bank_total` em `reconciliations` (fim do erro 42703 `updated_at`), com soma algébrica por filial e versionamento idempotente em `ofx_balance_rules`.
+- `ManualMatchOsModal.tsx`: Interface de correspondência manual enriquecida com barra diagnóstica contábil (`Base | Acum | Delta | Cons | Disp`), eliminação do badge ilusório "Match por Valor" e confirmação de segurança para vínculos excepcionais com delta zerado.
+- `CentralImportWizard.tsx`: Assistente de importação com bloqueio de falso sucesso, retenção pericial do erro em `auditData.ofxBalanceSelectionError`, Hero Banner com status "Saldo Pendente" e botão de retry isolado (`handleRetryOfxBalance`).
 

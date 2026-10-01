@@ -910,4 +910,23 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
    - O rótulo foi ajustado de `REDE TOTAL` para `REDE LÍQUIDO`, acompanhado de tooltip explicativo: "Vendas líquidas na adquirente Rede". O valor exibido corresponde ao montante líquido que ingressará no banco, mantendo o sub-chip `A COMPENSAR (+R$ ...)` em destaque quando pendente de liquidação.
 **Não fazer:** Exibir selos de celebração ou conformidade de conciliação ("100% Conciliado") em dias ou filiais onde não houve transações reais a conciliar.
 
+## [2026-10-01] — [Feature ID: 461-unificar-matcher-rede-os-selecao-manual-diagnostico] Fim do "Match por Valor" e Decomposição Contábil no Modal
+
+**Contexto:** No modal de conciliação manual (`ManualMatchOsModal.tsx`), OSs com incremento zero recebiam badge verde enganoso "Match por Valor".
+**Regra aprendida:**
+1. **Eliminação do Falso "Match por Valor":** Substituído o badge "Match por Valor" por "Delta Exato", e adicionados badges de diagnóstico contábil pericial (`Elegível 1:1`, `Colisão Ambígua`, `Nome/Doc Divergente`, `Modalidade Oposta`, `Já Consumido`, `Sem Delta no Dia`).
+2. **Sublinha de Decomposição Contábil:** Abaixo do nome do cliente/placa, exibir de forma discriminada a linha de base e o consumo contábil:
+   `Base: R$ ... | Acum: R$ ... | Delta: R$ ... | Cons: R$ ... | Disp: R$ ...`
+3. **Banner de Erro Recuperável:** Caso a chamada à RPC de candidatos falhe, exibir banner de aviso com botão "Tentar Novamente", sem recorrer a fallbacks silenciosos que distorcem a realidade.
+4. **Diálogo de Confirmação para Casos Excepcionais:** Vincular manualmente uma OS sem incremento disponível (`available_card_amount <= 0.05`) abre modal de confirmação de segurança com aviso explícito de divergência residual.
+
+## [2026-10-01] — [Feature ID: 462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso] Banner de Atenção no Passo 8 e Botão de Retry Isolado
+
+**Contexto:** O assistente de importação (`CentralImportWizard.tsx`) exibia um Hero Banner verde com "Importação e Conciliação Concluída com Sucesso" mesmo quando a persistência de saldo OFX falhava.
+**Regra aprendida:**
+1. **Transparência Visual no Hero Banner:** Se `ofxBalanceSelectionError` estiver ativo ao concluir a importação, o Hero Banner substitui o ícone verde `<CheckCircle2>` pelo ícone âmbar `<AlertTriangle>` e altera o título para "Importação Concluída com Pendência no Saldo OFX".
+2. **Card de Alerta com Ação Direta:** Renderiza um banner âmbar (`bg-amber-500/10 border-amber-500/30`) detalhando o código do erro, a mensagem e o botão primário "Repetir Saldo OFX" com spinner interativo.
+3. **Card Data Base com Status Pendente:** No grid de 4 métricas, o card "Data Base" exibe o selo âmbar "Saldo Pendente" em substituição ao verde "Consolidado".
+4. **Cancelamento de Auto-Avanço:** Erros de saldo bloqueiam o auto-avanço para o Passo 4 (`autoAdvanceToStep4 && !currentOfxError`), retendo o operador no Passo 8 para que tome conhecimento da pendência imediatamente.
+
 

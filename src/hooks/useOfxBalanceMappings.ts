@@ -84,6 +84,22 @@ export interface BalancePreviewImpact {
   diff: number;
 }
 
+export interface OfxBalanceSelectionErrorState {
+  code?: string;
+  message: string;
+  targetDate: string;
+  affectedAccounts: string[];
+  details?: any;
+  failedAt: string;
+}
+
+export interface ApplyOfxBalanceSelectionResult {
+  success: boolean;
+  target_date: string;
+  affected_stores: string[];
+  was_closed: boolean;
+}
+
 export function useOfxBalanceMappings(options?: { accountKeys?: string[]; date?: string }) {
   const queryClient = useQueryClient();
   const { accountKeys, date } = options || {};
@@ -153,15 +169,18 @@ export function useOfxBalanceMappings(options?: { accountKeys?: string[]; date?:
       targetDate: string;
       userId?: string;
       reason?: string;
-    }) => {
+    }): Promise<ApplyOfxBalanceSelectionResult> => {
       const { data, error } = await (supabase as any).rpc('apply_ofx_balance_selection', {
         p_selections: items,
         p_target_date: targetDate,
         p_user_id: userId || null,
         p_reason: reason || null,
       });
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('[useOfxBalanceMappings] Erro ao aplicar seleção de saldo OFX:', error);
+        throw new Error(error.message || `Erro ao aplicar saldo OFX (código: ${error.code || 'N/A'})`);
+      }
+      return data as ApplyOfxBalanceSelectionResult;
     },
     onSuccess: (_: any, variables: any) => {
       queryClient.invalidateQueries({ queryKey: ['ofx_balance_rules'] });
@@ -170,6 +189,7 @@ export function useOfxBalanceMappings(options?: { accountKeys?: string[]; date?:
       queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
       queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
       queryClient.invalidateQueries({ queryKey: ['conciliacao-backend'] });
+      queryClient.invalidateQueries({ queryKey: ['stores'] });
     },
   });
 
