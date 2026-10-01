@@ -78,4 +78,6 @@ Toda nova spec DEVE consultar este catálogo para **REUTILIZAR** em vez de dupli
 - `apply_ofx_balance_selection`: RPC corrigida para atualização exclusiva de `bank_total` em `reconciliations` (fim do erro 42703 `updated_at`), com soma algébrica por filial e versionamento idempotente em `ofx_balance_rules`.
 - `ManualMatchOsModal.tsx`: Interface de correspondência manual enriquecida com barra diagnóstica contábil (`Base | Acum | Delta | Cons | Disp`), eliminação do badge ilusório "Match por Valor" e confirmação de segurança para vínculos excepcionais com delta zerado.
 - `CentralImportWizard.tsx`: Assistente de importação com bloqueio de falso sucesso, retenção pericial do erro em `auditData.ofxBalanceSelectionError`, Hero Banner com status "Saldo Pendente" e botão de retry isolado (`handleRetryOfxBalance`).
+- `20261001000001_remediar_brechas_seguranca_lovable.sql`: Blindagem de segurança de banco no Supabase contra 5 achados Lovable: eliminação de políticas anônimas em 38 tabelas com RLS exigindo `profiles.id = auth.uid()`, view `transactions` com `security_invoker = true`, fixação de `search_path = public` em 29 funções, revogação de `EXECUTE` de `anon` e restrição do storage `knowledge_graph`.
+
 

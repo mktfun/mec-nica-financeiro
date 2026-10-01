@@ -3240,8 +3240,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1790797051.3626785,
-    "ast_hash": "f07642b8684a5948af6654c7e03c0aeb",
+    "mtime": 1790866166.4777641,
+    "ast_hash": "700a9f270be902bc8d696008f195be6f",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -5314,49 +5314,24 @@
     "ast_hash": "80826d8777002814af8ed6a5b636f534",
     "semantic_hash": ""
   },
-  "specs/460-preservar-incremento-real-pagamentos-os/design.md": {
-    "mtime": 1790857786.1117394,
-    "ast_hash": "15575fb86bf12e94609392259e29edc0",
+  "supabase/migrations/20261001000001_remediar_brechas_seguranca_lovable.sql": {
+    "mtime": 1790865198.9572268,
+    "ast_hash": "82f1b75781e139c57e759631ab2d9e71",
     "semantic_hash": ""
   },
-  "specs/460-preservar-incremento-real-pagamentos-os/proposal.md": {
-    "mtime": 1790857768.4286983,
-    "ast_hash": "f4351187356a593433fcbd088a37aaa9",
+  "specs/463-remediar-brechas-seguranca-rls-lovable/design.md": {
+    "mtime": 1790865061.9500897,
+    "ast_hash": "a9880f3da6df8f6730f2ea9fc00ae40e",
     "semantic_hash": ""
   },
-  "specs/460-preservar-incremento-real-pagamentos-os/spec-plan.md": {
-    "mtime": 1790858619.2970445,
-    "ast_hash": "041640610a85d4f04a367a5dd788d635",
+  "specs/463-remediar-brechas-seguranca-rls-lovable/proposal.md": {
+    "mtime": 1790865042.1000085,
+    "ast_hash": "b96819a2da229421501da12709f87372",
     "semantic_hash": ""
   },
-  "specs/461-unificar-matcher-rede-os-selecao-manual-diagnostico/design.md": {
-    "mtime": 1790859214.2542112,
-    "ast_hash": "7a7aecaec4b9bddc7f925e45a0f282d0",
-    "semantic_hash": ""
-  },
-  "specs/461-unificar-matcher-rede-os-selecao-manual-diagnostico/proposal.md": {
-    "mtime": 1790859196.4731472,
-    "ast_hash": "f0c1482336583734857049a180aeb012",
-    "semantic_hash": ""
-  },
-  "specs/461-unificar-matcher-rede-os-selecao-manual-diagnostico/spec-plan.md": {
-    "mtime": 1790860528.870427,
-    "ast_hash": "fd5bf102a01e7eaf683c4ab506ca89dd",
-    "semantic_hash": ""
-  },
-  "specs/462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso/design.md": {
-    "mtime": 1790860962.9394188,
-    "ast_hash": "792dfa79f729f396e43ac3d9593683fe",
-    "semantic_hash": ""
-  },
-  "specs/462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso/proposal.md": {
-    "mtime": 1790860944.7520359,
-    "ast_hash": "78d7e40450b400c857ebb375a5644f72",
-    "semantic_hash": ""
-  },
-  "specs/462-corrigir-selecao-saldo-ofx-impedir-sucesso-falso/spec-plan.md": {
-    "mtime": 1790862029.098357,
-    "ast_hash": "3ce339c1692ed710ef1889bcf9c32059",
+  "specs/463-remediar-brechas-seguranca-rls-lovable/spec-plan.md": {
+    "mtime": 1790866022.9464347,
+    "ast_hash": "5cce37f7d84dab0d7e7647487d4cd03b",
     "semantic_hash": ""
   }
 }

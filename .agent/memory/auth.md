@@ -17,3 +17,13 @@
 
 **Não fazer:** Nunca coloque a variável de estado retornado de `useState` como dependência de um `useEffect` que executa `setState` (`useEffect(..., [session])` com `setSession`).
 
+## [2026-10-01] — [Feature ID: 463-remediar-brechas-seguranca-rls-lovable]
+
+**Contexto:** O scanner de segurança da Lovable (integrado ao Supabase Security Advisor) apontou 5 vulnerabilidades ao publicar: 38 tabelas com acesso anônimo irrestrito (`USING (true)` para `anon`), bucket `knowledge_graph` legível por qualquer usuário, 29 funções com `search_path` mutável e view `transactions` com `security_definer`.
+**Regra aprendida:**
+1. **Blindagem RLS Corporativa:** Nenhuma tabela financeira pode ter políticas concedidas para as roles `anon` ou `public` com `qual = true`. Todas as regras de leitura e escrita devem ser restritas `TO authenticated` e validar a existência do usuário na tabela de controle de acesso (`EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid())`).
+2. **Defesa em Funções e Views:** Toda função de schema público deve ter `SET search_path = public` e revogação de privilégios `EXECUTE` para `PUBLIC` e `anon`. Toda view deve possuir `WITH (security_invoker = true)`.
+**Risco identificado:** Políticas criadas temporariamente para testes que concedem `Allow anon ...` vazam para migrações de produção e deixam o banco vulnerável a queries diretas via PostgREST.
+**Não fazer:** Nunca criar políticas `FOR ALL TO anon USING (true)` ou `FOR SELECT TO public USING (true)` em tabelas de produção.
+
+
