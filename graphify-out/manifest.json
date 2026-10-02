@@ -5295,8 +5295,8 @@
     "semantic_hash": ""
   },
   "tests/integration/matcher-rede-os-diagnostics.test.mjs": {
-    "mtime": 1790860492.2002819,
-    "ast_hash": "b24825b016c28a5628162b5c7322b988",
+    "mtime": 1790876167.4506176,
+    "ast_hash": "1b435ed0b96fb7bd09f53c6786820e51",
     "semantic_hash": ""
   },
   "tests/integration/ofx-balance-selection.test.mjs": {
@@ -5305,8 +5305,8 @@
     "semantic_hash": ""
   },
   "tests/integration/os-payment-import-baseline.test.mjs": {
-    "mtime": 1790858354.8831341,
-    "ast_hash": "71f6c0961e95a3ceccdd37a651d12028",
+    "mtime": 1790876118.6532648,
+    "ast_hash": "1e9434c1570658a477449c473c030382",
     "semantic_hash": ""
   },
   "tests/unit/import-stage-outcome.test.mjs": {
@@ -5319,19 +5319,79 @@
     "ast_hash": "82f1b75781e139c57e759631ab2d9e71",
     "semantic_hash": ""
   },
-  "specs/463-remediar-brechas-seguranca-rls-lovable/design.md": {
-    "mtime": 1790865061.9500897,
-    "ast_hash": "a9880f3da6df8f6730f2ea9fc00ae40e",
+  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/rollback_20261001000005.sql": {
+    "mtime": 1790878396.0710926,
+    "ast_hash": "62666cac26d6e608e9bd4f138dc6f8bb",
     "semantic_hash": ""
   },
-  "specs/463-remediar-brechas-seguranca-rls-lovable/proposal.md": {
-    "mtime": 1790865042.1000085,
-    "ast_hash": "b96819a2da229421501da12709f87372",
+  "supabase/migrations/20261001000004_fix_os_import_reset_consistency.sql": {
+    "mtime": 1790876011.5965357,
+    "ast_hash": "f3cdd3e74da99c6ab78e1beb6a6cf3e5",
     "semantic_hash": ""
   },
-  "specs/463-remediar-brechas-seguranca-rls-lovable/spec-plan.md": {
-    "mtime": 1790866022.9464347,
-    "ast_hash": "5cce37f7d84dab0d7e7647487d4cd03b",
+  "supabase/migrations/20261001000005_paridade_elegibilidade_matcher_e_desvinculo.sql": {
+    "mtime": 1790879072.779508,
+    "ast_hash": "c5d36118988eb66b517d1b7d6812220e",
+    "semantic_hash": ""
+  },
+  "tests/integration/helpers/disposable-finance-db.mjs": {
+    "mtime": 1790878932.8733852,
+    "ast_hash": "5713e7f180696c059c71af8a268e552b",
+    "semantic_hash": ""
+  },
+  "tests/integration/matcher-eligibility-parity.test.mjs": {
+    "mtime": 1790880106.6528382,
+    "ast_hash": "0ef22f4d48f6d0ac57dab4e392422108",
+    "semantic_hash": ""
+  },
+  "tests/integration/os-import-reset-reimport.test.mjs": {
+    "mtime": 1790875715.0403461,
+    "ast_hash": "94513bb4bb527118ad97f749733670a3",
+    "semantic_hash": ""
+  },
+  "specs/464-validacao-e2e-fluxo-30-09-rede-os-maua/design.md": {
+    "mtime": 1790868720.946555,
+    "ast_hash": "5ae408b5273a81c84b11aaf8e3e6ff0b",
+    "semantic_hash": ""
+  },
+  "specs/464-validacao-e2e-fluxo-30-09-rede-os-maua/proposal.md": {
+    "mtime": 1790868712.0441878,
+    "ast_hash": "5eeae46193b46fbd186a7bd94ba0db30",
+    "semantic_hash": ""
+  },
+  "specs/464-validacao-e2e-fluxo-30-09-rede-os-maua/spec-plan.md": {
+    "mtime": 1790873100.2365727,
+    "ast_hash": "72fab79695ddfd82b573851caf443199",
+    "semantic_hash": ""
+  },
+  "specs/465-consistencia-importacao-reset-reimportacao-os/design.md": {
+    "mtime": 1790875462.1306486,
+    "ast_hash": "f3652e0503e42fd2926ac6734f639ea0",
+    "semantic_hash": ""
+  },
+  "specs/465-consistencia-importacao-reset-reimportacao-os/proposal.md": {
+    "mtime": 1790875449.5037096,
+    "ast_hash": "a8b002ff71bb41ecef6133a3fbc7ace2",
+    "semantic_hash": ""
+  },
+  "specs/465-consistencia-importacao-reset-reimportacao-os/spec-plan.md": {
+    "mtime": 1790876468.7086465,
+    "ast_hash": "61a4bdd1f8f3757d279a2f5645154aed",
+    "semantic_hash": ""
+  },
+  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/design.md": {
+    "mtime": 1790878287.8885288,
+    "ast_hash": "cdc71d99e5da8c90f6f726dbcb0d720c",
+    "semantic_hash": ""
+  },
+  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/proposal.md": {
+    "mtime": 1790878275.4617293,
+    "ast_hash": "79a5d8f867987ee1e88de9361e0aa37e",
+    "semantic_hash": ""
+  },
+  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/spec-plan.md": {
+    "mtime": 1790880418.1624744,
+    "ast_hash": "221c7dd3c051e8b51b2b45c2d19d0605",
     "semantic_hash": ""
   }
 }

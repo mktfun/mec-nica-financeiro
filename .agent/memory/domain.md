@@ -1,3 +1,28 @@
+## [2026-10-02] — [Feature ID: 466-paridade-elegibilidade-rede-os-e-desvinculo]
+
+**Contexto:** Eliminação do bloqueio de elegibilidade de Ordens de Serviço (OSs) quitadas ou pré-vinculadas no motor de conciliação de cartões Rede × OS (`match_stage2_rede_os`), unificação da regra de elegibilidade com a seleção manual (`get_rede_os_eligible_candidates`), isolamento estrito de número de OS por loja e desvinculação consistente e idempotente (`unlink_manual_os_match`).
+
+**Regra aprendida:**
+1. **Inconsistência de `match_status = 'MATCHED'` residual:**
+   - Uma OS marcada como `MATCHED` na tabela `patio_os` não pode ser sumariamente descartada pelo auto-matcher se não houver um vínculo ativo de maquininha (`pos_transactions`) ou registro ativo em `conciliation_matches` na mesma data e loja.
+   - OSs 100% quitadas pelo cliente ou com flag residual da importação continuam elegíveis para comprovação de vendas de cartão 1:1.
+2. **Isolamento de Loja por Chave Composta `(store_id, os_number)`:**
+   - O mesmo número de OS (ex: OS 443) pode existir concorrentemente em lojas diferentes (ex: Jabaquara e Imigrantes).
+   - O array de OSs vinculadas e candidatas DEVE SEMPRE ser indexado por `store_id || ':' || os_number` para evitar que a vinculação em uma filial bloqueie uma OS homônima em outra filial.
+3. **Proteção Anti-Órfão em `conciliation_matches`:**
+   - Registros em `conciliation_matches` só são considerados vínculos ativos se a transação POS referenciada (`rede_transaction_id`) existir fisicamente em `pos_transactions` e conferir em `store_id` e `matched_os_number`.
+4. **Desvinculação Segura e Idempotência:**
+   - Na desvinculação (`unlink_manual_os_match`), se o vínculo original não teve o efeito `baixa_aplicada` gravado em `conciliation_matches`, o saldo do pátio (`patio_os.paid_value`) NUNCA deve ser deduzido (evitando adulterar o valor pago pelo cliente).
+   - Em baixas parciais, estorna estritamente o valor registrado em `divergence_amount`.
+   - A liberação do saldo consumido na observação de importação (`os_import_observations`) DEVE ser estritamente na modalidade correta (`consumed_credit` para vendas de crédito, `consumed_debit` para vendas de débito).
+   - Chamadas subsequentes de desvinculação da mesma transação são no-op seguro (`success: true`).
+
+**Risco identificado:** Apagar pagamentos legítimos de clientes em OSs quitadas durante o desvínculo de maquininha, ou descartar dezenas de vendas de cartão por confusão entre status quitado da OS e status de conciliação.
+
+**Não fazer:** Filtrar elegibilidade com cláusulas cegas como `COALESCE(p.match_status, '') <> 'MATCHED'` sem conferir a existência de transação ativa da maquininha vinculada àquela OS.
+
+---
+
 ## [2026-09-30] — [Feature ID: 459-fix-salvar-regra-ofx-e-reversao-completa-limpeza-dia]
 
 **Contexto:** Correção de falha de persistência ao marcar "Lembrar esta fonte como regra para próximas importações" na seleção de saldo OFX (erro 42501 RLS na role anon) e evolução do "Resetar Dados do Dia" (Purge diário) para realizar reversão transacional e restauração fiel do pátio (`patio_os`) ao estado pré-importação via backup snapshot em `patio_os_daily_backups`.

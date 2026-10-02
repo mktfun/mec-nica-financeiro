@@ -1,3 +1,24 @@
+## [2026-10-02] — [Feature ID: 466-paridade-elegibilidade-rede-os-e-desvinculo]
+
+**Contexto:** Migration `20261001000005_paridade_elegibilidade_matcher_e_desvinculo.sql`. Atualização in-place das 4 funções PL/pgSQL canônicas de Rede × OS: `get_rede_os_eligible_candidates`, `match_stage2_rede_os`, `link_manual_rede_to_os` e `unlink_manual_os_match`.
+
+**Regra aprendida:**
+1. **Fórmula Canônica de Elegibilidade em SQL:**
+   - Ambas as funções `match_stage2_rede_os` e `get_rede_os_eligible_candidates` utilizam a mesma definição de vínculo ativo:
+     `SELECT ARRAY_AGG(pt.store_id || ':' || pt.matched_os_number)` concatenado com `JOIN conciliation_matches cm JOIN pos_transactions pt_ref ON pt_ref.id = cm.rede_transaction_id WHERE pt_ref.store_id = cm.store_id AND pt_ref.matched_os_number = cm.system_os_number`.
+2. **Persistência de Efeito Contábil sem Alteração de Schema:**
+   - Reutilização semântica das colunas existentes de `conciliation_matches`:
+     - `status`: `'baixa_aplicada'` (quando abateu saldo devedor de OS em aberto) ou `'vinculo_informativo'` (quando a OS já estava quitada).
+     - `divergence_amount`: armazena `v_actually_applied` (o montante exato abatido do pátio).
+3. **Idempotência no Desvínculo:**
+   - Se `pos_transactions.matched_os_number IS NULL`, a RPC `unlink_manual_os_match` retorna sucesso imediatamente (`no-op`).
+   - Se `status = 'baixa_aplicada'`, subtrai `divergence_amount` de `patio_os.paid_value`. Se não, preserva `paid_value` inalterado.
+   - Transiciona `patio_os.match_status` para `'pending'` caso não restem outros vínculos ativos na loja.
+
+**Risco identificado / Anti-pattern:** Usar `match_status <> 'MATCHED'` no WHERE de busca de candidatos no pátio legado, provocando silenciamento de dezenas de vendas compatíveis.
+
+---
+
 ## [2026-09-30] — [Feature ID: 459-fix-salvar-regra-ofx-e-reversao-completa-limpeza-dia]
 
 **Contexto:** Migration `20260930000005_fix_ofx_balance_rule_and_daily_purge_reversion.sql`. Criação da RPC `save_ofx_balance_rule` (SECURITY DEFINER com grant para anon), criação da tabela `patio_os_daily_backups`, extensão de políticas RLS para `anon` em tabelas de saldo OFX e backup, e aprimoramento da RPC `purge_daily_financial_data(p_date)` para restauração pontual e atômica de OSs do pátio.
