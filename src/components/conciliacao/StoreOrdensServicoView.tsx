@@ -19,6 +19,7 @@ import {
   Search,
   DollarSign,
   AlertCircle,
+  AlertTriangle,
   CreditCard
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -53,6 +54,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
+  const [scopeFilter, setScopeFilter] = useState<'updated_today' | 'open_patio' | 'all'>('updated_today');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTotal, setEditTotal] = useState<number>(0);
   const [editPaid, setEditPaid] = useState<number>(0);
@@ -271,9 +273,132 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
     }
   };
 
-  // Filtragem
-  const filteredList = useMemo(() => {
+  // Busca observações e deltas importados para a data alvo na filial (Spec 470 / Spec 471)
+  const { data: dayObservations = [] } = useQuery({
+    queryKey: ['store-os-observations', storeId, date],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('os_import_observations')
+        .select('os_number, delta_paid, delta_credit, delta_debit, delta_pix, consumed_credit, consumed_debit, baseline_source')
+        .eq('store_id', storeId)
+        .eq('target_date', date);
+
+      if (error) {
+        console.warn('Aviso ao buscar os_import_observations:', error);
+        return [];
+      }
+      return data || [];
+    },
+    enabled: !!storeId && !!date,
+  });
+
+  // Mapeamento preciso de cobertura por OS para sinalização visual na tabela (Spec 471)
+  const osCoverageMap = useMemo(() => {
+    const map = new Map<string, {
+      isPending: boolean;
+      hasPendingCredit: boolean;
+      hasPendingDebit: boolean;
+      deltaCredit: number;
+      deltaDebit: number;
+      deltaPaid: number;
+    }>();
+
+    dayObservations.forEach((obs: any) => {
+      const num = String(obs.os_number || '').trim();
+      if (!num) return;
+
+      const deltaCredit = Number(obs.delta_credit || 0);
+      const consumedCredit = Number(obs.consumed_credit || 0);
+      const deltaDebit = Number(obs.delta_debit || 0);
+      const consumedDebit = Number(obs.consumed_debit || 0);
+      const deltaPaid = Number(obs.delta_paid || 0);
+
+      const hasPendingCredit = deltaCredit > 0.05 && (consumedCredit < deltaCredit - 0.05);
+      const hasPendingDebit = deltaDebit > 0.05 && (consumedDebit < deltaDebit - 0.05);
+      const isPending = (hasPendingCredit || hasPendingDebit) && obs.baseline_source !== 'historical_closed';
+
+      map.set(num, {
+        isPending,
+        hasPendingCredit,
+        hasPendingDebit,
+        deltaCredit,
+        deltaDebit,
+        deltaPaid
+      });
+    });
+
+    return map;
+  }, [dayObservations]);
+
+  const osNumbersMovedToday = useMemo(() => {
+    const set = new Set<string>();
+    dayObservations.forEach((obs: any) => {
+      // Ignora OSs históricas que já estavam finalizadas em datas anteriores
+      if (obs.baseline_source === 'historical_closed') return;
+
+      const deltaPaid = Math.abs(Number(obs.delta_paid || 0));
+      const deltaCredit = Math.abs(Number(obs.delta_credit || 0));
+      const deltaDebit = Math.abs(Number(obs.delta_debit || 0));
+      const deltaPix = Math.abs(Number(obs.delta_pix || 0));
+
+      // Conta exclusivamente OSs com movimentação contábil real no dia
+      if (deltaPaid > 0.01 || deltaCredit > 0.01 || deltaDebit > 0.01 || deltaPix > 0.01) {
+        if (obs.os_number) set.add(String(obs.os_number).trim());
+      }
+    });
+    return set;
+  }, [dayObservations]);
+
+  // Contadores para as 3 pílulas de escopo (Spec 471)
+  const countUpdatedToday = useMemo(() => {
     return rawOsList.filter(os => {
+      const num = String(os.os_number).trim();
+      const hasMovementToday = osNumbersMovedToday.has(num);
+      const isDateMatched = (os.opened_at && os.opened_at.startsWith(date)) || (os.closed_at && os.closed_at.startsWith(date));
+      return hasMovementToday || isDateMatched;
+    }).length;
+  }, [rawOsList, osNumbersMovedToday, date]);
+
+  const countOpenPatio = useMemo(() => {
+    return rawOsList.filter(os => {
+      const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
+      return !isClosed && (os.total_value - os.paid_value > 0.05);
+    }).length;
+  }, [rawOsList]);
+
+  const countAll = rawOsList.length;
+
+  // Lista com tri-escopo temporal: Atualizadas Hoje vs Em Aberto no Pátio vs Histórico Completo
+  const scopedOsList = useMemo(() => {
+    if (scopeFilter === 'all') return rawOsList;
+
+    if (scopeFilter === 'open_patio') {
+      return rawOsList.filter(os => {
+        const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
+        return !isClosed && (os.total_value - os.paid_value > 0.05);
+      });
+    }
+
+    // scopeFilter === 'updated_today'
+    return rawOsList.filter(os => {
+      const num = String(os.os_number).trim();
+      const hasMovementToday = osNumbersMovedToday.has(num);
+      const isDateMatched = (os.opened_at && os.opened_at.startsWith(date)) || (os.closed_at && os.closed_at.startsWith(date));
+
+      // Se ainda não houver observações registradas no dia, mantém abertas e da data
+      if (dayObservations.length === 0) {
+        const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
+        const isOpenInPatio = !isClosed && (os.total_value - os.paid_value > 0.05);
+        return isOpenInPatio || isDateMatched;
+      }
+
+      return hasMovementToday || isDateMatched;
+    });
+  }, [rawOsList, scopeFilter, osNumbersMovedToday, dayObservations.length, date]);
+
+  // Filtragem sobre scopedOsList
+  const filteredList = useMemo(() => {
+    return scopedOsList.filter(os => {
       if (statusFilter === 'OPEN') {
         const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
         const saldo = os.total_value - os.paid_value;
@@ -291,19 +416,19 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
         (os.client_name && os.client_name.toLowerCase().includes(q))
       );
     });
-  }, [rawOsList, statusFilter, searchTerm]);
+  }, [scopedOsList, statusFilter, searchTerm]);
 
-  // Totais
-  const totalOsBruto = rawOsList.reduce((acc, os) => acc + os.total_value, 0);
-  const totalOsPago = rawOsList.reduce((acc, os) => acc + os.paid_value, 0);
-  const totalSaldoPatio = rawOsList
+  // Totais calculados sobre scopedOsList
+  const totalOsBruto = scopedOsList.reduce((acc, os) => acc + os.total_value, 0);
+  const totalOsPago = scopedOsList.reduce((acc, os) => acc + os.paid_value, 0);
+  const totalSaldoPatio = scopedOsList
     .filter(os => {
       const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
       return !isClosed && (os.total_value - os.paid_value) > 0;
     })
     .reduce((acc, os) => acc + (os.total_value - os.paid_value), 0);
 
-  const openCount = rawOsList.filter(os => {
+  const openCount = scopedOsList.filter(os => {
     const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
     return !isClosed && (os.total_value - os.paid_value) > 0;
   }).length;
@@ -336,18 +461,18 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
       {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Faturado */}
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-l-4 border-l-blue-500 rounded-2xl">
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total das OSs</p>
           <p className="font-display font-bold text-2xl font-mono text-zinc-100">
             <AmountCell value={totalOsBruto} tone="neutral" />
           </p>
           <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
-            {rawOsList.length} OSs cadastradas
+            {scopedOsList.length} OSs {scopeFilter === 'updated_today' ? 'atualizadas hoje' : scopeFilter === 'open_patio' ? 'em aberto no pátio' : 'cadastradas'}
           </span>
         </Card>
 
         {/* Card 2: Total Pago */}
-        <Card className="border-l-4 border-l-emerald-500">
+        <Card className="border-l-4 border-l-emerald-500 rounded-2xl">
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Recebido / Pago</p>
           <p className="font-display font-bold text-2xl font-mono text-emerald-400">
             <AmountCell value={totalOsPago} tone="success" />
@@ -358,7 +483,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
         </Card>
 
         {/* Card 3: Saldo em Pátio (Pendente) */}
-        <Card className="border-l-4 border-l-amber-500">
+        <Card className="border-l-4 border-l-amber-500 rounded-2xl">
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Saldo no Pátio (Na Loja OS)</p>
           <p className="font-display font-bold text-2xl font-mono text-amber-400">
             <AmountCell value={totalSaldoPatio} tone="warning" />
@@ -369,7 +494,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
         </Card>
 
         {/* Card 4: Botão de Nova OS */}
-        <Card className="border-l-4 border-l-[var(--color-primary)] flex flex-col justify-between">
+        <Card className="border-l-4 border-l-[var(--color-primary)] rounded-2xl flex flex-col justify-between">
           <div>
             <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Ação Rápida</p>
             <p className="text-xs text-[var(--text-tertiary)] font-mono">Cadastre OSs ausentes manualmente no fechamento.</p>
@@ -377,7 +502,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
           <Button
             size="sm"
             onClick={() => setIsAddModalOpen(true)}
-            className="w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs gap-1.5 h-8 shadow-sm cursor-pointer"
+            className="w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs gap-1.5 h-8 rounded-lg shadow-sm cursor-pointer"
           >
             <Plus size={14} />
             + Nova OS Manual
@@ -419,7 +544,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
       )}
 
       {/* Tabela de Ordens de Serviço */}
-      <Card className="p-0 overflow-hidden border-zinc-800 bg-zinc-950">
+      <Card className="p-0 overflow-hidden rounded-2xl border-zinc-800 bg-zinc-950 shadow-md">
         <div className="bg-zinc-900 p-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-display font-semibold text-base flex items-center gap-2 text-zinc-100">
@@ -432,7 +557,56 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
           </div>
 
           {/* Filtros e Busca */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            {/* Seletor de Escopo Temporal em 3 Pílulas (Spec 471) */}
+            <div className="flex bg-zinc-950 border border-zinc-800 rounded-lg p-0.5 text-[11px] gap-0.5">
+              <button
+                type="button"
+                onClick={() => setScopeFilter('updated_today')}
+                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  scopeFilter === 'updated_today' 
+                    ? 'bg-emerald-600 text-white font-semibold shadow-xs' 
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+                title="Exibe ordens que foram atualizadas ou movimentadas na data"
+              >
+                <span>Atualizadas Hoje</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${scopeFilter === 'updated_today' ? 'bg-emerald-700/80 text-white' : 'bg-zinc-800 text-zinc-300'}`}>
+                  {countUpdatedToday}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setScopeFilter('open_patio')}
+                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  scopeFilter === 'open_patio' 
+                    ? 'bg-amber-600 text-white font-semibold shadow-xs' 
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+                title="Exibe ordens com veículos em pátio e saldo pendente a pagar"
+              >
+                <span>Em Aberto no Pátio</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${scopeFilter === 'open_patio' ? 'bg-amber-700/80 text-white' : 'bg-zinc-800 text-zinc-300'}`}>
+                  {countOpenPatio}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setScopeFilter('all')}
+                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  scopeFilter === 'all' 
+                    ? 'bg-zinc-800 text-white font-semibold' 
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+                title="Exibe todas as ordens de serviço históricas da filial"
+              >
+                <span>Todas</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${scopeFilter === 'all' ? 'bg-zinc-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}>
+                  {countAll}
+                </span>
+              </button>
+            </div>
+
             <div className="relative">
               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500" />
               <input
@@ -440,7 +614,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar OS, placa..."
-                className="bg-zinc-950 border border-zinc-800 rounded-lg pl-8 pr-3 py-1 text-xs text-zinc-200 focus:outline-none focus:border-zinc-700 w-36 sm:w-44 font-sans"
+                className="bg-zinc-950 border border-zinc-800 rounded-lg pl-8 pr-3 py-1 text-xs text-zinc-200 focus:outline-none focus:border-zinc-700 w-32 sm:w-40 font-sans"
               />
             </div>
 
@@ -449,7 +623,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                 onClick={() => setStatusFilter('ALL')}
                 className={`px-2.5 py-1 rounded-md transition-colors ${statusFilter === 'ALL' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'}`}
               >
-                Todas ({rawOsList.length})
+                Todas ({scopedOsList.length})
               </button>
               <button
                 onClick={() => setStatusFilter('OPEN')}
@@ -469,8 +643,24 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
 
         {filteredList.length === 0 ? (
           <div className="p-12 text-center text-zinc-500 flex flex-col items-center">
-            <ShoppingBag size={36} className="opacity-20 mb-3" />
-            Nenhuma Ordem de Serviço encontrada com os filtros selecionados.
+            <Car size={36} className="opacity-20 mb-3 text-zinc-400" />
+            <p className="text-sm font-medium text-zinc-400">Nenhuma Ordem de Serviço encontrada</p>
+            <p className="text-xs text-zinc-500 mt-1 max-w-md">
+              {scopeFilter === 'updated_today'
+                ? "Nenhuma OS movimentada de ontem para hoje na filial. Você pode consultar 'Em Aberto no Pátio' ou 'Todas' acima para localizar ordens que não foram atualizadas na data."
+                : scopeFilter === 'open_patio'
+                ? "Nenhuma OS em aberto com saldo no pátio da oficina."
+                : "Nenhuma OS corresponde aos filtros selecionados."}
+            </p>
+            {scopeFilter !== 'all' && rawOsList.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setScopeFilter('all')}
+                className="mt-3 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 font-medium transition-colors cursor-pointer"
+              >
+                Ver Todas as {rawOsList.length} OSs Históricas
+              </button>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -496,19 +686,43 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                   const osRecs = storeReceivables.filter((r: any) => String(r.os_number).trim() === String(os.os_number).trim());
                   const paidRecs = osRecs.filter((r: any) => r.status === 'recebido');
 
+                  const osNumTrimmed = String(os.os_number || '').trim();
+                  const coverage = osCoverageMap.get(osNumTrimmed);
+
                   return (
                     <tr key={os.id} className="hover:bg-zinc-900/40 transition-colors">
                       {/* Nº OS */}
-                      <td className="py-3 px-4 font-mono font-bold text-blue-400 whitespace-nowrap">
+                      <td className="py-3 px-4 font-mono font-bold whitespace-nowrap">
                         <div className="flex flex-col gap-1">
-                          <button
-                            onClick={() => setSelectedOsData(os)}
-                            className="hover:underline flex items-center gap-1"
-                            title="Ver detalhes da OS"
-                          >
-                            #{os.os_number}
-                            <ExternalLink size={11} />
-                          </button>
+                          <div className="flex items-center gap-1.5">
+                            {coverage?.isPending && (
+                              <span className="relative flex h-2 w-2" title="OS com delta no dia sem cobertura de maquininha/extrato">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                              </span>
+                            )}
+                            <button
+                              onClick={() => setSelectedOsData(os)}
+                              className="hover:underline flex items-center gap-1 text-blue-400"
+                              title="Ver detalhes da OS"
+                            >
+                              #{os.os_number}
+                              <ExternalLink size={11} />
+                            </button>
+                          </div>
+
+                          {coverage?.isPending && (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedOsData(os)}
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition-colors cursor-pointer w-fit"
+                              title={`Sem cobertura no dia: ${coverage.hasPendingCredit ? 'Crédito ' : ''}${coverage.hasPendingDebit ? 'Débito ' : ''}pendente de validação. Clique para detalhes.`}
+                            >
+                              <AlertTriangle size={10} className="text-rose-400" />
+                              Sem Cobertura
+                            </button>
+                          )}
+
                           {isTransfer && osRecs.length === 0 && (
                             <button
                               type="button"

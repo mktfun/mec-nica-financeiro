@@ -1,3 +1,22 @@
+## [2026-10-02] — [Feature ID: 471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix]
+
+**Contexto:** Diagnóstico de cobertura contábil e fiduciária de Ordens de Serviço por filial. Identificação matemática de OSs com deltas de pagamento no dia que não possuem contrapartida comprovada em adquirentes de cartão (Rede) ou extrato bancário (OFX), e implementação do tri-escopo de consulta para operadores de caixa e gerentes.
+
+**Regra aprendida:**
+1. **Diferenciação Estrita entre "OS no Pátio" vs "Movimentada Hoje":**
+   - Nem toda OS com saldo aberto em pátio foi mexida no dia do fechamento, e nem toda OS que recebeu pagamento hoje continua com saldo aberto.
+   - O tri-escopo (`updated_today`, `open_patio`, `all`) separa claramente:
+     a) `updated_today`: OSs que tiveram alteração contábil (`delta_paid`, `delta_credit`, `delta_debit`, `delta_pix` > 0) ou abertura/fechamento na data.
+     b) `open_patio`: Veículos fisicamente na oficina com saldo pendente de recebimento (`status <> 'finalizado' AND total_value - paid_value > 0.05`), permitindo que o operador localize rapidamente a OS caso o gerente tenha esquecido de registrá-la no sistema no dia.
+     c) `all`: Catálogo histórico completo.
+2. **Diagnóstico Unitário de Cobertura (`osCoverageMap`):**
+   - Uma OS é considerada com cobertura pendente (`isPending = true`) se `delta_credit > 0.05 AND consumed_credit < delta_credit - 0.05` ou `delta_debit > 0.05 AND consumed_debit < delta_debit - 0.05`, desde que não seja de baseline histórico fechado em dias anteriores.
+   - O modal de detalhes da OS consulta diretamente as tabelas transacionais `pos_transactions` e `ofx_transactions` para comprovar se cada parcela declarada foi efetivamente coberta, alertando o operador caso falte o comprovante da maquininha ou o extrato do PIX.
+
+**Risco identificado:** Assumir que uma OS finalizada não precisa de cobertura no dia. Se o cliente retirou o veículo e pagou hoje no cartão, essa venda precisa obrigatoriamente de cobertura da maquininha no fechamento do dia.
+
+---
+
 ## [2026-10-02] — [Feature ID: 466-paridade-elegibilidade-rede-os-e-desvinculo]
 
 **Contexto:** Eliminação do bloqueio de elegibilidade de Ordens de Serviço (OSs) quitadas ou pré-vinculadas no motor de conciliação de cartões Rede × OS (`match_stage2_rede_os`), unificação da regra de elegibilidade com a seleção manual (`get_rede_os_eligible_candidates`), isolamento estrito de número de OS por loja e desvinculação consistente e idempotente (`unlink_manual_os_match`).

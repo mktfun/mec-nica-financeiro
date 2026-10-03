@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/OsDetailModal.tsx": {
-    "mtime": 1790780710.420527,
-    "ast_hash": "ea7a69a4fb3031804cb97aa7a589e5e6",
+    "mtime": 1790971353.8547502,
+    "ast_hash": "42d7d1455f46d47d89536aa620c3e810",
     "semantic_hash": ""
   },
   "src/components/conciliacao/PatioOsDetailModal.tsx": {
@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1790713281.8080034,
-    "ast_hash": "ec15bb249fba64ede3a1dd35bdeb58ad",
+    "mtime": 1790948730.731789,
+    "ast_hash": "a8d6983964bfef045eebbdac6c284c28",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -215,13 +215,13 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1790773078.9274938,
-    "ast_hash": "d71e09f3d530418777e41f86405c88a3",
+    "mtime": 1790971414.1041868,
+    "ast_hash": "7635fc079583f38f4c93d5d35928627c",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
-    "mtime": 1790780605.5701976,
-    "ast_hash": "d9fdabc5c66385848eb8e10e71708f16",
+    "mtime": 1790971394.5283163,
+    "ast_hash": "f92362d4e8730afba53724347bbd1242",
     "semantic_hash": ""
   },
   "src/components/conciliacao/WhisperDot.tsx": {
@@ -370,8 +370,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1790861624.2112172,
-    "ast_hash": "6b283ac8e134c1eb1d92f8ce5846957a",
+    "mtime": 1790964639.7302644,
+    "ast_hash": "a51fdc9a4e3551b2cca40690e1d14f6a",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -425,8 +425,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1790705626.589803,
-    "ast_hash": "02a3bc48bfedd840b762996bac90e0a3",
+    "mtime": 1790964699.7092335,
+    "ast_hash": "16f7f9ccadd33cf1f277c937bf3c1ea4",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/types.ts": {
@@ -610,8 +610,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1790713193.0362022,
-    "ast_hash": "f63e4a8ca9713e41c0ee144e941afaed",
+    "mtime": 1790964391.6100683,
+    "ast_hash": "be19415a16367e7717085795695530d5",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -780,8 +780,8 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1790775368.3363345,
-    "ast_hash": "ce60b530e18671a93cbed702a2c824fc",
+    "mtime": 1790964503.5783434,
+    "ast_hash": "ca59682063dca6cb25b1d8f625cd3e60",
     "semantic_hash": ""
   },
   "src/hooks/useTripleMatch.ts": {
@@ -1030,9 +1030,9 @@
     "semantic_hash": "64c5888c5528836a196356cd6c435d03"
   },
   "src/routes/conciliacao.$lojaId.tsx": {
-    "mtime": 1788869469.040173,
-    "ast_hash": "03d7de3776d1a6943e5e5d8f7093a0aa",
-    "semantic_hash": "03d7de3776d1a6943e5e5d8f7093a0aa"
+    "mtime": 1790967363.1330748,
+    "ast_hash": "ea192871d9b9285ff8ade6b40cb050e8",
+    "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
     "mtime": 1789507061.4619634,
@@ -1890,13 +1890,13 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ConciliacaoLojasView.tsx": {
-    "mtime": 1790342645.73352,
-    "ast_hash": "834471f4b7257f21dcc22f36e97a1661",
+    "mtime": 1790948813.1301425,
+    "ast_hash": "f08edadf375fc4dcff972a567f3485db",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCardModulo1.tsx": {
-    "mtime": 1790615886.8695533,
-    "ast_hash": "b3b31d4603a1c0853861757da4746170",
+    "mtime": 1790966683.2568269,
+    "ast_hash": "a0f0d051128bd7bc3cac64297301898a",
     "semantic_hash": ""
   },
   "supabase/migrations/20260901000003_fix_store_breakdown_metrics_and_differences.sql": {
@@ -1910,8 +1910,8 @@
     "semantic_hash": ""
   },
   ".agent/rules/ia.md": {
-    "mtime": 1790769886.8746188,
-    "ast_hash": "da4f7ee47571c08c361a6d2dd65e6980",
+    "mtime": 1790961054.4173732,
+    "ast_hash": "f44332b081532d86ab4206070a370682",
     "semantic_hash": ""
   },
   ".antigravity/rules.md": {
@@ -3240,8 +3240,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1790866166.4777641,
-    "ast_hash": "700a9f270be902bc8d696008f195be6f",
+    "mtime": 1790940883.4785314,
+    "ast_hash": "1b1a16c4d00570d692e9f4cc4a87c5fa",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -3775,8 +3775,8 @@
     "semantic_hash": ""
   },
   "skills/INDEX.md": {
-    "mtime": 1789664136.7130277,
-    "ast_hash": "d1b446e87938745c10f2595076464c30",
+    "mtime": 1790959145.9598358,
+    "ast_hash": "535996e5b9a1387588df4f46214e252d",
     "semantic_hash": ""
   },
   "skills/WORKFLOW.md": {
@@ -3885,23 +3885,23 @@
     "semantic_hash": ""
   },
   "skills/sdd-apply/SKILL.md": {
-    "mtime": 1790769886.904989,
-    "ast_hash": "7a99a45acd4515016805bf4468e96d1f",
+    "mtime": 1790959145.9658716,
+    "ast_hash": "a51e26d7209ff078e01e6745b2f54878",
     "semantic_hash": ""
   },
   "skills/sdd-archive/SKILL.md": {
-    "mtime": 1790769886.9094615,
-    "ast_hash": "2e6a5a25aca8c3dcec41fa3bb461c2be",
+    "mtime": 1790959145.971739,
+    "ast_hash": "305ca2250a63e287f7831098ca87c89f",
     "semantic_hash": ""
   },
   "skills/sdd-debug/SKILL.md": {
-    "mtime": 1789069458.6894183,
-    "ast_hash": "d76b294b4a9cb1ad2de611a5c7128002",
+    "mtime": 1790959145.9774823,
+    "ast_hash": "eac974759ab0d152143165e11dd0a475",
     "semantic_hash": ""
   },
   "skills/sdd-proposal/SKILL.md": {
-    "mtime": 1790769886.9145672,
-    "ast_hash": "89428ce0cf1a286a27d35adf800e8772",
+    "mtime": 1790959145.9798832,
+    "ast_hash": "7b6910a090c4d34403274785fcde0776",
     "semantic_hash": ""
   },
   "skills/sdd-proposal/references/inference-rules.md": {
@@ -4140,8 +4140,8 @@
     "semantic_hash": ""
   },
   "skills/agy-bridge/SKILL.md": {
-    "mtime": 1788965843.8676422,
-    "ast_hash": "544eddf469884f2f4a667b75bc25aa38",
+    "mtime": 1790959145.9638603,
+    "ast_hash": "05ca8c2eab01bef493d02495dfb9a7e5",
     "semantic_hash": ""
   },
   "skills/frontend-design-pro/references/ai-slop-catalog.md": {
@@ -4220,8 +4220,8 @@
     "semantic_hash": ""
   },
   "src/lib/matchers/reconciliadorRedeOfx.ts": {
-    "mtime": 1790706142.0669758,
-    "ast_hash": "41904be7eb71f70104005f5fc03abdcb",
+    "mtime": 1790964136.8448434,
+    "ast_hash": "4fb77af390dc296682439943e4c1795b",
     "semantic_hash": ""
   },
   "supabase/migrations/20260910000046_fix_cash_vault_deposit_and_summary_alignment.sql": {
@@ -4270,8 +4270,8 @@
     "semantic_hash": ""
   },
   "rpc_dump.sql": {
-    "mtime": 1790110240.5940146,
-    "ast_hash": "b939441fcad89d984180c2e331a85323",
+    "mtime": 1790948418.3113332,
+    "ast_hash": "6ddcb268450f625e7c769337b28648b0",
     "semantic_hash": ""
   },
   "src/hooks/useDailyReconciliationSummary.ts": {
@@ -4475,8 +4475,8 @@
     "semantic_hash": ""
   },
   "docs/manual-operacao-antigravity.md": {
-    "mtime": 1790769886.884534,
-    "ast_hash": "1ef58cf77c3263f8d7ec3a2e11aa7a0c",
+    "mtime": 1790961763.6687682,
+    "ast_hash": "ce09af24702772773c90f4a5f727dca3",
     "semantic_hash": ""
   },
   "specs/412-alinhamento-matematico-estrito-excel-1609/design.md": {
@@ -4660,8 +4660,8 @@
     "semantic_hash": ""
   },
   "src/lib/sandbox/sandboxCalculator.ts": {
-    "mtime": 1790110243.6512933,
-    "ast_hash": "e3574eda7375dfee934d8c4fb4310bb5",
+    "mtime": 1790948792.3173609,
+    "ast_hash": "12fd300a216b9b19d585c02d2a78acfe",
     "semantic_hash": ""
   },
   "src/lib/sandbox/sandboxStorage.ts": {
@@ -4995,8 +4995,8 @@
     "semantic_hash": ""
   },
   "src/types/reconciliationContract.ts": {
-    "mtime": 1790615892.160287,
-    "ast_hash": "36f64468478f03375d729c5473efbb3c",
+    "mtime": 1790948562.7756402,
+    "ast_hash": "aae428de54f8f88e0b6f0d741ddfa808",
     "semantic_hash": ""
   },
   "supabase/migrations/20260928000004_restore_daily_summary_and_rede_os_match.sql": {
@@ -5319,29 +5319,24 @@
     "ast_hash": "82f1b75781e139c57e759631ab2d9e71",
     "semantic_hash": ""
   },
-  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/rollback_20261001000005.sql": {
-    "mtime": 1790878396.0710926,
-    "ast_hash": "62666cac26d6e608e9bd4f138dc6f8bb",
-    "semantic_hash": ""
-  },
   "supabase/migrations/20261001000004_fix_os_import_reset_consistency.sql": {
     "mtime": 1790876011.5965357,
     "ast_hash": "f3cdd3e74da99c6ab78e1beb6a6cf3e5",
     "semantic_hash": ""
   },
   "supabase/migrations/20261001000005_paridade_elegibilidade_matcher_e_desvinculo.sql": {
-    "mtime": 1790879072.779508,
-    "ast_hash": "c5d36118988eb66b517d1b7d6812220e",
+    "mtime": 1790940848.8629458,
+    "ast_hash": "3709a5428903ec84f564453b055dd301",
     "semantic_hash": ""
   },
   "tests/integration/helpers/disposable-finance-db.mjs": {
-    "mtime": 1790878932.8733852,
-    "ast_hash": "5713e7f180696c059c71af8a268e552b",
+    "mtime": 1790940848.9049466,
+    "ast_hash": "c83be07c59dc21a511b0239d8f40a5a7",
     "semantic_hash": ""
   },
   "tests/integration/matcher-eligibility-parity.test.mjs": {
-    "mtime": 1790880106.6528382,
-    "ast_hash": "0ef22f4d48f6d0ac57dab4e392422108",
+    "mtime": 1790940848.9016762,
+    "ast_hash": "236f1ee3704dcb471b616fa5c076fdf4",
     "semantic_hash": ""
   },
   "tests/integration/os-import-reset-reimport.test.mjs": {
@@ -5379,19 +5374,124 @@
     "ast_hash": "61a4bdd1f8f3757d279a2f5645154aed",
     "semantic_hash": ""
   },
-  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/design.md": {
-    "mtime": 1790878287.8885288,
-    "ast_hash": "cdc71d99e5da8c90f6f726dbcb0d720c",
+  ".gemini/config.json": {
+    "mtime": 1790960807.374228,
+    "ast_hash": "9397ca8ce325ae25713a355de8c765d7",
     "semantic_hash": ""
   },
-  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/proposal.md": {
-    "mtime": 1790878275.4617293,
-    "ast_hash": "79a5d8f867987ee1e88de9361e0aa37e",
+  "supabase/migrations/20261002000001_disponivel_abs_e_verificacao_vinculos.sql": {
+    "mtime": 1790948271.7237823,
+    "ast_hash": "e8d02dcae60f0d16331de7f66dc2b61e",
     "semantic_hash": ""
   },
-  "specs/466-paridade-elegibilidade-rede-os-e-desvinculo/spec-plan.md": {
-    "mtime": 1790880418.1624744,
-    "ast_hash": "221c7dd3c051e8b51b2b45c2d19d0605",
+  "supabase/migrations/20261002000002_fix_rede_liquidacao_e_cartoes_compensar.sql": {
+    "mtime": 1790963875.0024748,
+    "ast_hash": "dc1d88c1ef8379abf24333ff79a50c63",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20261002000003_calibrar_os_dia_e_blindar_checks_extrato.sql": {
+    "mtime": 1790969579.3450577,
+    "ast_hash": "b7efbb56f4f3504fba52de5df3baa736",
+    "semantic_hash": ""
+  },
+  "tests/integration/disponivel-abs-and-badges.test.mjs": {
+    "mtime": 1790949206.9492195,
+    "ast_hash": "b8b4d6158d22549c054d675baf58d286",
+    "semantic_hash": ""
+  },
+  "tests/integration/spec468-multi-day-and-rede-consistency.test.mjs": {
+    "mtime": 1790964997.6779935,
+    "ast_hash": "1cae630d5f536293daa47f0c020669bc",
+    "semantic_hash": ""
+  },
+  "tests/integration/spec469-store-tabs-and-kpis.test.mjs": {
+    "mtime": 1790967965.4493854,
+    "ast_hash": "02ac1b1610c478c4f0a8ec0dc3c32c2c",
+    "semantic_hash": ""
+  },
+  "tests/integration/spec470-os-calibration-and-extrato-checks.test.mjs": {
+    "mtime": 1790969821.9791243,
+    "ast_hash": "6e8b32e9741c1ff684e7f1a90284ca25",
+    "semantic_hash": ""
+  },
+  "tests/integration/spec471-os-detail-and-ui-consistency.test.mjs": {
+    "mtime": 1790971585.0331006,
+    "ast_hash": "1e357589d11eb835939bfd79d421174c",
+    "semantic_hash": ""
+  },
+  "specs/467-disponivel-abs-e-badge-verificacao-vinculos/design.md": {
+    "mtime": 1790947741.6848576,
+    "ast_hash": "6822c64cf43d63357b5190469bf1d43f",
+    "semantic_hash": ""
+  },
+  "specs/467-disponivel-abs-e-badge-verificacao-vinculos/proposal.md": {
+    "mtime": 1790947691.1559377,
+    "ast_hash": "b8a6bc8885ae197cca08cc3812ec4d28",
+    "semantic_hash": ""
+  },
+  "specs/467-disponivel-abs-e-badge-verificacao-vinculos/spec-plan.md": {
+    "mtime": 1790949617.978597,
+    "ast_hash": "fd084b7bc4c128168c7be3cb50807240",
+    "semantic_hash": ""
+  },
+  "specs/468-datas-liquidacao-rede-e-consistencia-fechamento/design.md": {
+    "mtime": 1790963685.8902392,
+    "ast_hash": "60b9f37e9a161797b9ba2f51a13ffa14",
+    "semantic_hash": ""
+  },
+  "specs/468-datas-liquidacao-rede-e-consistencia-fechamento/proposal.md": {
+    "mtime": 1790963612.5541918,
+    "ast_hash": "feb4d9dcfda2204179f8167ddf233486",
+    "semantic_hash": ""
+  },
+  "specs/468-datas-liquidacao-rede-e-consistencia-fechamento/spec-plan.md": {
+    "mtime": 1790965042.769994,
+    "ast_hash": "b22cb980ad4439117d8a87e4c19ee814",
+    "semantic_hash": ""
+  },
+  "specs/469-diagnostico-tabs-e-kpis-filial/design.md": {
+    "mtime": 1790966360.4439716,
+    "ast_hash": "0997e38fa72c8086007413881f0c5461",
+    "semantic_hash": ""
+  },
+  "specs/469-diagnostico-tabs-e-kpis-filial/proposal.md": {
+    "mtime": 1790966348.7547948,
+    "ast_hash": "85e4190936d273b3e7125514cb014d7f",
+    "semantic_hash": ""
+  },
+  "specs/469-diagnostico-tabs-e-kpis-filial/spec-plan.md": {
+    "mtime": 1790967996.0994503,
+    "ast_hash": "ac7e685ae371287819b692263585b8d1",
+    "semantic_hash": ""
+  },
+  "specs/470-calibracao-os-dia-e-correcao-checks-extrato/design.md": {
+    "mtime": 1790968964.3185072,
+    "ast_hash": "3dc118b27fb2ac2a84161491144546bb",
+    "semantic_hash": ""
+  },
+  "specs/470-calibracao-os-dia-e-correcao-checks-extrato/proposal.md": {
+    "mtime": 1790968946.7931478,
+    "ast_hash": "86a351a1fb52ab126e116798c8bf84cc",
+    "semantic_hash": ""
+  },
+  "specs/470-calibracao-os-dia-e-correcao-checks-extrato/spec-plan.md": {
+    "mtime": 1790969946.4912262,
+    "ast_hash": "899c0a244690830a67b0faa7ace00989",
+    "semantic_hash": ""
+  },
+  "specs/471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix/design.md": {
+    "mtime": 1790970725.5736854,
+    "ast_hash": "757eeba5d74c93dba936a0c7ebbe057c",
+    "semantic_hash": ""
+  },
+  "specs/471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix/proposal.md": {
+    "mtime": 1790970699.9497433,
+    "ast_hash": "0870952a64dec7f4b3c444b57b1f80c5",
+    "semantic_hash": ""
+  },
+  "specs/471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix/spec-plan.md": {
+    "mtime": 1790971679.856541,
+    "ast_hash": "6ce795d4ad638853113f0400928e5ac7",
     "semantic_hash": ""
   }
 }

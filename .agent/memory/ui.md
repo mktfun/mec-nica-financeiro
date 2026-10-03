@@ -1,3 +1,22 @@
+## [2026-10-02] — [Feature ID: 471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix]
+
+**Contexto:** Diagnóstico e sinalização de Ordens de Serviço sem cobertura de maquininha ou extrato bancário na tabela de OSs da loja (`StoreOrdensServicoView.tsx`), tri-escopo de filtros em pílulas (`Atualizadas Hoje`, `Em Aberto no Pátio`, `Todas`), lista cronológica descendente de transações no modal de detalhes (`OsDetailModal.tsx`) e harmonização geométrica anti-Frankenstein (`rounded-2xl` em contêineres e `rounded-xl` em modais e tabelas).
+
+**Regra aprendida:**
+1. **Sinalização Reativa de Cobertura Pendente:**
+   - O mapa de cobertura `osCoverageMap` deve correlacionar os deltas de crédito/débito de `os_import_observations` com as transações da maquininha (`pos_transactions`) e extrato bancário (`ofx_transactions`).
+   - Linhas com deltas não cobertos devem exibir indicador visual imediato (`animate-ping` / `animate-pulse` em `bg-rose-500`) e badge interativo `🔴 Sem Cobertura`, eliminando a necessidade de o operador abrir todas as OSs às cegas para localizar pendências.
+2. **Tri-Escopo Temporal em Pílulas com Contadores Dinâmicos:**
+   - Em vez de seletores binários ambíguos, utilizar 3 pílulas explícitas: `Atualizadas Hoje ({count})` (movimentadas na data), `Em Aberto no Pátio ({count})` (veículos na oficina com saldo pendente) e `Todas ({count})` (catálogo histórico). Isso resolve diretamente o esquecimento de lançamentos pelo gerente.
+3. **Lista Cronológica Descendente de Movimentações em Modais de Detalhe:**
+   - O modal de detalhes da OS (`OsDetailModal.tsx`) deve ordenar estritamente de cima para baixo (do mais recente ao mais antigo) todas as transações da maquininha, extrato bancário e pagamentos declarados, informando o status fiduciário real de cada item (`Vinculado à Rede`, `Vinculado ao Extrato`, `Cofre da Filial` ou `🔴 Sem Cobertura na Maquininha` / `🔴 Sem Vínculo no Extrato`) com botão direto de atalho para lançar ou vincular.
+4. **Harmonização Geométrica do Design System (Anti-Frankenstein):**
+   - Seguir estritamente a hierarquia do `StoreCardModulo1` e `DESIGN.md`: `rounded-2xl` para cards e contêineres grandes de tabela, `rounded-xl` para modais e linhas de itens, e `rounded-lg` para botões, pills e badges. Proibido misturar cantos retos aleatórios (`rounded-none`).
+
+**Risco identificado / Anti-pattern:** Exibir status estáticos "Pareado com Rede" baseando-se apenas na string declarada na OS sem auditar as transações reais no banco, criando uma ilusão de conciliação quando há vendas a descoberto na adquirente.
+
+---
+
 ## [2026-09-30] — [Feature ID: 457-remover-cockpit-por-completo]
 
 **Contexto:** Remoção completa do componente "Cockpit de Diagnóstico 360° Pós-Motor" (`PostMotorDiagnosticCockpit.tsx`), seus subcomponentes (`DiagnosticActionCards.tsx`, `StoreDiagnosticRow.tsx`), tipos (`src/types/cockpit360.ts`) e desacoplamento do `CentralImportWizard.tsx` (Step 8).

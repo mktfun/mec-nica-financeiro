@@ -57,14 +57,14 @@ interface StoreExtratoBancarioViewProps {
   date: string;
 }
 
-type FilterType = 'all' | 'pending' | 'in' | 'out' | 'expenses' | 'rede' | 'os_pix' | 'locked_history';
+type FilterType = 'all' | 'pending' | 'justified' | 'linked' | 'in' | 'out' | 'expenses' | 'rede' | 'os_pix' | 'locked_history';
 
 export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancarioViewProps) {
   const { data: extratoData, isLoading: loadingExtrato } = useStoreExtratoBancario(date, storeId);
   const { data: allTransactions = [], isLoading: loadingTx } = useTransactionsPorDataELoja(date, storeId);
   const { data: dailyBills = [], isLoading: loadingBills } = useStoreDailyBills(date, storeId);
   const { data: historicalReconciled = [], isLoading: loadingHistory } = useHistoricalReconciledTransactions(storeId);
-  const { categorize } = useCategorizeOrphan();
+  const { categorize, reopen } = useCategorizeOrphan();
   const { unlinkTransaction } = useManualMatch();
   const queryClient = useQueryClient();
 
@@ -168,7 +168,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
       const isRede = isRedeTx(tx);
       const osNum = effectiveOsNum;
-      const hasCategory = !!effectiveCategory || !!effectiveJustification || !!linkedBill;
+      const hasCategory = !!effectiveCategory || !!effectiveJustification || !!linkedBill || tx.match_status === 'justified';
 
       // Fuzzy auto-match para saídas (débitos)
       const isBatchMatched = tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled';
@@ -184,7 +184,29 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         : { isMatched: false, confidence: 0 };
       const isMatchedExpense = expenseMatch.isMatched || isBatchMatched;
 
-      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate && !isBatchMatched && !linkedBill;
+      const isLinked = !!osNum || !!linkedBill || !!tx.matched_bill_id || isMatchedExpense || isRede || tx.match_status === 'matched';
+      const isJustified = !isLinked && (tx.match_status === 'justified' || (!!effectiveCategory && !isMatchedExpense) || !!effectiveJustification);
+      const isPending = !isLinked && !isJustified && !isLockedFromOtherDate;
+
+      // Cálculo específico do motivo da pendência
+      let pendingReason = tx.pending_reason;
+      if (!pendingReason && isPending) {
+        if (tx.type === 'in') {
+          if (isRedeTx(tx)) {
+            pendingReason = 'Lote de cartões pendente de conciliação';
+          } else {
+            pendingReason = 'Entrada bancária sem OS ou justificativa vinculada';
+          }
+        } else {
+          if (tx.isMatchedExpense || /BOLETO|CONTA/i.test(tx.title || '')) {
+            pendingReason = 'Débito sem conta correspondente vinculada no ERP';
+          } else if (/PIX/i.test(tx.title || '')) {
+            pendingReason = 'Transferência PIX de saída sem despesa registrada';
+          } else {
+            pendingReason = 'Saída bancária sem comprovação ou justificativa';
+          }
+        }
+      }
 
       return {
         ...tx,
@@ -199,7 +221,10 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         lockedReconciliationDate,
         isPastDate,
         txOccurredDate,
-        isPending
+        isLinked,
+        isJustified,
+        isPending,
+        pendingReason
       };
     });
   }, [ofxTransactions, dailyBills, historicalReconciled, date]);
@@ -294,6 +319,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const countEntradas = enrichedTransactions.filter(t => t.type === 'in').length;
   const countSaidas = enrichedTransactions.filter(t => t.type === 'out').length;
   const countPendentes = enrichedTransactions.filter(t => t.isPending).length;
+  const countJustificadas = enrichedTransactions.filter(t => t.isJustified).length;
+  const countVinculadas = enrichedTransactions.filter(t => t.isLinked).length;
   const countRede = enrichedTransactions.filter(t => t.isRede).length;
   const countOsPix = enrichedTransactions.filter(t => t.type === 'in' && t.osNum && !t.isLockedFromOtherDate).length;
   const countContasPagas = enrichedTransactions.filter(t => (t.isMatchedExpense || (t.type === 'out' && t.hasCategory)) && !t.isLockedFromOtherDate).length;
@@ -303,6 +330,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const filteredTransactions = useMemo(() => {
     return enrichedTransactions.filter(tx => {
       if (filterType === 'pending' && !tx.isPending) return false;
+      if (filterType === 'justified' && !tx.isJustified) return false;
+      if (filterType === 'linked' && !tx.isLinked) return false;
       if (filterType === 'in' && tx.type !== 'in') return false;
       if (filterType === 'out' && tx.type !== 'out') return false;
       if (filterType === 'rede' && !tx.isRede) return false;
@@ -705,109 +734,6 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
   return (
     <div className="space-y-6">
-      {/* 4 Hero Cards Revolut Analytics 2.0 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Saldo Oficial da Conta (<LEDGERBAL>) com Contexto de Saldo Anterior */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
-              Saldo Oficial da Conta
-            </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:scale-105 transition-transform">
-              <Landmark size={15} />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className={`font-display text-2xl font-bold font-mono tracking-tight ${activeBankTotal >= 0 ? 'text-zinc-100' : 'text-purple-300'}`}>
-              <AmountCell value={activeBankTotal} tone={activeBankTotal >= 0 ? 'neutral' : 'brand'} />
-            </p>
-          </div>
-          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2 text-zinc-500">
-            <span>Saldo Anterior:</span>
-            <span className={activePreviousBalance >= 0 ? 'text-zinc-400 font-medium' : 'text-rose-400 font-medium'}>
-              {formatCurrency(activePreviousBalance)}
-            </span>
-          </div>
-        </div>
-
-        {/* Card 2: Total Entradas */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
-              Total Entradas
-            </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 group-hover:scale-105 transition-transform">
-              <ArrowDownLeft size={15} />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="font-display text-2xl font-bold font-mono tracking-tight text-emerald-400">
-              <AmountCell value={totalEntradas} tone="success" showPlusSign />
-            </p>
-          </div>
-          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2 text-zinc-500">
-            <span>Créditos no Extrato</span>
-            <span className="text-emerald-400/90 font-medium">
-              {countEntradas} recebimento(s)
-            </span>
-          </div>
-        </div>
-
-        {/* Card 3: Total Saídas */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
-              Total Saídas
-            </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 group-hover:scale-105 transition-transform">
-              <ArrowUpRight size={15} />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="font-display text-2xl font-bold font-mono tracking-tight text-rose-400">
-              <AmountCell value={-totalSaidas} tone="danger" />
-            </p>
-          </div>
-          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2 text-zinc-500">
-            <span>Débitos & Pagamentos</span>
-            <span className="text-rose-400/90 font-medium">
-              {countSaidas} lançamento(s)
-            </span>
-          </div>
-        </div>
-
-        {/* Card 4: Movimentação Líquida & Status */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
-              Movimentação Líquida
-            </span>
-            <div className={`flex items-center justify-center w-8 h-8 rounded-xl ${saldoLiquidoDia >= 0 ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400' : 'bg-amber-500/10 border border-amber-500/20 text-amber-400'} group-hover:scale-105 transition-transform`}>
-              <DollarSign size={15} />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className={`font-display text-2xl font-bold font-mono tracking-tight ${saldoLiquidoDia >= 0 ? 'text-blue-400' : 'text-amber-400'}`}>
-              <AmountCell value={saldoLiquidoDia} tone={saldoLiquidoDia >= 0 ? "brand" : "warning"} showPlusSign />
-            </p>
-          </div>
-          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2">
-            <span className="text-zinc-500">Conciliação</span>
-            {countPendentes > 0 ? (
-              <span className="text-amber-400 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                {countPendentes} pendente(s)
-              </span>
-            ) : (
-              <span className="text-emerald-400 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                100% Batido
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-
       {/* Barra de Filtros e Busca Nativa */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-zinc-900/60 p-3 rounded-lg border border-zinc-800">
         {/* Pills de Filtro */}
@@ -828,7 +754,29 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
               onClick={() => setFilterType('pending')}
               className={`text-xs h-7 px-2.5 font-medium ${filterType === 'pending' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'border-amber-500/30 text-amber-400 hover:bg-amber-500/10'}`}
             >
-              ⚠️ Pendentes ({countPendentes})
+              ⚠️ Órfãs Pendentes ({countPendentes})
+            </Button>
+          )}
+
+          {countJustificadas > 0 && (
+            <Button
+              size="sm"
+              variant={filterType === 'justified' ? 'primary' : 'outline'}
+              onClick={() => setFilterType('justified')}
+              className={`text-xs h-7 px-2.5 font-medium ${filterType === 'justified' ? 'bg-purple-500/20 text-purple-300 border-purple-500/40' : 'border-zinc-800 text-purple-400 hover:text-purple-300 hover:bg-purple-500/10'}`}
+            >
+              🏷️ Justificadas ({countJustificadas})
+            </Button>
+          )}
+
+          {countVinculadas > 0 && (
+            <Button
+              size="sm"
+              variant={filterType === 'linked' ? 'primary' : 'outline'}
+              onClick={() => setFilterType('linked')}
+              className={`text-xs h-7 px-2.5 font-medium ${filterType === 'linked' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'border-zinc-800 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10'}`}
+            >
+              🔗 Vinculadas ({countVinculadas})
             </Button>
           )}
 
@@ -909,7 +857,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       </div>
 
       {/* Tabela do Extrato Bancário */}
-      <Card className="p-0 overflow-hidden border-zinc-800 bg-zinc-950">
+      <Card className="p-0 overflow-hidden rounded-2xl border-zinc-800 bg-zinc-950 shadow-md">
         <div className="bg-zinc-900/90 p-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="font-display font-semibold text-base flex items-center gap-2 text-zinc-100">
@@ -1128,10 +1076,10 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                         <CreditCard size={10} className="mr-1" />
                                         Lote Rede (Ref: D-1)
                                       </Badge>
-                                    ) : tx.manual_category ? (
+                                    ) : (tx.isJustified || tx.manual_category || tx.match_status === 'justified') ? (
                                       <Badge variant="outline" className="h-5 py-0 px-2 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
                                         <CheckCircle2 size={10} className="mr-1 text-purple-400" />
-                                        {String(tx.manual_category).replace('_', ' ')}
+                                        {String(tx.manual_category || 'Justificado').replace('_', ' ')}
                                       </Badge>
                                     ) : matchedBill ? (
                                       <Badge variant="outline" className="h-5 py-0 px-2 bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold">
@@ -1148,14 +1096,14 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                         D-1 ({formatDateOnly(tx.occurred_at || tx.txOccurredDate || tx.date)})
                                       </Badge>
                                     ) : tx.isPending ? (
-                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold" title={tx.pendingReason}>
                                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse mr-1"></span>
-                                        Pendente
+                                        Órfã: {tx.pendingReason || 'Pendente'}
                                       </Badge>
                                     ) : null}
                                   </div>
 
-                                  {/* Linha 2: Metadados Revolut (Natureza contábil, Conta vinculada, Intercompany, Documento, Justificativa) */}
+                                  {/* Linha 2: Metadados Revolut (Natureza contábil, Conta vinculada, Intercompany, Documento, Justificativa, Auditoria) */}
                                   <div className="flex items-center gap-1.5 text-xs text-zinc-400 mt-0.5 flex-wrap">
                                     <span className="font-medium text-zinc-300">{natureLabel}</span>
                                     {matchedBill && !tx.manual_category && (
@@ -1180,6 +1128,21 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                       <>
                                         <span className="text-zinc-600">•</span>
                                         <span className="text-emerald-400 italic text-[11px]">"{tx.manual_justification}"</span>
+                                      </>
+                                    )}
+                                    {tx.justified_by && (
+                                      <>
+                                        <span className="text-zinc-600">•</span>
+                                        <span className="text-zinc-400 text-[11px]" title={`Justificado em ${formatDateOnly(tx.justified_at)}`}>
+                                          Por: <strong className="text-zinc-300">{tx.justified_by.split('@')[0]}</strong>
+                                          {tx.justified_at && ` em ${formatDateOnly(tx.justified_at)}`}
+                                        </span>
+                                      </>
+                                    )}
+                                    {tx.isPending && tx.pendingReason && (
+                                      <>
+                                        <span className="text-zinc-600">•</span>
+                                        <span className="text-amber-400/90 text-[11px]">Motivo: {tx.pendingReason}</span>
                                       </>
                                     )}
                                   </div>
@@ -1252,11 +1215,28 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
           transactionType={categorizingTx.type}
           storeId={storeId}
           targetDate={date}
+          initialCategory={categorizingTx.manual_category}
+          initialJustification={categorizingTx.manual_justification}
+          bankName={categorizingTx.bank_name}
+          accountNumber={categorizingTx.account_number}
+          fitid={categorizingTx.fitid}
+          documentNumber={categorizingTx.bank_reference || categorizingTx.cnpj_cpf}
+          pendingReason={categorizingTx.pendingReason || categorizingTx.pending_reason}
+          justifiedBy={categorizingTx.justified_by}
+          justifiedAt={categorizingTx.justified_at}
           onClose={() => setCategorizingTx(null)}
           onSuccess={handleCategorizationSuccess}
           categorizeOrphan={(id, cat, just, impacts) => 
             categorize(id, cat, just, impacts, Number(categorizingTx.amount || 0), date, categorizingTx.type, storeId)
           }
+          onReopen={async (id) => {
+            const res = await reopen(id);
+            if (res.success) {
+              toast.success('Transação reaberta com sucesso!');
+              await handleCategorizationSuccess();
+            }
+            return res;
+          }}
         />
       )}
 
