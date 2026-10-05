@@ -1566,3 +1566,12 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 **Regra aprendida:**
 1. **Transparência de Desfecho no Assistente:** Nenhuma mensagem triunfante de sucesso pode ser exibida se qualquer operação financeira (OS, Rede ou Saldo OFX) falhar. O estágio deve receber status `'error'` e o erro detalhado deve ser embutido no arquivo JSON de auditoria pericial.
 2. **Mecanismo de Retry Isolado:** Quando uma etapa transacional secundária (como persistência de saldos escolhidos) falha, o assistente deve fornecer um botão de retry isolado que execute exclusivamente a etapa pendente a partir do cache da sessão, sem forçar o operador a recarregar arquivos ou reprocessar transações já salvas.
+
+## [2026-10-05] — [Feature ID: 477-restaurar-status-conciliado-eliminar-falso-alarme-verificacao-e-transparencia-filial] Integridade da Tabela Stores e Eliminação de Colunas Inexistentes no Robô
+
+**Contexto:** O hook `useBotDownloadedFiles.ts` executava consulta com `.select('..., stores (id, name, code)')`, gerando erro PostgreSQL 42703 (`column stores_1.code does not exist`) e HTTP 400 no carregamento do buffer do robô no assistente de importação.
+**Regra aprendida:**
+1. **Schema da Tabela `stores`:** A tabela `stores` no Supabase possui apenas as colunas `id, name, address, phone, manager, mechanics, account_limit, active, created_at, updated_at`. A coluna `code` não existe e nunca deve ser solicitada em queries relacionais.
+2. **Consultas a Lojas:** Consultas com relacionamento a `stores` devem selecionar apenas `stores (id, name)` ou colunas comprovadamente existentes no schema.
+**Não fazer:** Assumir que `stores` possui código ou sigla em campo dedicado `code` sem verificar o schema no banco de dados.
+

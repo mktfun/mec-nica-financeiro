@@ -963,4 +963,16 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 3. **Card Data Base com Status Pendente:** No grid de 4 métricas, o card "Data Base" exibe o selo âmbar "Saldo Pendente" em substituição ao verde "Consolidado".
 4. **Cancelamento de Auto-Avanço:** Erros de saldo bloqueiam o auto-avanço para o Passo 4 (`autoAdvanceToStep4 && !currentOfxError`), retendo o operador no Passo 8 para que tome conhecimento da pendência imediatamente.
 
+## [2026-10-05] — [Feature ID: 477-restaurar-status-conciliado-eliminar-falso-alarme-verificacao-e-transparencia-filial] Restauração do Badge Canônico "CONCILIADO", Fim do Falso Alarme de Verificação Incompleta e Banner Executivo da Filial
+
+**Contexto:** No card de conciliação das lojas (`StoreCardModulo1.tsx`), o status verde `CONCILIADO` havia desaparecido quando `isDiferencaOk === true`, sendo substituído por um falso alarme vermelho `VERIFICAÇÃO INCOMPLETA` originado pela condição espúria `(!isSemMovimento && !verificacao)`. Na tela de detalhes da filial (`conciliacao.$lojaId.tsx`), o operador não tinha confirmação visual explícita de que a filial estava 100% batida.
+**Regra aprendida:**
+1. **Restauração Canônica de `CONCILIADO`:** Quando a filial tem movimentação e `isDiferencaOk === true` (diferença <= 0.05 e status `approved` ou `conciliado`), o badge verde `CONCILIADO` deve ser compulsoriamente renderizado no cabeçalho do card.
+2. **Eliminação de Falsos Alarmes em Verificação:** Jamais disparar `isIncompleto = true` apenas pela ausência do objeto `verificacao` em memória (`!verificacao`). Incompletude deve ser estrita a `data.isMissingData || verificacao?.status === 'incomplete'`.
+3. **Badge de Pendências Informativo:** Se `pendingCount > 0`, exibir em tom âmbar informativo (`variant="warning"` com `{pendingCount} itens a vincular`) sem pintar o card de vermelho de forma alarmista quando os saldos contábeis estiverem batidos.
+4. **Divergência com Valor Monetário:** Quando houver divergência real, o badge deve explicitar o montante: `DIVERGÊNCIA (R$ X,XX)`.
+5. **Banner Executivo de Fechamento Contábil:** No topo da rota de detalhe `/conciliacao/:lojaId`, renderizar banner proeminente com `CheckCircle2` verde afirmando "Fechamento Contábil 100% Conciliado" quando a loja estiver batida, e ícones verdes `✓` nas abas com `isVerified === true`.
+**Não fazer:** Suprimir o badge verde de conciliado na presença de pendências de vínculo secundárias já mapeadas no payload ou disparar tarja vermelha de erro por latência de carregamento do objeto de verificação.
+
+
 

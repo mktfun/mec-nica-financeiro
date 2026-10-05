@@ -28,11 +28,9 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date, 
   const isDifEntradasOk = Math.abs(data.diferencaEntradas || 0) <= 0.05;
   const isDifSaidasOk = Math.abs(data.diferencaSaidas || 0) <= 0.05;
 
-  // Diagnóstico unitário de vínculos (Spec 467)
+  // Diagnóstico unitário de vínculos (Spec 467 / 477)
   const verificacao = data.verificacaoVinculos;
   const pendingCount = verificacao?.pending_count ?? 0;
-  const isVerificado = verificacao?.status === 'verified';
-  const isIncompleto = data.isMissingData || verificacao?.status === 'incomplete' || (!isSemMovimento && !verificacao);
 
   const tooltipVerificacao = verificacao?.groups ? [
     `OS: ${verificacao.groups.os_payments.covered}/${verificacao.groups.os_payments.total} ${verificacao.groups.os_payments.pending > 0 ? '⚠' : '✓'}`,
@@ -87,45 +85,48 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date, 
                 </div>
 
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  {/* Badge de Verificação de Vínculos (Spec 467) */}
-                  {isIncompleto ? (
-                    <Badge size="sm" variant="danger" dot={false} title={tooltipVerificacao}>
-                      Verificação incompleta
-                    </Badge>
-                  ) : isSemMovimento ? (
-                    <Badge size="sm" variant="neutral" dot={false} title={tooltipVerificacao}>
-                      Sem movimento
-                    </Badge>
-                  ) : pendingCount > 0 ? (
-                    <Badge size="sm" variant="danger" dot={false} title={tooltipVerificacao}>
-                      {pendingCount === 1 ? '1 verificação pendente' : `${pendingCount} verificações pendentes`}
-                    </Badge>
-                  ) : isVerificado ? (
-                    <Badge size="sm" variant="success" dot={false} title={tooltipVerificacao}>
-                      Vínculos conferidos
-                    </Badge>
-                  ) : null}
-
                   {data.isMissingData ? (
                     <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-900/40 text-red-400 border border-red-500/30">
                       ⚠️ DADOS AUSENTES
                     </span>
                   ) : isSemMovimento ? (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700">
+                    <Badge size="sm" variant="neutral">
                       SEM MOVIMENTO
-                    </span>
+                    </Badge>
                   ) : (
                     <>
-                      {!isDiferencaOk && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
-                          DIVERGÊNCIA
-                        </span>
+                      {/* 1. Status Principal Contábil da Filial */}
+                      {isDiferencaOk ? (
+                        <Badge size="sm" variant="success">
+                          CONCILIADO
+                        </Badge>
+                      ) : (
+                        <Badge 
+                          size="sm" 
+                          variant="danger" 
+                          title={`Diferença contábil: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.diferenca || 0)}`}
+                        >
+                          DIVERGÊNCIA {data.diferenca ? `(${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(data.diferenca))})` : ''}
+                        </Badge>
                       )}
+
+                      {/* 2. Badge de Liquidação Futura de Cartões */}
                       {hasACompensar && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                        <Badge size="sm" variant="warning" title="Vendas de cartão capturadas aguardando crédito bancário">
                           A COMPENSAR
-                        </span>
+                        </Badge>
                       )}
+
+                      {/* 3. Diagnóstico Unitário de Vínculos (Apenas se houver pendência real comprovada) */}
+                      {pendingCount > 0 ? (
+                        <Badge size="sm" variant="warning" dot={false} title={tooltipVerificacao}>
+                          {pendingCount === 1 ? '1 item a vincular' : `${pendingCount} itens a vincular`}
+                        </Badge>
+                      ) : verificacao?.status === 'incomplete' ? (
+                        <Badge size="sm" variant="warning" dot={false} title={tooltipVerificacao}>
+                          Verificação incompleta
+                        </Badge>
+                      ) : null}
                     </>
                   )}
                 </div>

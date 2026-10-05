@@ -58,8 +58,7 @@ export function useBotDownloadedFiles(filter?: { date?: string; storeId?: string
           expires_at,
           stores (
             id,
-            name,
-            code
+            name
           )
         `)
         .order('created_at', { ascending: false });
