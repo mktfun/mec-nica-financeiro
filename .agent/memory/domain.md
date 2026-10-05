@@ -1,3 +1,18 @@
+## [2026-10-04] — [Feature ID: 476-calibracao-saidas-entradas-ofx-e-saneamento-contas]
+
+**Contexto:** Definição da semântica de divergência de saídas bancárias vs contas a pagar da loja e tratamento de pagamentos históricos de ordens de serviço (carry-over de pátio).
+
+**Regra aprendida:**
+1. **Semântica de Saída Órfã vs Contas a Pagar:**
+   - Divergência de saída bancária só existe quando dinheiro sai da conta bancária (`ofx_transactions` a débito) sem justificativa contábil correspondente (sem boleto, fatura ou despesa de loja).
+   - Se uma loja cadastrou contas a pagar para a data (ex: R$ 844,73 em Mauá) mas o extrato bancário não registrou débito na data da conciliação (saídas bancárias = 0), a diferença bancária fiduciária é R$ 0,00. As contas permanecem como obrigações pendentes de débito futuro, e nunca como rombo bancário.
+2. **Carry-over de Pátio e Observações de OS:**
+   - OSs que já estavam no pátio antes do dia do fechamento contábil e que já tiveram entradas parciais em datas passadas não podem exigir cobertura de maquininha/banco no dia corrente para o valor pago antigo. Apenas os deltas financeiros efetivamente recebidos no dia exigem comprovação.
+
+**Risco identificado / Anti-pattern:** Tratar contas a pagar não debitadas como divergência negativa de caixa, gerando inconsistência conceitual entre o extrato bancário e o painel executivo.
+
+---
+
 ## [2026-10-02] — [Feature ID: 471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix]
 
 **Contexto:** Diagnóstico de cobertura contábil e fiduciária de Ordens de Serviço por filial. Identificação matemática de OSs com deltas de pagamento no dia que não possuem contrapartida comprovada em adquirentes de cartão (Rede) ou extrato bancário (OFX), e implementação do tri-escopo de consulta para operadores de caixa e gerentes.

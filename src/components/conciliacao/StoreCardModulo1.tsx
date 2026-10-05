@@ -1,16 +1,19 @@
 import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { StoreCardData } from '@/hooks/useBackendConciliacao';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 
-interface StoreCardModulo1Props {
+export interface StoreCardModulo1Props {
   data: StoreCardData;
   date: string;
+  disableLink?: boolean;
+  className?: string;
 }
 
-export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }) => {
+export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date, disableLink = false, className = '' }) => {
   const isSemMovimento = data.status === 'sem_movimento' || (
     (data.statusCompensacao === 'sem_movimento' || !data.statusCompensacao) &&
     (data.maquininha || 0) === 0 &&
@@ -24,6 +27,19 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
 
   const isDifEntradasOk = Math.abs(data.diferencaEntradas || 0) <= 0.05;
   const isDifSaidasOk = Math.abs(data.diferencaSaidas || 0) <= 0.05;
+
+  // Diagnóstico unitário de vínculos (Spec 467)
+  const verificacao = data.verificacaoVinculos;
+  const pendingCount = verificacao?.pending_count ?? 0;
+  const isVerificado = verificacao?.status === 'verified';
+  const isIncompleto = data.isMissingData || verificacao?.status === 'incomplete' || (!isSemMovimento && !verificacao);
+
+  const tooltipVerificacao = verificacao?.groups ? [
+    `OS: ${verificacao.groups.os_payments.covered}/${verificacao.groups.os_payments.total} ${verificacao.groups.os_payments.pending > 0 ? '⚠' : '✓'}`,
+    `Rede → OS: ${verificacao.groups.rede_os.covered}/${verificacao.groups.rede_os.total} ${verificacao.groups.rede_os.pending > 0 ? '⚠' : '✓'}`,
+    `Entradas OFX: ${verificacao.groups.entradas_ofx.covered}/${verificacao.groups.entradas_ofx.total} ${verificacao.groups.entradas_ofx.pending > 0 ? '⚠' : '✓'}`,
+    `Saídas OFX: ${verificacao.groups.saidas_ofx.covered}/${verificacao.groups.saidas_ofx.total} ${verificacao.groups.saidas_ofx.pending > 0 ? '⚠' : '✓'}`,
+  ].join(' | ') : undefined;
 
   // Cor da barra lateral de status da filial
   let barColorClass = 'bg-[var(--color-accent-teal)]';
@@ -51,18 +67,13 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
   const contasLojaValor = data.contasLoja ?? 0;
   const diferencaSaidasValor = data.diferencaSaidas ?? 0;
 
-  return (
-    <div className="relative group">
-      <Link
-        to="/conciliacao/$lojaId"
-        params={{ lojaId: data.storeId }}
-        search={{ date }}
-        className="block transition-all hover:scale-[1.003] duration-200"
-      >
-        <Card className={`p-4 sm:p-5 border flex flex-col xl:flex-row items-stretch justify-between gap-5 transition-all shadow-md hover:shadow-xl cursor-pointer ${
-          data.isMissingData ? 'border-red-900/50 hover:border-red-500/50' :
-          isDiferencaOk ? 'hover:border-[var(--color-accent-teal)]/40' : (hasACompensar ? 'hover:border-amber-500/40' : 'hover:border-[var(--color-accent-danger)]/40')
-        }`}>
+  const cardElement = (
+    <Card className={`p-4 sm:p-5 border flex flex-col xl:flex-row items-stretch justify-between gap-5 transition-all shadow-md ${
+      disableLink ? '' : 'hover:shadow-xl cursor-pointer'
+    } ${
+      data.isMissingData ? 'border-red-900/50 hover:border-red-500/50' :
+      isDiferencaOk ? 'hover:border-[var(--color-accent-teal)]/40' : (hasACompensar ? 'hover:border-amber-500/40' : 'hover:border-[var(--color-accent-danger)]/40')
+    } ${className}`}>
           {/* BLOCO ESQUERDO: Identidade da Filial & Balanço Base Empilhado (Vertical Stack) */}
           <div className="w-full xl:w-80 shrink-0 flex gap-3.5">
             <div className={`w-2 self-stretch rounded-full shrink-0 ${barColorClass}`} />
@@ -75,23 +86,49 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <span className="text-[10px] text-[var(--text-tertiary)] font-mono">ID: {data.storeId}</span>
                 </div>
 
-                {data.isMissingData ? (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-900/40 text-red-400 border border-red-500/30">
-                    ⚠️ DADOS AUSENTES
-                  </span>
-                ) : isSemMovimento ? (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700">
-                    SEM MOVIMENTO
-                  </span>
-                ) : (
-                  <>
-                    {!isDiferencaOk && !hasACompensar && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
-                        DIVERGÊNCIA
-                      </span>
-                    )}
-                  </>
-                )}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {/* Badge de Verificação de Vínculos (Spec 467) */}
+                  {isIncompleto ? (
+                    <Badge size="sm" variant="danger" dot={false} title={tooltipVerificacao}>
+                      Verificação incompleta
+                    </Badge>
+                  ) : isSemMovimento ? (
+                    <Badge size="sm" variant="neutral" dot={false} title={tooltipVerificacao}>
+                      Sem movimento
+                    </Badge>
+                  ) : pendingCount > 0 ? (
+                    <Badge size="sm" variant="danger" dot={false} title={tooltipVerificacao}>
+                      {pendingCount === 1 ? '1 verificação pendente' : `${pendingCount} verificações pendentes`}
+                    </Badge>
+                  ) : isVerificado ? (
+                    <Badge size="sm" variant="success" dot={false} title={tooltipVerificacao}>
+                      Vínculos conferidos
+                    </Badge>
+                  ) : null}
+
+                  {data.isMissingData ? (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-900/40 text-red-400 border border-red-500/30">
+                      ⚠️ DADOS AUSENTES
+                    </span>
+                  ) : isSemMovimento ? (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700">
+                      SEM MOVIMENTO
+                    </span>
+                  ) : (
+                    <>
+                      {!isDiferencaOk && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
+                          DIVERGÊNCIA
+                        </span>
+                      )}
+                      {hasACompensar && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                          A COMPENSAR
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Pilares Empilhados (Vertical Stack - Sem Truncar / Sem Ellipsis) */}
@@ -241,7 +278,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <span className="text-[8px] text-zinc-500 block truncate" title={data.contasCentralizadas && data.contasCentralizadas > 0 ? `Despesas Locais (C6 Centralizado: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.contasCentralizadas)})` : 'Despesas da Loja'}>
                     {data.contasCentralizadas && data.contasCentralizadas > 0 
                       ? (contasLojaValor === 0 ? 'Centralizado C6' : 'Locais (+ C6)') 
-                      : 'Despesas da Loja'}
+                      : (saidasOfxValor === 0 && contasLojaValor > 0 ? 'A Pagar / Sem Débito' : 'Despesas da Loja')}
                   </span>
                   <p className="font-mono font-bold text-xs sm:text-sm text-zinc-300 mt-0.5">
                     {data.isMissingData ? 'N/D' : <AnimatedNumber value={contasLojaValor} format="currency" />}
@@ -254,21 +291,37 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                   <span className="text-[8px] text-zinc-500 block">
                     {isSemMovimento || (saidasOfxValor === 0 && contasLojaValor === 0)
                       ? 'Sem Mov. Saídas'
+                      : saidasOfxValor === 0 && contasLojaValor > 0
+                      ? 'Sem Débito no Banco'
                       : isDifSaidasOk ? '100% Conciliado' : 'Débito Órfão'}
                   </span>
                   <p className={`font-mono font-bold text-xs sm:text-sm mt-0.5 ${
-                    data.isMissingData ? 'text-zinc-500' : isDifSaidasOk ? 'text-emerald-400' : 'text-rose-400'
+                    data.isMissingData ? 'text-zinc-500' : (isDifSaidasOk || saidasOfxValor === 0) ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
                     {data.isMissingData || data.diferencaSaidas === null || data.diferencaSaidas === undefined ? 'N/D' : (
-                      <AnimatedNumber value={isDifSaidasOk ? 0 : diferencaSaidasValor} format="currency" />
+                      <AnimatedNumber value={(isDifSaidasOk || saidasOfxValor === 0) ? 0 : diferencaSaidasValor} format="currency" />
                     )}
                   </p>
                 </div>
               </div>
             </div>
-
           </div>
         </Card>
+  );
+
+  if (disableLink) {
+    return <div className="relative group">{cardElement}</div>;
+  }
+
+  return (
+    <div className="relative group">
+      <Link
+        to="/conciliacao/$lojaId"
+        params={{ lojaId: data.storeId }}
+        search={{ date }}
+        className="block transition-all hover:scale-[1.003] duration-200"
+      >
+        {cardElement}
       </Link>
     </div>
   );

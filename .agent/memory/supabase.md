@@ -1,3 +1,20 @@
+## [2026-10-04] — [Feature ID: 476-calibracao-saidas-entradas-ofx-e-saneamento-contas]
+
+**Contexto:** Migration `20261003000004_calibracao_saidas_ofx_e_saneamento_contas_loja.sql`. Calibração da RPC `get_daily_reconciliation_summary` para eliminação de falsos alarmes de divergência de saídas bancárias, saneamento de observações de importação de OSs legadas (`baseline_source = 'historical_patio_carryover'`) e batimento de vendas Rede × OS em filiais com divergência residual.
+
+**Regra aprendida:**
+1. **Diferença de Saídas Bancárias Estritamente Órfãs (`sofx.saidas_orfas`):**
+   - Na RPC `get_daily_reconciliation_summary`, os campos `dif_saidas` e `diferenca_saidas` devem retornar estritamente `sofx.saidas_orfas` (0.00 quando não há débitos bancários no extrato OFX).
+   - A existência de contas a pagar cadastradas no sistema da filial sem débito no extrato bancário do mesmo dia representa contas pendentes de liquidação bancária futura, e NUNCA uma saída órfã do banco.
+2. **Critério Canônico de Status Conciliado de Filial:**
+   - Uma filial com `saidas_orfas = 0`, `entradas_orfas = 0` e `cartoes_a_compensar` compensados deve ser classificada com status regularizado (`'conciliado'` / `'approved'`), mesmo que haja contas a pagar da loja aguardando débito bancário futuro.
+3. **Saneamento de Baseline Histórico de Pátio:**
+   - Ordens de serviço registradas no pátio antes da data de corte do dia contábil não devem disparar falso alarme de "pagamento sem cobertura de maquininha/banco" para movimentações históricas anteriores. O carimbo `baseline_source = 'historical_patio_carryover'` em `os_import_observations` sela a integridade histórica.
+
+**Risco identificado / Anti-pattern:** Subtrair despesas de loja do total de saídas do extrato gerando valor negativo de divergência ou alarmes falsos de "DIVERGÊNCIA" em filiais que sequer tiveram movimentação bancária a débito.
+
+---
+
 ## [2026-10-02] — [Feature ID: 466-paridade-elegibilidade-rede-os-e-desvinculo]
 
 **Contexto:** Migration `20261001000005_paridade_elegibilidade_matcher_e_desvinculo.sql`. Atualização in-place das 4 funções PL/pgSQL canônicas de Rede × OS: `get_rede_os_eligible_candidates`, `match_stage2_rede_os`, `link_manual_rede_to_os` e `unlink_manual_os_match`.

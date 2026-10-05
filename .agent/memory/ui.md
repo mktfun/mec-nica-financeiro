@@ -1,3 +1,18 @@
+## [2026-10-04] — [Feature ID: 476-calibracao-saidas-entradas-ofx-e-saneamento-contas]
+
+**Contexto:** Refinamento visual do card de conciliação de filiais (`StoreCardModulo1.tsx`) para harmonizar a exibição de saídas bancárias vs despesas a pagar.
+
+**Regra aprendida:**
+1. **Diferenciação Visual entre Débito Bancário Órfão e Contas Pendentes:**
+   - Quando `saidasOfxValor === 0` e `contasLojaValor > 0`, o card de loja deve exibir o indicador amigável "Sem Débito no Banco" com `R$ 0,00` em tom verde/neutro (`text-emerald-400`), com sub-rótulo "A Pagar / Sem Débito".
+   - O badge vermelho de "Débito Órfão" só deve ser acionado quando houver débitos reais no extrato que superem as contas justificadas (`saidasOfxValor > 0 && diferencaSaidasValor > 0.05`).
+2. **Eliminação de Alarmes Falsos na UX:**
+   - Evitar exibir números negativos ou badges de perigo em filiais cujo extrato bancário não sofreu nenhum débito indevido no dia.
+
+**Risco identificado / Anti-pattern:** Aplicar estilos de alerta vermelho (`text-rose-400` / `bg-rose-500/20`) a lojas regulares simplesmente por haver contas a pagar cadastradas no sistema que ainda não caíram na conta corrente.
+
+---
+
 ## [2026-10-02] — [Feature ID: 471-diagnostico-os-sem-cobertura-harmonizacao-ui-e-vinculo-pix]
 
 **Contexto:** Diagnóstico e sinalização de Ordens de Serviço sem cobertura de maquininha ou extrato bancário na tabela de OSs da loja (`StoreOrdensServicoView.tsx`), tri-escopo de filtros em pílulas (`Atualizadas Hoje`, `Em Aberto no Pátio`, `Todas`), lista cronológica descendente de transações no modal de detalhes (`OsDetailModal.tsx`) e harmonização geométrica anti-Frankenstein (`rounded-2xl` em contêineres e `rounded-xl` em modais e tabelas).
