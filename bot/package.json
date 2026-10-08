@@ -7,6 +7,8 @@
     "bot:server": "ts-node src/server.ts",
     "bot:oi": "ts-node src/runner.ts --target oficina",
     "bot:rede": "ts-node src/runner.ts --target rede",
+    "bot:patio": "ts-node src/runner.ts --target patio",
+    "bot:patio:cache": "ts-node src/runner.ts --target patio --from-cache",
     "bot:install-browsers": "npx playwright install chromium"
   },
   "dependencies": {

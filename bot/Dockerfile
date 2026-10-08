@@ -25,6 +25,7 @@ COPY . .
 
 # Compila TypeScript para JS
 RUN ./node_modules/.bin/tsc --skipLibCheck
+RUN mkdir -p dist/config && cp src/config/*.json dist/config/ || true
 
 EXPOSE 3001
 

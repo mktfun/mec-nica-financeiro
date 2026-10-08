@@ -33,3 +33,5 @@ dist-ssr
 
 # Configuração local
 .env.local
+.tmp/
+.tmp/
